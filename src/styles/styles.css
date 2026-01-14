@@ -16,7 +16,9 @@ html {
 
 body {
   background-color: var(--color-bg);
-  padding: 0 16px;
+  /* background-image: url("https://www.transparenttextures.com/patterns/concrete-wall-2.png"); */
+  background-image: url("https://www.transparenttextures.com/patterns/concrete-wall.png");
+  padding: 0px;
 }
 
 .main {
@@ -27,7 +29,6 @@ body {
 
 header {
   background-color: var(--color-primary);
-  margin: auto -16px;
   padding: 4px 32px;
   box-shadow: 0px 2px 7px var(--color-text);
   display: flex;
