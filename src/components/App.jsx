@@ -1,8 +1,11 @@
-import './App.css'
+import './App.css';
+import Header from "./Header";
 
 function App() {
   return (
-    <h1>Match Time</h1>
+    <div className="App">
+      <Header />
+    </div>
   );
 }
 
