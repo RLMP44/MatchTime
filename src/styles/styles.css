@@ -1,3 +1,9 @@
+:root {
+  --color-text: #361c00;
+  --color-bg: #ed6300be;
+  --color-primary: #fef2e3;
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -9,7 +15,7 @@ html {
 }
 
 body {
-  background-color: #ed6300be;
+  background-color: var(--color-bg);
   padding: 0 16px;
 }
 
@@ -20,17 +26,17 @@ body {
 }
 
 header {
-  background-color: #fef2e3;
+  background-color: var(--color-primary);
   margin: auto -16px;
   padding: 4px 32px;
-  box-shadow: 0px 2px 7px #361c00;
+  box-shadow: 0px 2px 7px var(--color-text);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 header h1 {
-  color: #361c00;
+  color: var(--color-text);
   font-family: "McLaren", cursive;
   font-weight: 200;
 }
@@ -47,7 +53,7 @@ footer {
 }
 
 footer p {
-  color: #ccc;
+  color: var(--color-text);
 }
 
 .App {
