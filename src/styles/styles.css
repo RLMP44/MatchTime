@@ -49,3 +49,8 @@ footer {
 footer p {
   color: #ccc;
 }
+
+.App {
+  display: grid;
+  grid-template-rows: 1fr 10fr 1fr;
+}
