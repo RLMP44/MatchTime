@@ -1,8 +1,10 @@
 :root {
+  --color-text-highlight: #fef2e3;
   --color-text: black;
   --color-highlight: #ed6300;
   --color-highlight-fade: #ed6300c8;
   --color-primary: #fef2e3;
+  --color-bg: #383837;
 }
 
 * {
@@ -16,8 +18,7 @@ html {
 }
 
 body {
-  background-color: var(--color-primary);
-  background-image: url("../assets/black-bg.jpg");
+  background-color: var(--color-bg);
   background-size: 100vw 100vh;
   background-repeat: no-repeat;
   background-position: center;
@@ -33,14 +34,15 @@ body {
 header {
   background-color: var(--color-primary);
   padding: 4px 32px;
-  box-shadow: 0px 2px 7px var(--color-text);
+  box-shadow: 0px 2px 7px black;
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: .5rem;
 }
 
 header h1 {
-  color: var(--color-highlight);
+  color: var(--color-text-highlight);
   font-family: "McLaren", cursive;
   font-weight: 200;
 }
