@@ -1,6 +1,7 @@
 :root {
-  --color-text: #361c00;
-  --color-bg: #ed6300be;
+  --color-text: black;
+  --color-highlight: #ed6300;
+  --color-highlight-fade: #ed6300c8;
   --color-primary: #fef2e3;
 }
 
@@ -15,9 +16,11 @@ html {
 }
 
 body {
-  background-color: var(--color-bg);
-  /* background-image: url("https://www.transparenttextures.com/patterns/concrete-wall-2.png"); */
-  background-image: url("https://www.transparenttextures.com/patterns/concrete-wall.png");
+  background-color: var(--color-primary);
+  background-image: url("../assets/black-bg.jpg");
+  background-size: 100vw 100vh;
+  background-repeat: no-repeat;
+  background-position: center;
   padding: 0px;
 }
 
@@ -37,7 +40,7 @@ header {
 }
 
 header h1 {
-  color: var(--color-text);
+  color: var(--color-highlight);
   font-family: "McLaren", cursive;
   font-weight: 200;
 }
@@ -54,7 +57,7 @@ footer {
 }
 
 footer p {
-  color: var(--color-text);
+  color: var(--color-highlight-fade);
 }
 
 .App {
