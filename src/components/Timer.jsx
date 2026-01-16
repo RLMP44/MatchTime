@@ -5,15 +5,19 @@ function Timer() {
   function handleClick(event) {
     console.log(event.target.id);
     var target = event.target;
+    var bibElement = document.getElementById("bib-display");
+    var nameElement = document.getElementById("name-display");
     if (target.value) {
       bibNum = (bibNum === null) ? target.value : bibNum + target.value;
+      bibElement.innerHTML = bibNum;
+      nameElement.innerHTML = "name"; // to be updated
       console.log(bibNum);
       // retrieve value
       // append each value to previous bibNum and search
+      // update timer-info-display Bib#
       // update timer-info-display with entrant name upon button press
     } else if (target.id === "start-record-button") {
-      // check innerHTML
-        // if "start", start timer
+      if (target.innerHTML === "Start") { target.innerHTML = "Record" };
         // if "record"
           // submit bib number to backend and retrieve entrant's info
           // retrieve time and placement, and bundle with entrant's info
@@ -23,8 +27,9 @@ function Timer() {
         console.log("submit")
         bibNum = null;
     } else if (target.id === "clear-button") {
-      // clear bibNum
       bibNum = null;
+      bibElement.innerHTML = null;
+      nameElement.innerHTML = null;
       // clear name in timer-info-display
       console.log("clear")
     } else if (target.id === "same-time-button") {
@@ -41,10 +46,10 @@ function Timer() {
   return (
     <div className="timer-display">
       <div className="timer-info-display">
-        <h4>Time: </h4>
-        <h4>Place: </h4>
-        <h4>Bib#: </h4>
-        <h4>Name: </h4>
+        <h4>Time: <span id="time-display"></span></h4>
+        <h4>Place: <span id="place-display"></span></h4>
+        <h4>Bib#: <span id="bib-display"></span></h4>
+        <h4>Name: <span id="name-display"></span></h4>
       </div>
       <div className="timer-buttons-container">
         <button onClick={handleClick} id="button-1" className="timer-button timer-btn-reg" value="1">1</button>
