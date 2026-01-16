@@ -1,0 +1,13 @@
+header h1 {
+  color: var(--color-text-highlight);
+  font-family: "McLaren", cursive;
+  font-weight: 200;
+}
+
+h4 {
+  color: var(--color-highlight);
+}
+
+footer p {
+  color: var(--color-highlight-fade);
+}
