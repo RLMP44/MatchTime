@@ -1,3 +1,6 @@
+@import './components/text.css';
+@import './components/timer.css';
+
 :root {
   --color-text-highlight: #fef2e3;
   --color-text: black;
@@ -41,16 +44,6 @@ header {
   gap: .5rem;
 }
 
-header h1 {
-  color: var(--color-text-highlight);
-  font-family: "McLaren", cursive;
-  font-weight: 200;
-}
-
-h4 {
-  color: var(--color-highlight);
-}
-
 header img {
   height: 4rem;
 }
@@ -62,54 +55,7 @@ footer {
   height: 2.5rem;
 }
 
-footer p {
-  color: var(--color-highlight-fade);
-}
-
 .App {
   display: grid;
   grid-template-rows: 1fr 10fr 1fr;
-}
-
-.timer-tab {
-  display: flex;
-  justify-content: space-around;
-  margin: 2rem 1rem;
-}
-
-.timer-display {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.timer-info-display {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: .5rem;
-}
-
-.timer-buttons-container {
-  display: grid;
-  grid-template-columns: 4fr 4fr 4fr;
-  gap: .5rem;
-}
-
-.timer-button {
-  min-height: 4rem;
-  min-width: 5rem;
-  font-weight: bolder;
-  font-size: 18px;
-  border: none;
-  border-radius: 4px;
-}
-
-.timer-btn-reg {
-  background-color: var(--color-primary);
-  box-shadow: inset 0px 0px 8px 6px #bab1a6db, 3px 3px 9px black;
-}
-
-.timer-btn-color {
-  background-color: var(--color-highlight);
-  box-shadow: inset 0px 0px 8px 6px #c05000, 3px 3px 9px black;
 }
