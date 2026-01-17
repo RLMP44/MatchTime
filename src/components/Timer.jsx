@@ -8,11 +8,6 @@ function Timer() {
   const [place, setPlace] = useState(1);
   const [buttonText, setButtonText] = useState("Start");
 
-  // while (started) {
-  //   setTimeout(setTime(prev => prev + 1), 100);
-  //   console.log(time)
-  // }
-
   function handleClick(event) {
     console.log(event.target.id);
     var target = event.target;
@@ -21,27 +16,27 @@ function Timer() {
         return (prevNum !== null) ? prevNum + target.value : target.value;
       });
       // submit bibNum to backend and retrieve name
-      setName("name"); // to be updated
+      setName("name"); // to be updated from backend
       // update timer-info-display with entrant name upon button press
     } else if (target.id === "start-record-button") {
       if (buttonText === "Start") {
         setButtonText("Record");
         setStarted(true);
-      };
-        // if "record"
-          // submit bib number to backend and retrieve entrant's info
-          // retrieve time and placement, and bundle with entrant's info
-          // submit data to backend
-          // update records display in timer tab
+      } else {
         console.log("submit")
         reset();
-        setPlace((prevNum) => {return prevNum + 1});
+        setPlace(prev => prev + 1);
+        // submit bib number to backend and retrieve entrant's info
+        // retrieve time and placement, and bundle with entrant's info
+        // submit data to backend
+        // update records display in timer tab
+      }
     } else if (target.id === "clear-button") {
       reset();
       console.log("clear")
     } else if (target.id === "same-time-button") {
       reset();
-      setPlace(prev => prev + 2);
+      setPlace(prev => prev + 1);
       // retrieve time and placement info from latest entry
       // if exists
         // submit bib number to backend and retrieve entrant's info
@@ -60,10 +55,10 @@ function Timer() {
   return (
     <div className="timer-display">
       <div className="timer-info-display">
-        <h4>Time: <span id="time-display">{time}</span></h4>
-        <h4>Place: <span id="place-display">{place}</span></h4>
-        <h4>Bib#: <span id="bib-display">{bibNum}</span></h4>
-        <h4>Name: <span id="name-display">{name}</span></h4>
+        <h4>Time: {time}</h4>
+        <h4>Place: {place}</h4>
+        <h4>Bib#: {bibNum}</h4>
+        <h4>Name: {name}</h4>
       </div>
       <div className="timer-buttons-container">
         <button onClick={handleClick} id="button-1" className="timer-button timer-btn-reg" value="1">1</button>
