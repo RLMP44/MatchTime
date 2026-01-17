@@ -1,38 +1,42 @@
+import { useState } from "react";
+
 function Timer() {
-  var time = 0;
-  var bibNum = null;
+  const [time, setTime] = useState(null);
+  const [started, setStarted] = useState(false);
+  const [bibNum, setBibNum] = useState(null);
+  const [name, setName] = useState(null);
+  const [place, setPlace] = useState(1);
+  const [buttonText, setButtonText] = useState("Start");
 
   function handleClick(event) {
     console.log(event.target.id);
     var target = event.target;
-    var bibElement = document.getElementById("bib-display");
-    var nameElement = document.getElementById("name-display");
     if (target.value) {
-      bibNum = (bibNum === null) ? target.value : bibNum + target.value;
-      bibElement.innerHTML = bibNum;
-      nameElement.innerHTML = "name"; // to be updated
-      console.log(bibNum);
-      // retrieve value
-      // append each value to previous bibNum and search
-      // update timer-info-display Bib#
+      setBibNum((prevNum) => {
+        return (prevNum !== null) ? prevNum + target.value : target.value;
+      });
+      // submit bibNum to backend and retrieve name
+      setName("name"); // to be updated from backend
       // update timer-info-display with entrant name upon button press
     } else if (target.id === "start-record-button") {
-      if (target.innerHTML === "Start") { target.innerHTML = "Record" };
-        // if "record"
-          // submit bib number to backend and retrieve entrant's info
-          // retrieve time and placement, and bundle with entrant's info
-          // submit data to backend
-          // update records display in timer tab
-        console.log(bibNum);
+      if (buttonText === "Start") {
+        setButtonText("Record");
+        setStarted(true);
+      } else {
         console.log("submit")
-        bibNum = null;
+        reset();
+        setPlace(prev => prev + 1);
+        // submit bib number to backend and retrieve entrant's info
+        // retrieve time and placement, and bundle with entrant's info
+        // submit data to backend
+        // update records display in timer tab
+      }
     } else if (target.id === "clear-button") {
-      bibNum = null;
-      bibElement.innerHTML = null;
-      nameElement.innerHTML = null;
-      // clear name in timer-info-display
+      reset();
       console.log("clear")
     } else if (target.id === "same-time-button") {
+      reset();
+      setPlace(prev => prev + 1);
       // retrieve time and placement info from latest entry
       // if exists
         // submit bib number to backend and retrieve entrant's info
@@ -43,13 +47,18 @@ function Timer() {
     }
   }
 
+  function reset() {
+    setBibNum(null);
+    setName(null);
+  }
+
   return (
     <div className="timer-display">
       <div className="timer-info-display">
-        <h4>Time: <span id="time-display"></span></h4>
-        <h4>Place: <span id="place-display"></span></h4>
-        <h4>Bib#: <span id="bib-display"></span></h4>
-        <h4>Name: <span id="name-display"></span></h4>
+        <h4>Time: {time}</h4>
+        <h4>Place: {place}</h4>
+        <h4>Bib#: {bibNum}</h4>
+        <h4>Name: {name}</h4>
       </div>
       <div className="timer-buttons-container">
         <button onClick={handleClick} id="button-1" className="timer-button timer-btn-reg" value="1">1</button>
@@ -64,7 +73,7 @@ function Timer() {
         <button onClick={handleClick} id="same-time-button" className="timer-button timer-btn-color">Same Time</button>
         <button onClick={handleClick} id="button-0" className="timer-button timer-btn-reg" value="0">0</button>
         <button onClick={handleClick} id="clear-button" className="timer-button timer-btn-color">Clear</button>
-        <button onClick={handleClick} id="start-record-button" className="timer-button timer-btn-color">Start</button>
+        <button onClick={handleClick} id="start-record-button" className="timer-button timer-btn-color">{buttonText}</button>
       </div>
     </div>
   );
