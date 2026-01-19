@@ -1,0 +1,14 @@
+.record-container {
+  display: grid;
+  grid-template-columns: 2fr 2fr 3fr 5fr;
+  border-bottom: 1px solid gray;
+  padding: .25rem 0rem;
+}
+
+.records-display-container {
+  min-width: 45vw;
+  min-height: 75vh;
+  background-color: var(--color-primary);
+  border-radius: 4px;
+  padding: .5rem .5rem;
+}
