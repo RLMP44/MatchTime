@@ -1,12 +1,19 @@
 import { useState } from "react";
 
-function Timer() {
+function Timer(props) {
   const [time, setTime] = useState(null);
   const [started, setStarted] = useState(false);
   const [bibNum, setBibNum] = useState(null);
   const [name, setName] = useState(null);
   const [place, setPlace] = useState(1);
   const [buttonText, setButtonText] = useState("Start");
+
+  async function updateRecord() {
+    const recordToUpdate = await props.fetchRecord(parseInt(bibNum));
+    recordToUpdate.place = place;
+    recordToUpdate.time = time;
+    props.updateUserRecord(recordToUpdate);
+  }
 
   function handleClick(event) {
     console.log(event.target.id);
@@ -23,6 +30,7 @@ function Timer() {
         setButtonText("Record");
         setStarted(true);
       } else {
+        updateRecord();
         console.log("submit")
         reset();
         setPlace(prev => prev + 1);

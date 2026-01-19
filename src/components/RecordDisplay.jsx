@@ -1,7 +1,5 @@
 function RecordDisplay() {
-  // async function createRecord() {
 
-  // }
 
   return (
     <div className="records-display-container">
