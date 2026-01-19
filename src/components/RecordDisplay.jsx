@@ -1,17 +1,13 @@
-function RecordDisplay() {
-
+function RecordDisplay(params) {
 
   return (
-    <div className="records-display-container">
-      <div className="record-container">
-        <p><strong>Place</strong></p>
-        <p><strong>Bib #</strong></p>
-        <p><strong>Time</strong></p>
-        <p><strong>Name</strong></p>
-      </div>
+    <div className="record-container">
+      <p>{ params.data ? params.data.place : <strong>Place</strong>}</p>
+      <p>{ params.data ? params.data.bib : <strong>Bib #</strong>}</p>
+      <p>{ params.data ? params.data.time : <strong>Time</strong>}</p>
+      <p>{ params.data ? params.data.name : <strong>Name</strong>}</p>
     </div>
   );
-
 }
 
 export default RecordDisplay;

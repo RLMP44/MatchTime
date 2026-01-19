@@ -2,17 +2,23 @@ import { useState } from "react";
 
 function Timer(props) {
   const [time, setTime] = useState(null);
-  const [started, setStarted] = useState(false);
   const [bibNum, setBibNum] = useState(null);
   const [name, setName] = useState(null);
   const [place, setPlace] = useState(1);
   const [buttonText, setButtonText] = useState("Start");
+  const [currentRecord, setCurrentRecord] = useState(null);
 
   async function updateRecord() {
-    const recordToUpdate = await props.fetchRecord(parseInt(bibNum));
-    recordToUpdate.place = place;
-    recordToUpdate.time = time;
-    props.updateUserRecord(recordToUpdate);
+    currentRecord.place = place;
+    currentRecord.time = time;
+    props.updateUserRecord(currentRecord);
+  }
+
+  async function fetchAndSetRecord(newNum) {
+    const newRecord = await props.fetchRecord(parseInt(newNum))
+    // TODO: make sure not allowing users to be entered more than once
+    if (newRecord) {setCurrentRecord(newRecord)};
+    setName(newRecord ? newRecord.name : null);
   }
 
   function handleClick(event) {
@@ -20,24 +26,19 @@ function Timer(props) {
     var target = event.target;
     if (target.value) {
       setBibNum((prevNum) => {
-        return (prevNum !== null) ? prevNum + target.value : target.value;
+        const updatedBibNum = (prevNum !== null) ? prevNum + target.value : target.value;
+        fetchAndSetRecord(updatedBibNum);
+        return updatedBibNum;
       });
-      // submit bibNum to backend and retrieve name
-      setName("name"); // to be updated from backend
-      // update timer-info-display with entrant name upon button press
     } else if (target.id === "start-record-button") {
       if (buttonText === "Start") {
         setButtonText("Record");
-        setStarted(true);
+        // TODO: start timer
       } else {
         updateRecord();
         console.log("submit")
         reset();
         setPlace(prev => prev + 1);
-        // submit bib number to backend and retrieve entrant's info
-        // retrieve time and placement, and bundle with entrant's info
-        // submit data to backend
-        // update records display in timer tab
       }
     } else if (target.id === "clear-button") {
       reset();
@@ -45,7 +46,7 @@ function Timer(props) {
     } else if (target.id === "same-time-button") {
       reset();
       setPlace(prev => prev + 1);
-      // retrieve time and placement info from latest entry
+      // TODO: retrieve time and placement info from latest entry
       // if exists
         // submit bib number to backend and retrieve entrant's info
         // bundle time and placement with entrant's info
