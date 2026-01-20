@@ -10,7 +10,8 @@ function App() {
     {id: 2, place: null, bib: 2, time: null, name: "Maelle Pierre"},
     {id: 3, place: null, bib: 3, time: null, name: "Sciel Jeanne"},
     {id: 4, place: null, bib: 4, time: null, name: "Lune Acuse"},
-    {id: 5, place: null, bib: 5, time: null, name: "Verso L'vange"}
+    {id: 5, place: null, bib: 5, time: null, name: "Verso L'vange"},
+    {id: 54, place: null, bib: 5, time: null, name: "Monoco"}
   ]
 
   const [displayRecords, setDisplayRecords] = useState([]);
