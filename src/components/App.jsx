@@ -11,7 +11,7 @@ function App() {
     {id: 3, place: null, bib: 3, time: null, name: "Sciel Jeanne"},
     {id: 4, place: null, bib: 4, time: null, name: "Lune Acuse"},
     {id: 5, place: null, bib: 5, time: null, name: "Verso L'vange"},
-    {id: 54, place: null, bib: 5, time: null, name: "Monoco"}
+    {id: 6, place: null, bib: 54, time: null, name: "Monoco"}
   ]
 
   const [displayRecords, setDisplayRecords] = useState([]);

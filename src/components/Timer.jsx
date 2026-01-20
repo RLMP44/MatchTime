@@ -61,7 +61,6 @@ function Timer(props) {
         // bundle time and placement with entrant's info
         // submit data to backend
         // update records display in timer tab
-      console.log("same time")
     }
   }
 
