@@ -24,12 +24,14 @@ function Timer(props) {
 
   function stopTimer() {
     setTimerOn(false);
+    // TODO: create race end button away from timer UI to avoid accidents
   }
 
   useEffect(() => {
     if (!timerOn) return;
 
     const interval = setInterval(() => {
+      // performance.now() is the most accurate and can keep calculating in background
       const timeElapsed = (performance.now() - startTime);
       const hours = Math.floor(timeElapsed / 3_600_000);
       const mins = Math.floor((timeElapsed % 3_600_000) / 60_000);
@@ -46,7 +48,8 @@ function Timer(props) {
       setSec(padSeconds);
       setMilli(padMillis);
       setTime(`${padHours}:${padMins}:${padSeconds}:${padMillis}`)
-    }, 60);
+      // update timer loop at 30 Hz (30 updates per second)
+    }, 30);
 
     return () => clearInterval(interval);
   }, [timerOn, startTime]);
@@ -96,7 +99,6 @@ function Timer(props) {
       updateRecord({prevTime: lastRecord.time, prevPlace: lastRecord.place, bib: bibNum});
       reset();
       setPlace(prev => prev + 1);
-      // TODO: submit data to backend
     }
   }
 
