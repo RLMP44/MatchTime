@@ -34,12 +34,12 @@ function Timer(props) {
       const hours = Math.floor(timeElapsed / 3_600_000);
       const mins = Math.floor((timeElapsed % 3_600_000) / 60_000);
       const seconds = Math.floor((timeElapsed % 60000) / 1000);
-      const millis = Math.floor(timeElapsed % 1000);
+      const millis = (Math.floor(timeElapsed % 1000) / 10).toFixed(0);
 
       const padHours = hours.toString().padStart(2, "0");
       const padMins = mins.toString().padStart(2, "0");
       const padSeconds = seconds.toString().padStart(2, "0");
-      const padMillis = millis.toString().padStart(3, "0");
+      const padMillis = millis.toString().padStart(2, "0");
 
       setHour(padHours);
       setMin(padMins);
