@@ -1,13 +1,59 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Timer(props) {
-  const [time, setTime] = useState(null);
+  const [timerOn, setTimerOn] = useState(false);
+  const [startTime, setStartTime] = useState(null);
+  const [time, setTime] = useState("0");
+  const [hour, setHour] = useState("HH");
+  const [min, setMin] = useState("MM");
+  const [sec, setSec] = useState("SS");
+  const [milli, setMilli] = useState("mm");
+
   const [bibNum, setBibNum] = useState(null);
   const [name, setName] = useState(null);
   const [place, setPlace] = useState(1);
   const [buttonText, setButtonText] = useState("Start");
   const [currentRecord, setCurrentRecord] = useState(null);
   const [prevFourRecords, setPrevFourRecords] = useState([]);
+
+  // ---------------------- TIMER LOGIC START ----------------------
+  function startTimer() {
+    setStartTime(performance.now());
+    setTimerOn(true);
+  }
+
+  function stopTimer() {
+    setTimerOn(false);
+    // TODO: create race end button away from timer UI to avoid accidents
+  }
+
+  useEffect(() => {
+    if (!timerOn) return;
+
+    const interval = setInterval(() => {
+      // performance.now() is the most accurate and can keep calculating in background
+      const timeElapsed = (performance.now() - startTime);
+      const hours = Math.floor(timeElapsed / 3_600_000);
+      const mins = Math.floor((timeElapsed % 3_600_000) / 60_000);
+      const seconds = Math.floor((timeElapsed % 60000) / 1000);
+      const millis = (Math.floor(timeElapsed % 1000) / 10).toFixed(0);
+
+      const padHours = hours.toString().padStart(2, "0");
+      const padMins = mins.toString().padStart(2, "0");
+      const padSeconds = seconds.toString().padStart(2, "0");
+      const padMillis = millis.toString().padStart(2, "0");
+
+      setHour(padHours);
+      setMin(padMins);
+      setSec(padSeconds);
+      setMilli(padMillis);
+      setTime(`${padHours}:${padMins}:${padSeconds}:${padMillis}`)
+      // update timer loop at 30 Hz (30 updates per second)
+    }, 30);
+
+    return () => clearInterval(interval);
+  }, [timerOn, startTime]);
+  // ---------------------- TIMER LOGIC END ----------------------
 
   async function updateRecord({prevTime: prevTime, prevPlace: prevPlace, bib: bib}) {
     // create and update copy to avoid bugging react useState
@@ -39,15 +85,13 @@ function Timer(props) {
       const updatedBibNum = (bibNum !== null) ? bibNum + target.value : target.value;
       setBibNum(updatedBibNum);
       fetchAndSetRecord(updatedBibNum);
+    } else if (target.id === "start-record-button" && buttonText === "Start") {
+      setButtonText("Record");
+      startTimer();
     } else if (target.id === "start-record-button") {
-      if (buttonText === "Start") {
-        setButtonText("Record");
-        // TODO: start timer
-      } else {
-        updateRecord({prevTime: null, prevPlace: null, bib: null});
-        reset();
-        setPlace(prev => prev + 1);
-      }
+      updateRecord({prevTime: null, prevPlace: null, bib: null});
+      reset();
+      setPlace(prev => prev + 1);
     } else if (target.id === "clear-button") {
       reset();
     } else if (target.id === "same-time-button") {
@@ -55,19 +99,13 @@ function Timer(props) {
       updateRecord({prevTime: lastRecord.time, prevPlace: lastRecord.place, bib: bibNum});
       reset();
       setPlace(prev => prev + 1);
-      // TODO: retrieve time and placement info from latest entry
-      // if exists
-        // submit bib number to backend and retrieve entrant's info
-        // bundle time and placement with entrant's info
-        // submit data to backend
-        // update records display in timer tab
     }
   }
 
   return (
     <div className="timer-display">
       <div className="timer-info-display">
-        <h4>Time: {time}</h4>
+        <h4>Time: {hour}:{min}:{sec}:{milli}</h4>
         <h4>Place: {place}</h4>
         <h4>Bib#: {bibNum}</h4>
         <h4>Name: {name}</h4>
