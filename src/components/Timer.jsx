@@ -14,7 +14,6 @@ function Timer(props) {
   const [place, setPlace] = useState(1);
   const [buttonText, setButtonText] = useState("Start");
   const [currentRecord, setCurrentRecord] = useState(null);
-  const [prevFourRecords, setPrevFourRecords] = useState([]);
 
   // ---------------------- TIMER LOGIC START ----------------------
   function startTimer() {
@@ -22,10 +21,10 @@ function Timer(props) {
     setTimerOn(true);
   }
 
-  function stopTimer() {
-    setTimerOn(false);
-    // TODO: create race end button away from timer UI to avoid accidents
-  }
+  // function stopTimer() {
+  //   setTimerOn(false);
+  //   // TODO: create race end button away from timer UI to avoid accidents
+  // }
 
   useEffect(() => {
     if (!timerOn) return;
@@ -67,7 +66,6 @@ function Timer(props) {
   }
 
   async function fetchAndSetRecord(newNum) {
-    setPrevFourRecords((prev) => {return [...prev.slice(-4), currentRecord]});
     const newRecord = await props.fetchRecord(parseInt(newNum))
     // TODO: make sure not allowing users to be entered more than once
     newRecord ? setCurrentRecord(newRecord) : setCurrentRecord({id: null, place: place, bib: newNum, time: time, name: "Not Found"});
@@ -95,7 +93,7 @@ function Timer(props) {
     } else if (target.id === "clear-button") {
       reset();
     } else if (target.id === "same-time-button") {
-      const lastRecord = prevFourRecords.at(-1);
+      const lastRecord = props.displayRecords.at(-1);
       updateRecord({prevTime: lastRecord.time, prevPlace: lastRecord.place, bib: bibNum});
       reset();
       setPlace(prev => prev + 1);
