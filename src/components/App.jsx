@@ -16,11 +16,11 @@ function App() {
 
   const [displayRecords, setDisplayRecords] = useState([]);
 
-  async function fetchAllUsers() {
-    // TODO: fetch user records from backend
-    // return as list
-    return records;
-  }
+  // async function fetchAllUsers() {
+  //   // TODO: fetch user records from backend
+  //   // return as list
+  //   return records;
+  // }
 
   async function fetchUserRecord(bib) {
     const userRecord = records.find((record) => {
@@ -29,8 +29,12 @@ function App() {
     return userRecord;
   }
 
-  async function fetchLastRecord() {
+  // async function fetchLastRecord() {
     // TODO: retrieve time and placement of last record
+  // }
+
+  function resetDBRecord(record) {
+    // set DB record time and place back to null
   }
 
   function updateUserRecord(record) {
@@ -47,6 +51,16 @@ function App() {
     });
   }
 
+  // resets old record and updates new record : 2 record limit
+  function editUserRecords({ oldRecord: oldR, newRecord: newR }) {
+    resetDBRecord(oldR);
+    setDisplayRecords((prevRecords) =>
+      prevRecords.map((record) => {
+        return record.id === oldR.id ? newR : record
+      })
+    );
+  };
+
   // TODO: function deleteRecord()
 
   return (
@@ -55,7 +69,13 @@ function App() {
       <div className="timer-tab">
         <div className="records-display-container">
           <RecordDisplay />
-          {displayRecords.map(record => <RecordDisplay key={record.id} data={record} />)}
+          {displayRecords.map(record =>
+            <RecordDisplay
+              key={record.id}
+              data={record}
+              editRecords={editUserRecords}
+              fetchRecord={fetchUserRecord}
+            />)}
         </div>
         <Timer
           updateUserRecord={updateUserRecord}

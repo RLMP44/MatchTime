@@ -50,14 +50,14 @@
   padding: .5rem 1rem;
 }
 
-.cancel-button {
+#cancel-button {
   background-color: var(--color-primary);
 }
 
-.save-button {
+#update-button {
   background-color: var(--color-highlight);
 }
 
-.delete-button {
+#delete-button {
   background-color: rgba(252, 32, 32, 0.901);
 }
