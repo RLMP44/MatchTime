@@ -4,7 +4,6 @@ function RecordDisplay(props) {
   let [isDisplayed, setIsDisplayed] = useState("none");
   const [time, setTime] = useState(props?.data?.time || "");
   const [bibNum, setBibNum] = useState(props?.data?.bib || "");
-
   function handlePopUp() {
     setIsDisplayed(isDisplayed === "none" ? "" : "none");
   }
@@ -25,7 +24,7 @@ function RecordDisplay(props) {
 
       props.editRecords({oldRecord: props.data, newRecord: updatedRecord});
     } else if (button === "delete-button") {
-      // TODO: delete record
+      props.deleteRecord(props.data)
     } else {
       console.log('cancelled')
     }
@@ -46,7 +45,6 @@ function RecordDisplay(props) {
         <h4 className="title">Edit Record</h4>
         <div className="border"></div>
         <div className="popup-content">
-          <p>Name: {props?.data?.name}</p>
           <p>Time: <input className='time-input' value={time} onChange={event => setTime(event.target.value)}></input></p>
           <p>Bib#: <input className='bib-input' value={bibNum} onChange={event => setBibNum(event.target.value)}></input></p>
           <div className="popup-buttons-container">

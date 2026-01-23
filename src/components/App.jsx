@@ -29,12 +29,12 @@ function App() {
     return userRecord;
   }
 
-  // async function fetchLastRecord() {
-    // TODO: retrieve time and placement of last record
+  // async function fetchLastDBRecord() {
+    // TODO: retrieve time and placement of last record in DB
   // }
 
   function resetDBRecord(record) {
-    // set DB record time and place back to null
+    // TODO: set DB record time and place back to null
   }
 
   function updateUserRecord(record) {
@@ -51,11 +51,9 @@ function App() {
     });
   }
 
-  // resets old record and updates new record : 2 record limit
+  // takes 2 records => resets old record and updates new record
   function editUserRecords({ oldRecord: oldR, newRecord: newR }) {
     resetDBRecord(oldR);
-
-    // TODO: bug setting same time after altering time of previous record
     setDisplayRecords((prevRecords) =>
       prevRecords.map((record) => {
         return record.id === oldR.id ? newR : record
@@ -63,7 +61,19 @@ function App() {
     );
   };
 
-  // TODO: function deleteRecord()
+  function deleteRecord(recordToDelete) {
+    resetDBRecord(recordToDelete);
+    setDisplayRecords((prevRecords) => {
+      // filter out deleted record
+      const filteredRecords = prevRecords.filter((record) =>
+        record.id !== recordToDelete.id
+      );
+      // update placements of all subsequent records
+      return filteredRecords.map((record) =>
+        record.place > recordToDelete.place ? { ...record, place: record.place - 1 } : record
+      );
+    });
+  }
 
   return (
     <div className="App">
@@ -77,6 +87,7 @@ function App() {
               data={record}
               editRecords={editUserRecords}
               fetchRecord={fetchUserRecord}
+              deleteRecord={deleteRecord}
             />)}
         </div>
         <Timer
