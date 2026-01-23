@@ -54,6 +54,8 @@ function App() {
   // resets old record and updates new record : 2 record limit
   function editUserRecords({ oldRecord: oldR, newRecord: newR }) {
     resetDBRecord(oldR);
+
+    // TODO: bug setting same time after altering time of previous record
     setDisplayRecords((prevRecords) =>
       prevRecords.map((record) => {
         return record.id === oldR.id ? newR : record
@@ -80,6 +82,7 @@ function App() {
         <Timer
           updateUserRecord={updateUserRecord}
           fetchRecord={fetchUserRecord}
+          displayRecords={displayRecords}
           />
       </div>
       <Footer />
