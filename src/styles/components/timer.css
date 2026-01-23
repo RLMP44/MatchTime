@@ -22,10 +22,6 @@
   gap: .5rem;
 }
 
-#same-time-button {
-  word-wrap: wrap;
-}
-
 #start-record-button {
   grid-area: 5 / 1 / 6 / -1;
 }
