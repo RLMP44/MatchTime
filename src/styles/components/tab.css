@@ -9,10 +9,11 @@
 .tab-btn {
   border: 2px solid var(--color-highlight);
   background-color: var(--color-bg);
-  border-radius: 10px 10px;
   max-height: max-content;
   padding: 1rem;
   margin-top: 1rem;
   color: var(--color-primary);
   font-size: 16px;
+  border-radius: 20px 20px 0 0;
+  clip-path: path("M0 0 H300 V180 Q150 240 0 180 Z");
 }
