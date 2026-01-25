@@ -18,6 +18,7 @@ function App() {
 
   const [displayRecords, setDisplayRecords] = useState([]);
   const [tab, setTab] = useState("timer");
+  const [place, setPlace] = useState(1);
 
   // async function fetchAllUsers() {
   //   // TODO: fetch user records from backend
@@ -76,6 +77,7 @@ function App() {
         record.place > recordToDelete.place ? { ...record, place: record.place - 1 } : record
       );
     });
+    setPlace(prev => prev - 1);
   }
 
   return (
@@ -88,6 +90,8 @@ function App() {
         <button className="tab-btn results-tab-btn" onClick={() => setTab("results")}>Results</button>
       </div>
       {tab === "timer" && <TimerTab
+                            setPlace={setPlace}
+                            place={place}
                             displayRecords={displayRecords}
                             editRecords={editUserRecords}
                             fetchRecord={fetchUserRecord}

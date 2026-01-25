@@ -16,6 +16,8 @@ function TimerTab(props) {
           />)}
       </div>
       <Timer
+        place={props.place}
+        setPlace={props.setPlace}
         updateUserRecord={props.updateUserRecord}
         fetchRecord={props.fetchRecord}
         displayRecords={props.displayRecords}
