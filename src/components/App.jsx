@@ -1,7 +1,9 @@
 import Header from "./Header";
 import Footer from "./Footer";
-import Timer from "./Timer";
-import RecordDisplay from "./RecordDisplay";
+import TimerTab from "./TimerTab";
+import RacersTab from "./RacersTab";
+import CategoriesTab from "./CategoriesTab";
+import ResultsTab from "./ResultsTab";
 import { useState } from "react";
 
 function App() {
@@ -15,6 +17,7 @@ function App() {
   ]
 
   const [displayRecords, setDisplayRecords] = useState([]);
+  const [tab, setTab] = useState("timer");
 
   // async function fetchAllUsers() {
   //   // TODO: fetch user records from backend
@@ -78,24 +81,44 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <div className="timer-tab">
-        <div className="records-display-container">
-          <RecordDisplay />
-          {displayRecords.map(record =>
-            <RecordDisplay
-              key={record.id}
-              data={record}
-              editRecords={editUserRecords}
-              fetchRecord={fetchUserRecord}
-              deleteRecord={deleteRecord}
-            />)}
-        </div>
-        <Timer
-          updateUserRecord={updateUserRecord}
-          fetchRecord={fetchUserRecord}
-          displayRecords={displayRecords}
-          />
+      <div className="tab-display">
+        <button className="tab-btn timer-tab-btn" onClick={() => setTab("timer")}>Timer</button>
+        <button className="tab-btn categories-tab-btn" onClick={() => setTab("categories")}>Categories</button>
+        <button className="tab-btn racers-tab-btn" onClick={() => setTab("racers")}>Racers</button>
+        <button className="tab-btn results-tab-btn" onClick={() => setTab("results")}>Results</button>
       </div>
+      {tab === "timer" && <TimerTab
+                            displayRecords={displayRecords}
+                            editRecords={editUserRecords}
+                            fetchRecord={fetchUserRecord}
+                            deleteRecord={deleteRecord}
+                            updateUserRecord={updateUserRecord}
+                          />
+      }
+      {tab === "categories" && <CategoriesTab
+                            displayRecords={displayRecords}
+                            editRecords={editUserRecords}
+                            fetchRecord={fetchUserRecord}
+                            deleteRecord={deleteRecord}
+                            updateUserRecord={updateUserRecord}
+                          />
+      }
+      {tab === "racers" && <RacersTab
+                            displayRecords={displayRecords}
+                            editRecords={editUserRecords}
+                            fetchRecord={fetchUserRecord}
+                            deleteRecord={deleteRecord}
+                            updateUserRecord={updateUserRecord}
+                          />
+      }
+      {tab === "results" && <ResultsTab
+                            displayRecords={displayRecords}
+                            editRecords={editUserRecords}
+                            fetchRecord={fetchUserRecord}
+                            deleteRecord={deleteRecord}
+                            updateUserRecord={updateUserRecord}
+                          />
+      }
       <Footer />
     </div>
   );
