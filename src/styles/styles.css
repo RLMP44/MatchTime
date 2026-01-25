@@ -2,6 +2,7 @@
 @import './components/timer.css';
 @import './components/record-display.css';
 @import './components/popup.css';
+@import './components/tab.css';
 
 :root {
   --color-text-highlight: #fef2e3;
@@ -59,5 +60,5 @@ footer {
 
 .App {
   display: grid;
-  grid-template-rows: 1fr 10fr 1fr;
+  grid-template-rows: 1fr 1fr 9fr 1fr;
 }

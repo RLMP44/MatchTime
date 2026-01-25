@@ -1,0 +1,18 @@
+.tab-display {
+  width: 100vw;
+  /* max-height: 2rem; */
+  display: grid;
+  grid-template-columns: 3fr 3fr 3fr 3fr;
+  justify-content: center;
+}
+
+.tab-btn {
+  border: 2px solid var(--color-highlight);
+  background-color: var(--color-bg);
+  border-radius: 10px 10px;
+  max-height: max-content;
+  padding: 1rem;
+  margin-top: 1rem;
+  color: var(--color-primary);
+  font-size: 16px;
+}
