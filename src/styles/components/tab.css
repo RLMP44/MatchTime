@@ -1,6 +1,5 @@
 .tab-display {
-  width: 100vw;
-  /* max-height: 2rem; */
+  width: auto;
   display: grid;
   grid-template-columns: 3fr 3fr 3fr 3fr;
   justify-content: center;
@@ -10,10 +9,9 @@
   border: 2px solid var(--color-highlight);
   background-color: var(--color-bg);
   max-height: max-content;
-  padding: 1rem;
+  padding: .5rem 1rem;
   margin-top: 1rem;
   color: var(--color-primary);
   font-size: 16px;
   border-radius: 20px 20px 0 0;
-  clip-path: path("M0 0 H300 V180 Q150 240 0 180 Z");
 }
