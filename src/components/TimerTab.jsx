@@ -17,7 +17,7 @@ function TimerTab(props) {
       </div>
       <Timer
         updateUserRecord={props.updateUserRecord}
-        fetchRecord={props.fetchUserRecord}
+        fetchRecord={props.fetchRecord}
         displayRecords={props.displayRecords}
         />
     </div>
