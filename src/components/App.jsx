@@ -103,14 +103,7 @@ function App() {
                             updateUserRecord={updateUserRecord}
                           />
       }
-      {tab === "categories" && <CategoriesTab
-                            displayRecords={displayRecords}
-                            editRecords={editUserRecords}
-                            fetchRecord={fetchUserRecord}
-                            deleteRecord={deleteRecord}
-                            updateUserRecord={updateUserRecord}
-                          />
-      }
+      {tab === "categories" && <CategoriesTab />}
       {tab === "racers" && <RacersTab
                             displayRecords={displayRecords}
                             editRecords={editUserRecords}
@@ -119,14 +112,7 @@ function App() {
                             updateUserRecord={updateUserRecord}
                           />
       }
-      {tab === "results" && <ResultsTab
-                            displayRecords={displayRecords}
-                            editRecords={editUserRecords}
-                            fetchRecord={fetchUserRecord}
-                            deleteRecord={deleteRecord}
-                            updateUserRecord={updateUserRecord}
-                          />
-      }
+      {tab === "results" && <ResultsTab displayRecords={displayRecords} />}
       <Footer />
     </div>
   );
