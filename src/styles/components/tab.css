@@ -1,0 +1,21 @@
+.tab-display {
+  width: auto;
+  display: grid;
+  grid-template-columns: 3fr 3fr 3fr 3fr;
+  gap: 1px;
+  justify-content: center;
+}
+
+.tab-btn {
+  border: none;
+  padding: .5rem 1rem;
+  margin-top: .25rem;
+  color: var(--color-primary);
+  font-size: 16px;
+  border-radius: 20px 20px 0 0;
+  background: linear-gradient(0deg, rgba(237, 99, 0, 0.5) 0%, rgba(56, 56, 55, 1) 100%);
+}
+
+.tab-btn:hover, .active {
+  background: linear-gradient(0deg,rgba(237, 99, 0, 0.5) 0%, rgba(237, 99, 0, 1) 100%);
+}

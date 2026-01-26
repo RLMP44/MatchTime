@@ -1,8 +1,14 @@
 import Header from "./Header";
 import Footer from "./Footer";
-import Timer from "./Timer";
-import RecordDisplay from "./RecordDisplay";
+import TimerTab from "./TimerTab";
+import RacersTab from "./RacersTab";
+import CategoriesTab from "./CategoriesTab";
+import ResultsTab from "./ResultsTab";
 import { useState } from "react";
+import TimerIcon from '@mui/icons-material/Timer';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd';
 
 function App() {
   var records = [
@@ -15,6 +21,8 @@ function App() {
   ]
 
   const [displayRecords, setDisplayRecords] = useState([]);
+  const [tab, setTab] = useState("timer");
+  const [place, setPlace] = useState(1);
 
   // async function fetchAllUsers() {
   //   // TODO: fetch user records from backend
@@ -73,28 +81,39 @@ function App() {
         record.place > recordToDelete.place ? { ...record, place: record.place - 1 } : record
       );
     });
+    setPlace(prev => prev - 1);
   }
 
   return (
     <div className="App">
       <Header />
-      <div className="timer-tab">
-        <div className="records-display-container">
-          <RecordDisplay />
-          {displayRecords.map(record =>
-            <RecordDisplay
-              key={record.id}
-              data={record}
-              editRecords={editUserRecords}
-              fetchRecord={fetchUserRecord}
-              deleteRecord={deleteRecord}
-            />)}
+      <div className="main-content">
+        <div className="tab-display">
+          <button className={`tab-btn ${tab === "timer" ? "active" : ""}`} onClick={() => setTab("timer")} alt="Timer"><TimerIcon /></button>
+          <button className={`tab-btn ${tab === "categories" ? "active" : ""}`} onClick={() => setTab("categories")} alt="Categories"><FormatListBulletedAddIcon /></button>
+          <button className={`tab-btn ${tab === "racers" ? "active" : ""}`} onClick={() => setTab("racers")} alt="Racers"><DirectionsRunIcon /></button>
+          <button className={`tab-btn ${tab === "results" ? "active" : ""}`} onClick={() => setTab("results")} alt="Results"><EmojiEventsIcon /></button>
         </div>
-        <Timer
-          updateUserRecord={updateUserRecord}
-          fetchRecord={fetchUserRecord}
-          displayRecords={displayRecords}
-          />
+        {tab === "timer" && <TimerTab
+                              setPlace={setPlace}
+                              place={place}
+                              displayRecords={displayRecords}
+                              editRecords={editUserRecords}
+                              fetchRecord={fetchUserRecord}
+                              deleteRecord={deleteRecord}
+                              updateUserRecord={updateUserRecord}
+                            />
+        }
+        {tab === "categories" && <CategoriesTab />}
+        {tab === "racers" && <RacersTab
+                              displayRecords={displayRecords}
+                              editRecords={editUserRecords}
+                              fetchRecord={fetchUserRecord}
+                              deleteRecord={deleteRecord}
+                              updateUserRecord={updateUserRecord}
+                            />
+        }
+        {tab === "results" && <ResultsTab displayRecords={displayRecords} />}
       </div>
       <Footer />
     </div>

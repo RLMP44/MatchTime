@@ -2,6 +2,7 @@
 @import './components/timer.css';
 @import './components/record-display.css';
 @import './components/popup.css';
+@import './components/tab.css';
 
 :root {
   --color-text-highlight: #fef2e3;
