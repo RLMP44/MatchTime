@@ -87,32 +87,34 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <div className="tab-display">
-        <button className={`tab-btn ${tab === "timer" ? "active" : ""}`} onClick={() => setTab("timer")} alt="Timer"><TimerIcon /></button>
-        <button className={`tab-btn ${tab === "categories" ? "active" : ""}`} onClick={() => setTab("categories")} alt="Categories"><FormatListBulletedAddIcon /></button>
-        <button className={`tab-btn ${tab === "racers" ? "active" : ""}`} onClick={() => setTab("racers")} alt="Racers"><DirectionsRunIcon /></button>
-        <button className={`tab-btn ${tab === "results" ? "active" : ""}`} onClick={() => setTab("results")} alt="Results"><EmojiEventsIcon /></button>
+      <div className="main-content">
+        <div className="tab-display">
+          <button className={`tab-btn ${tab === "timer" ? "active" : ""}`} onClick={() => setTab("timer")} alt="Timer"><TimerIcon /></button>
+          <button className={`tab-btn ${tab === "categories" ? "active" : ""}`} onClick={() => setTab("categories")} alt="Categories"><FormatListBulletedAddIcon /></button>
+          <button className={`tab-btn ${tab === "racers" ? "active" : ""}`} onClick={() => setTab("racers")} alt="Racers"><DirectionsRunIcon /></button>
+          <button className={`tab-btn ${tab === "results" ? "active" : ""}`} onClick={() => setTab("results")} alt="Results"><EmojiEventsIcon /></button>
+        </div>
+        {tab === "timer" && <TimerTab
+                              setPlace={setPlace}
+                              place={place}
+                              displayRecords={displayRecords}
+                              editRecords={editUserRecords}
+                              fetchRecord={fetchUserRecord}
+                              deleteRecord={deleteRecord}
+                              updateUserRecord={updateUserRecord}
+                            />
+        }
+        {tab === "categories" && <CategoriesTab />}
+        {tab === "racers" && <RacersTab
+                              displayRecords={displayRecords}
+                              editRecords={editUserRecords}
+                              fetchRecord={fetchUserRecord}
+                              deleteRecord={deleteRecord}
+                              updateUserRecord={updateUserRecord}
+                            />
+        }
+        {tab === "results" && <ResultsTab displayRecords={displayRecords} />}
       </div>
-      {tab === "timer" && <TimerTab
-                            setPlace={setPlace}
-                            place={place}
-                            displayRecords={displayRecords}
-                            editRecords={editUserRecords}
-                            fetchRecord={fetchUserRecord}
-                            deleteRecord={deleteRecord}
-                            updateUserRecord={updateUserRecord}
-                          />
-      }
-      {tab === "categories" && <CategoriesTab />}
-      {tab === "racers" && <RacersTab
-                            displayRecords={displayRecords}
-                            editRecords={editUserRecords}
-                            fetchRecord={fetchUserRecord}
-                            deleteRecord={deleteRecord}
-                            updateUserRecord={updateUserRecord}
-                          />
-      }
-      {tab === "results" && <ResultsTab displayRecords={displayRecords} />}
       <Footer />
     </div>
   );

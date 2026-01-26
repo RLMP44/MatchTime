@@ -8,10 +8,8 @@
 
 .tab-btn {
   border: none;
-  background-color: var(--color-highlight);
-  max-height: max-content;
   padding: .5rem 1rem;
-  margin-top: 1rem;
+  margin-top: .25rem;
   color: var(--color-primary);
   font-size: 16px;
   border-radius: 20px 20px 0 0;
