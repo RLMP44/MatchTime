@@ -7,7 +7,7 @@ import ResultsTab from "./ResultsTab";
 import { useState } from "react";
 import TimerIcon from '@mui/icons-material/Timer';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd';
 
 function App() {
@@ -88,10 +88,10 @@ function App() {
     <div className="App">
       <Header />
       <div className="tab-display">
-        <button className="tab-btn" onClick={() => setTab("timer")} alt="Timer"><TimerIcon /></button>
-        <button className="tab-btn" onClick={() => setTab("categories")} alt="Categories"><FormatListBulletedAddIcon /></button>
-        <button className="tab-btn" onClick={() => setTab("racers")} alt="Racers"><DirectionsRunIcon /></button>
-        <button className="tab-btn" onClick={() => setTab("results")} alt="Results"><FormatListNumberedIcon /></button>
+        <button className={`tab-btn ${tab === "timer" ? "active" : ""}`} onClick={() => setTab("timer")} alt="Timer"><TimerIcon /></button>
+        <button className={`tab-btn ${tab === "categories" ? "active" : ""}`} onClick={() => setTab("categories")} alt="Categories"><FormatListBulletedAddIcon /></button>
+        <button className={`tab-btn ${tab === "racers" ? "active" : ""}`} onClick={() => setTab("racers")} alt="Racers"><DirectionsRunIcon /></button>
+        <button className={`tab-btn ${tab === "results" ? "active" : ""}`} onClick={() => setTab("results")} alt="Results"><EmojiEventsIcon /></button>
       </div>
       {tab === "timer" && <TimerTab
                             setPlace={setPlace}
