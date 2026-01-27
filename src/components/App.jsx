@@ -12,12 +12,12 @@ import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd
 
 function App() {
   var records = [
-    {id: 1, place: null, bib: 1, time: null, name: "Gustave Pierre"},
-    {id: 2, place: null, bib: 2, time: null, name: "Maelle Pierre"},
-    {id: 3, place: null, bib: 3, time: null, name: "Sciel Jeanne"},
-    {id: 4, place: null, bib: 4, time: null, name: "Lune Acuse"},
-    {id: 5, place: null, bib: 5, time: null, name: "Verso L'vange"},
-    {id: 6, place: null, bib: 54, time: null, name: "Monoco"}
+    {id: 1, place: null, bib: 1, time: null, name: "Gustave Pierre", division: "M30-39"},
+    {id: 2, place: null, bib: 2, time: null, name: "Maelle Pierre", division: "F10-19"},
+    {id: 3, place: null, bib: 3, time: null, name: "Sciel Jeanne", division: "F30-39"},
+    {id: 4, place: null, bib: 4, time: null, name: "Lune Acuse", division: "F30-39"},
+    {id: 5, place: null, bib: 5, time: null, name: "Verso L'vange", division: "M40-49"},
+    {id: 6, place: null, bib: 54, time: null, name: "Monoco", division: "M50-59"}
   ]
 
   const [displayRecords, setDisplayRecords] = useState([]);
@@ -41,11 +41,16 @@ function App() {
     // TODO: retrieve time and placement of last record in DB
   // }
 
+  async function updateDBRecord(record) {
+    // TODO: update user record in DB
+  }
+
   function resetDBRecord(record) {
     // TODO: set DB record time and place back to null
   }
 
   function updateUserRecord(record) {
+    updateDBRecord(record);
     // IDs will already be assigned when entrants are added
     // TODO: add new time and placement
     // TODO: send to backend function and use SQL to update single record only
@@ -106,11 +111,10 @@ function App() {
         }
         {tab === "categories" && <CategoriesTab />}
         {tab === "racers" && <RacersTab
-                              displayRecords={displayRecords}
-                              editRecords={editUserRecords}
+                              records={records}
                               fetchRecord={fetchUserRecord}
                               deleteRecord={deleteRecord}
-                              updateUserRecord={updateUserRecord}
+                              updateRecord={updateUserRecord}
                             />
         }
         {tab === "results" && <ResultsTab displayRecords={displayRecords} />}
