@@ -1,4 +1,4 @@
-function ResultsTab(props) {
+function ResultsTab() {
   return (<h1>Results</h1>);
 }
 

@@ -27,6 +27,7 @@ function App() {
   const [startTime, setStartTime] = useState(null);
   const [buttonText, setButtonText] = useState("Start");
 
+  // -------------- TIMER LOGIC --------------
   function startTimer() {
     setStartTime(performance.now());
     setTimerOn(true);
@@ -37,28 +38,23 @@ function App() {
   //   // TODO: create race end button away from timer UI to avoid accidents
   // }
 
+
+  // -------------- DB LOGIC --------------
   // async function fetchAllUsers() {
   //   // TODO: fetch user records from backend
   //   // return as list
   //   return records;
   // }
 
-  async function fetchUserRecord(bib) {
-    const userRecord = records.find((record) => {
-      return record.bib === bib;
-    });
-    return userRecord;
-  }
-
   // async function fetchLastDBRecord() {
     // TODO: retrieve time and placement of last record in DB
   // }
 
-  async function updateDBRecord(record) {
+  async function updateDBRecord() {
     // TODO: update user record in DB
   }
 
-  function resetDBRecord(record) {
+  function resetDBRecord() {
     // TODO: set DB record time and place back to null
   }
 
@@ -75,6 +71,15 @@ function App() {
     setDisplayRecords((prevRecords) => {
       return [...prevRecords, record];
     });
+  }
+
+
+  // -------------- FRONT END DISPLAY LOGIC --------------
+  async function fetchUserRecord(bib) {
+    const userRecord = records.find((record) => {
+      return record.bib === bib;
+    });
+    return userRecord;
   }
 
   // takes 2 records => resets old record and updates new record
@@ -102,17 +107,21 @@ function App() {
     setPlace(prev => prev - 1);
   }
 
+
+  // -------------- RACER LOGIC --------------
   function addRacer() {
     console.log('add racer')
   }
 
-  function editRacer(racer) {
-    console.log('edit racer')
+  function editRacer({ oldData: oldR, newData: newR }) {
+    console.log(oldR)
+    console.log(newR)
   }
 
-  function deleteRacer(racerToDelete) {
+  function deleteRacer() {
     console.log('delete racer')
   }
+
 
   return (
     <div className="App">

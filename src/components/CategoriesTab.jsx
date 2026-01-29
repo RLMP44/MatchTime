@@ -1,4 +1,4 @@
-function CategoriesTab(props) {
+function CategoriesTab() {
   return (<h1>Categories</h1>);
 }
 

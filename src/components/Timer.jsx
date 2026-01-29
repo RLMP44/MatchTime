@@ -11,7 +11,8 @@ function Timer(props) {
   const [name, setName] = useState(null);
   const [currentRecord, setCurrentRecord] = useState(null);
 
-  // ---------------------- TIMER LOGIC START ----------------------
+
+  // ---------------------- TIMER LOGIC ----------------------
   useEffect(() => {
     if (!props.timerOn) return;
 
@@ -38,8 +39,8 @@ function Timer(props) {
 
     return () => clearInterval(interval);
   }, [props.timerOn, props.startTime]);
-  // ---------------------- TIMER LOGIC END ----------------------
 
+  // ---------------------- UPDATE LOGIC ----------------------
   async function updateRecord({prevTime: prevTime, prevPlace: prevPlace, bib: bib}) {
     // create and update copy to avoid bugging react useState
     const updatedRecord = { ...currentRecord,
