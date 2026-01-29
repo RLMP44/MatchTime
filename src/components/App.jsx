@@ -23,6 +23,19 @@ function App() {
   const [displayRecords, setDisplayRecords] = useState([]);
   const [tab, setTab] = useState("timer");
   const [place, setPlace] = useState(1);
+  const [timerOn, setTimerOn] = useState(false);
+  const [startTime, setStartTime] = useState(null);
+  const [buttonText, setButtonText] = useState("Start");
+
+  function startTimer() {
+    setStartTime(performance.now());
+    setTimerOn(true);
+  }
+
+  // function stopTimer() {
+  //   setTimerOn(false);
+  //   // TODO: create race end button away from timer UI to avoid accidents
+  // }
 
   // async function fetchAllUsers() {
   //   // TODO: fetch user records from backend
@@ -102,6 +115,13 @@ function App() {
         {tab === "timer" && <TimerTab
                               setPlace={setPlace}
                               place={place}
+                              timerOn={timerOn}
+                              setTimerOn={setTimerOn}
+                              buttonText={buttonText}
+                              setButtonText={setButtonText}
+                              startTime={startTime}
+                              startTimer={startTimer}
+                              setStartTime={setStartTime}
                               displayRecords={displayRecords}
                               editRecords={editUserRecords}
                               fetchRecord={fetchUserRecord}

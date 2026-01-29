@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 
 function Timer(props) {
-  const [timerOn, setTimerOn] = useState(false);
-  const [startTime, setStartTime] = useState(null);
   const [time, setTime] = useState("0");
   const [hour, setHour] = useState("HH");
   const [min, setMin] = useState("MM");
@@ -11,26 +9,15 @@ function Timer(props) {
 
   const [bibNum, setBibNum] = useState(null);
   const [name, setName] = useState(null);
-  const [buttonText, setButtonText] = useState("Start");
   const [currentRecord, setCurrentRecord] = useState(null);
 
   // ---------------------- TIMER LOGIC START ----------------------
-  function startTimer() {
-    setStartTime(performance.now());
-    setTimerOn(true);
-  }
-
-  // function stopTimer() {
-  //   setTimerOn(false);
-  //   // TODO: create race end button away from timer UI to avoid accidents
-  // }
-
   useEffect(() => {
-    if (!timerOn) return;
+    if (!props.timerOn) return;
 
     const interval = setInterval(() => {
       // performance.now() is the most accurate and can keep calculating in background
-      const timeElapsed = (performance.now() - startTime);
+      const timeElapsed = (performance.now() - props.startTime);
       const hours = Math.floor(timeElapsed / 3_600_000);
       const mins = Math.floor((timeElapsed % 3_600_000) / 60_000);
       const seconds = Math.floor((timeElapsed % 60000) / 1000);
@@ -50,7 +37,7 @@ function Timer(props) {
     }, 30);
 
     return () => clearInterval(interval);
-  }, [timerOn, startTime]);
+  }, [props.timerOn, props.startTime]);
   // ---------------------- TIMER LOGIC END ----------------------
 
   async function updateRecord({prevTime: prevTime, prevPlace: prevPlace, bib: bib}) {
@@ -82,11 +69,12 @@ function Timer(props) {
       const updatedBibNum = (bibNum !== null) ? bibNum + target.value : target.value;
       setBibNum(updatedBibNum);
       fetchAndSetRecord(updatedBibNum);
-    } else if (target.id === "start-record-button" && buttonText === "Start") {
-      setButtonText("Record");
-      startTimer();
+    } else if (target.id === "start-record-button" && props.buttonText === "Start") {
+      props.setButtonText("Record");
+      props.startTimer();
     } else if (target.id === "start-record-button") {
       updateRecord({prevTime: null, prevPlace: null, bib: null});
+      console.log("updating record")
       reset();
       props.setPlace(prev => prev + 1);
     } else if (target.id === "clear-button") {
@@ -120,7 +108,7 @@ function Timer(props) {
         <button onClick={handleClick} id="same-time-button" className="timer-button timer-btn-color">Same<br></br>Time</button>
         <button onClick={handleClick} id="button-0" className="timer-button timer-btn-reg" value="0">0</button>
         <button onClick={handleClick} id="clear-button" className="timer-button timer-btn-color">Clear</button>
-        <button onClick={handleClick} id="start-record-button" className="timer-button timer-btn-color">{buttonText}</button>
+        <button onClick={handleClick} id="start-record-button" className="timer-button timer-btn-color">{props.buttonText}</button>
       </div>
     </div>
   );

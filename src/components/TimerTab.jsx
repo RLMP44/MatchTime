@@ -18,6 +18,13 @@ function TimerTab(props) {
       <Timer
         place={props.place}
         setPlace={props.setPlace}
+        buttonText={props.buttonText}
+        setButtonText={props.setButtonText}
+        timerOn={props.timerOn}
+        setTimerOn={props.setTimerOn}
+        startTime={props.startTime}
+        setStartTime={props.setStartTime}
+        startTimer={props.startTimer}
         updateUserRecord={props.updateUserRecord}
         fetchRecord={props.fetchRecord}
         displayRecords={props.displayRecords}
