@@ -102,6 +102,18 @@ function App() {
     setPlace(prev => prev - 1);
   }
 
+  function addRacer() {
+    console.log('add racer')
+  }
+
+  function editRacer(racer) {
+    console.log('edit racer')
+  }
+
+  function deleteRacer(racerToDelete) {
+    console.log('delete racer')
+  }
+
   return (
     <div className="App">
       <Header />
@@ -132,9 +144,9 @@ function App() {
         {tab === "categories" && <CategoriesTab />}
         {tab === "racers" && <RacersTab
                               records={records}
-                              fetchRecord={fetchUserRecord}
-                              deleteRecord={deleteRecord}
-                              updateRecord={updateUserRecord}
+                              addRacer={addRacer}
+                              editRacer={editRacer}
+                              deleteRacer={deleteRacer}
                             />
         }
         {tab === "results" && <ResultsTab displayRecords={displayRecords} />}

@@ -1,21 +1,20 @@
-import { useState } from "react";
+import RacerDisplay from "./RacerDisplay";
 
 function RacersTab(props) {
 
   return (
-    <div className="records-display-container">
-      <div className="record-container racer-tab-record">
-        <p><strong>Bib #</strong></p>
-        <p><strong>Name</strong></p>
-        <p><strong>Division</strong></p>
+    <div className="racers-tab">
+      <div className="records-display-container">
+        <RacerDisplay />
+        {props.records.map(racer =>
+          <RacerDisplay
+            key={racer.id}
+            data={racer}
+            addRacer={props.addRacer}
+            editRacer={props.editRacer}
+            deleteRacer={props.deleteRacer}
+          />)}
       </div>
-      {props.records.map(racer =>
-        <div className="record-container racer-tab-record">
-          <p>{ racer?.bib }</p>
-          <p>{ racer?.name }</p>
-          <p>{ racer?.division }</p>
-        </div>
-      )}
     </div>
   );
 }
