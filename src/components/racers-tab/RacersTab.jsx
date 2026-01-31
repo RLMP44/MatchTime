@@ -1,5 +1,5 @@
 import RacerDisplay from "./RacerDisplay";
-import ButtonBar from "./ButtonBar";
+import ButtonBar from "../shared/ButtonBar";
 
 function RacersTab(props) {
   const racerAttributes = ['bib#', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'race#', 'division'];

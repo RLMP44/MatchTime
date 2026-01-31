@@ -1,7 +1,7 @@
 import Header from "./Header";
 import Footer from "./Footer";
-import TimerTab from "./TimerTab";
-import RacersTab from "./RacersTab";
+import TimerTab from "./timer-tab/TimerTab";
+import RacersTab from "./racers-tab/RacersTab";
 import CategoriesTab from "./CategoriesTab";
 import ResultsTab from "./ResultsTab";
 import { useState } from "react";

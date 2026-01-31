@@ -1,4 +1,4 @@
-import Popup from "./Popup";
+import Popup from "../shared/Popup";
 import { useState } from "react";
 
 function RacerDisplay(props) {
