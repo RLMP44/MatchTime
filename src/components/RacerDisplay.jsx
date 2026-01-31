@@ -13,7 +13,7 @@ function RacerDisplay(props) {
     <div>
       <div className="record-container racer-tab-record" onClick={handlePopUp}>
         <p>{ props.data ? props.data.bib : <strong>Bib #</strong>}</p>
-        <p>{ props.data ? props.data.name : <strong>Name</strong>}</p>
+        <p>{ props.data ? `${props.data.fName} ${props.data.lName}` : <strong>Name</strong>}</p>
         <p>{ props.data ? props.data.division : <strong>Division</strong>}</p>
       </div>
 

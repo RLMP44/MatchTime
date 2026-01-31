@@ -12,12 +12,12 @@ import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd
 
 function App() {
   var records = [
-    {id: 1, place: null, bib: 1, time: null, name: "Gustave Pierre", division: "M30-39"},
-    {id: 2, place: null, bib: 2, time: null, name: "Maelle Pierre", division: "F10-19"},
-    {id: 3, place: null, bib: 3, time: null, name: "Sciel Jeanne", division: "F30-39"},
-    {id: 4, place: null, bib: 4, time: null, name: "Lune Acuse", division: "F30-39"},
-    {id: 5, place: null, bib: 5, time: null, name: "Verso L'vange", division: "M40-49"},
-    {id: 6, place: null, bib: 54, time: null, name: "Monoco", division: "M50-59"}
+    {id: 1, place: null, bib: 1, age: null, sex: null, raceNo: null, handicap: null, time_raw: null, city: null, time: null, fName: "Gustave", lName: "Pierre", division: "M30-39"},
+    {id: 2, place: null, bib: 2, age: null, sex: null, raceNo: null, handicap: null, time_raw: null, city: null, time: null, fName: "Maelle", lName: "Pierre", division: "F10-19"},
+    {id: 3, place: null, bib: 3, age: null, sex: null, raceNo: null, handicap: null, time_raw: null, city: null, time: null, fName: "Sciel", lName: "Jeanne", division: "F30-39"},
+    {id: 4, place: null, bib: 4, age: null, sex: null, raceNo: null, handicap: null, time_raw: null, city: null, time: null, fName: "Lune", lName: "Acuse", division: "F30-39"},
+    {id: 5, place: null, bib: 5, age: null, sex: null, raceNo: null, handicap: null, time_raw: null, city: null, time: null, fName: "Verso", lName: "L'vange", division: "M40-49"},
+    {id: 6, place: null, bib: 54, age: null, sex: null, raceNo: null, handicap: null, time_raw: null, city: null, time: null, fName: "Monoco", lName: "Gestral", division: "M50-59"}
   ]
 
   const [displayRecords, setDisplayRecords] = useState([]);

@@ -8,7 +8,8 @@ function Timer(props) {
   const [milli, setMilli] = useState("mm");
 
   const [bibNum, setBibNum] = useState(null);
-  const [name, setName] = useState(null);
+  const [fName, setFName] = useState(null);
+  const [lName, setLName] = useState(null);
   const [currentRecord, setCurrentRecord] = useState(null);
 
 
@@ -55,13 +56,15 @@ function Timer(props) {
   async function fetchAndSetRecord(newNum) {
     const newRecord = await props.fetchRecord(parseInt(newNum))
     // TODO: make sure not allowing users to be entered more than once
-    newRecord ? setCurrentRecord(newRecord) : setCurrentRecord({id: null, place: props.place, bib: newNum, time: time, name: "Not Found"});
-    setName(newRecord ? newRecord.name : "Not Found");
+    newRecord ? setCurrentRecord(newRecord) : setCurrentRecord({id: null, place: props.place, bib: newNum, time: time, fName: "", lName: "Not Found"});
+    setFName(newRecord ? newRecord.fName : "");
+    setLName(newRecord ? newRecord.lName : "");
   }
 
   function reset() {
     setBibNum(null);
-    setName(null);
+    setFName(null);
+    setLName(null);
   }
 
   function handleClick(event) {
@@ -94,7 +97,7 @@ function Timer(props) {
         <h4>Time: {hour}:{min}:{sec}:{milli}</h4>
         <h4>Place: {props.place}</h4>
         <h4>Bib#: {bibNum}</h4>
-        <h4>Name: {name}</h4>
+        <h4>Name: {fName && lName ? `${fName} ${lName}` : bibNum ? "Not Found" : ""}</h4>
       </div>
       <div className="timer-buttons-container">
         <button onClick={handleClick} id="button-1" className="timer-button timer-btn-reg" value="1">1</button>
