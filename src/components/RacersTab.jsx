@@ -1,6 +1,10 @@
 import RacerDisplay from "./RacerDisplay";
+import ButtonBar from "./ButtonBar";
 
 function RacersTab(props) {
+  const racerAttributes = ['bib#', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'race#', 'division'];
+  const buttonTypes = ['cancel', 'save', 'done'];
+
 
   return (
     <div className="racers-tab">
@@ -10,11 +14,16 @@ function RacersTab(props) {
           <RacerDisplay
             key={racer.id}
             data={racer}
-            addRacer={props.addRacer}
             editRacer={props.editRacer}
             deleteRacer={props.deleteRacer}
           />)}
       </div>
+      <ButtonBar
+        tab={"racer"}
+        addRacer={props.addRacer}
+        buttons={buttonTypes}
+        fields={racerAttributes}
+      />
     </div>
   );
 }

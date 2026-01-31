@@ -29,7 +29,7 @@ function Popup(props) {
 
   return (
     <div className="dialog">
-      <h4 className="title">{props.type}</h4>
+      <h4 className="title">{titleize(props.crud)} {titleize(props.tab)}</h4>
       <div className="border"></div>
       <div className="popup-content">
         {props.fields.map(field => {
@@ -44,18 +44,20 @@ function Popup(props) {
             </p>
           );
         })}
-        <div className="popup-buttons-container">
-          {props.buttons.map(button =>
-            <button
-              key={button}
-              className="btn"
-              id={`${button}-button`}
-              onClick={handleSubmit}
-            >
-              {titleize(button)}
-            </button>
-          )}
-        </div>
+        {props.buttons?.length > 0 && (
+          <div className="popup-buttons-container">
+            {props.buttons.map(button =>
+              <button
+                key={button}
+                className="btn"
+                id={`${button}-button`}
+                onClick={handleSubmit}
+              >
+                {titleize(button)}
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

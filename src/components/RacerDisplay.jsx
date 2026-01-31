@@ -22,7 +22,8 @@ function RacerDisplay(props) {
         <Popup
           setIsDisplayed={setIsDisplayed}
           data={props.data}
-          type={"Edit Racer"}
+          tab={"racer"}
+          crud={"edit"}
           fields={racerAttributes}
           buttons={buttonTypes}
           addRacer={props.addRacer}

@@ -62,3 +62,26 @@ footer {
   display: grid;
   grid-template-rows: 1fr 10fr 1fr;
 }
+
+.buttons-bar {
+  width: auto;
+  display: grid;
+  grid-template-columns: 4fr 4fr 4fr;
+  gap: 1px;
+  justify-content: center;
+  gap: 1px;
+}
+
+.racer-tab-btn {
+  border: none;
+  padding: .5rem 1rem;
+  margin-top: .25rem;
+  color: var(--color-primary);
+  font-size: 16px;
+  border-radius: 0 0 20px 20px;
+  background: linear-gradient(180deg, rgba(237, 99, 0, 0.5) 0%, rgba(56, 56, 55, 1) 100%);
+}
+
+.racer-tab-btn:hover {
+  background: linear-gradient(180deg,rgba(237, 99, 0, 0.5) 0%, rgba(237, 99, 0, 1) 100%);
+}
