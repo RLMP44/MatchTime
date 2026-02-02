@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 
 function Timer(props) {
-  const [timerOn, setTimerOn] = useState(false);
-  const [startTime, setStartTime] = useState(null);
   const [time, setTime] = useState("0");
   const [hour, setHour] = useState("HH");
   const [min, setMin] = useState("MM");
@@ -10,27 +8,18 @@ function Timer(props) {
   const [milli, setMilli] = useState("mm");
 
   const [bibNum, setBibNum] = useState(null);
-  const [name, setName] = useState(null);
-  const [buttonText, setButtonText] = useState("Start");
+  const [fName, setFName] = useState(null);
+  const [lName, setLName] = useState(null);
   const [currentRecord, setCurrentRecord] = useState(null);
 
-  // ---------------------- TIMER LOGIC START ----------------------
-  function startTimer() {
-    setStartTime(performance.now());
-    setTimerOn(true);
-  }
 
-  // function stopTimer() {
-  //   setTimerOn(false);
-  //   // TODO: create race end button away from timer UI to avoid accidents
-  // }
-
+  // ---------------------- TIMER LOGIC ----------------------
   useEffect(() => {
-    if (!timerOn) return;
+    if (!props.timerOn) return;
 
     const interval = setInterval(() => {
       // performance.now() is the most accurate and can keep calculating in background
-      const timeElapsed = (performance.now() - startTime);
+      const timeElapsed = (performance.now() - props.startTime);
       const hours = Math.floor(timeElapsed / 3_600_000);
       const mins = Math.floor((timeElapsed % 3_600_000) / 60_000);
       const seconds = Math.floor((timeElapsed % 60000) / 1000);
@@ -50,9 +39,9 @@ function Timer(props) {
     }, 30);
 
     return () => clearInterval(interval);
-  }, [timerOn, startTime]);
-  // ---------------------- TIMER LOGIC END ----------------------
+  }, [props.timerOn, props.startTime]);
 
+  // ---------------------- UPDATE LOGIC ----------------------
   async function updateRecord({prevTime: prevTime, prevPlace: prevPlace, bib: bib}) {
     // create and update copy to avoid bugging react useState
     const updatedRecord = { ...currentRecord,
@@ -67,13 +56,15 @@ function Timer(props) {
   async function fetchAndSetRecord(newNum) {
     const newRecord = await props.fetchRecord(parseInt(newNum))
     // TODO: make sure not allowing users to be entered more than once
-    newRecord ? setCurrentRecord(newRecord) : setCurrentRecord({id: null, place: props.place, bib: newNum, time: time, name: "Not Found"});
-    setName(newRecord ? newRecord.name : "Not Found");
+    newRecord ? setCurrentRecord(newRecord) : setCurrentRecord({id: null, place: props.place, bib: newNum, time: time, fName: "", lName: "Not Found"});
+    setFName(newRecord ? newRecord.fName : "");
+    setLName(newRecord ? newRecord.lName : "");
   }
 
   function reset() {
     setBibNum(null);
-    setName(null);
+    setFName(null);
+    setLName(null);
   }
 
   function handleClick(event) {
@@ -82,17 +73,18 @@ function Timer(props) {
       const updatedBibNum = (bibNum !== null) ? bibNum + target.value : target.value;
       setBibNum(updatedBibNum);
       fetchAndSetRecord(updatedBibNum);
-    } else if (target.id === "start-record-button" && buttonText === "Start") {
-      setButtonText("Record");
-      startTimer();
+    } else if (target.id === "start-record-button" && props.buttonText === "Start") {
+      props.setButtonText("Record");
+      props.startTimer();
     } else if (target.id === "start-record-button") {
       updateRecord({prevTime: null, prevPlace: null, bib: null});
+      console.log("updating record")
       reset();
       props.setPlace(prev => prev + 1);
     } else if (target.id === "clear-button") {
       reset();
     } else if (target.id === "same-time-button") {
-      const lastRecord = props.displayRecords.at(-1);
+      const lastRecord = props.timerDisplayRecords.at(-1);
       updateRecord({prevTime: lastRecord.time, prevPlace: lastRecord.place, bib: bibNum});
       reset();
       props.setPlace(prev => prev + 1);
@@ -105,7 +97,7 @@ function Timer(props) {
         <h4>Time: {hour}:{min}:{sec}:{milli}</h4>
         <h4>Place: {props.place}</h4>
         <h4>Bib#: {bibNum}</h4>
-        <h4>Name: {name}</h4>
+        <h4>Name: {fName && lName ? `${fName} ${lName}` : bibNum ? "Not Found" : ""}</h4>
       </div>
       <div className="timer-buttons-container">
         <button onClick={handleClick} id="button-1" className="timer-button timer-btn-reg" value="1">1</button>
@@ -120,7 +112,7 @@ function Timer(props) {
         <button onClick={handleClick} id="same-time-button" className="timer-button timer-btn-color">Same<br></br>Time</button>
         <button onClick={handleClick} id="button-0" className="timer-button timer-btn-reg" value="0">0</button>
         <button onClick={handleClick} id="clear-button" className="timer-button timer-btn-color">Clear</button>
-        <button onClick={handleClick} id="start-record-button" className="timer-button timer-btn-color">{buttonText}</button>
+        <button onClick={handleClick} id="start-record-button" className="timer-button timer-btn-color">{props.buttonText}</button>
       </div>
     </div>
   );

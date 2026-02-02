@@ -19,7 +19,8 @@ function RecordDisplay(props) {
         id: user.id,
         bib: user.bib,
         time: newTime,
-        name: user.name
+        fName: user.fName,
+        lName: user.lName
       };
 
       props.editRecords({oldRecord: props.data, newRecord: updatedRecord});
@@ -37,7 +38,7 @@ function RecordDisplay(props) {
         <p>{ props.data ? props.data.place : <strong>Place</strong>}</p>
         <p>{ props.data ? props.data.bib : <strong>Bib #</strong>}</p>
         <p>{ props.data ? props.data.time : <strong>Time</strong>}</p>
-        <p>{ props.data ? props.data.name : <strong>Name</strong>}</p>
+        <p>{ props.data ? `${props.data.fName} ${props.data.lName}` : <strong>Name</strong>}</p>
       </div>
 
       {/* ------------- POPUP ------------- */}
