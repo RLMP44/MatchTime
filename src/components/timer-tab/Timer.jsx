@@ -84,7 +84,7 @@ function Timer(props) {
     } else if (target.id === "clear-button") {
       reset();
     } else if (target.id === "same-time-button") {
-      const lastRecord = props.displayRecords.at(-1);
+      const lastRecord = props.timerDisplayRecords.at(-1);
       updateRecord({prevTime: lastRecord.time, prevPlace: lastRecord.place, bib: bibNum});
       reset();
       props.setPlace(prev => prev + 1);

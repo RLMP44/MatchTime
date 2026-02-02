@@ -11,16 +11,20 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd';
 
 function App() {
+  // TODO: connect backend and generate IDs there
+  var nextID = 7;
   var records = [
-    {id: 1, place: null, bib: 1, age: null, sex: null, raceNo: null, handicap: null, time_raw: null, city: null, time: null, fName: "Gustave", lName: "Pierre", division: "M30-39"},
-    {id: 2, place: null, bib: 2, age: null, sex: null, raceNo: null, handicap: null, time_raw: null, city: null, time: null, fName: "Maelle", lName: "Pierre", division: "F10-19"},
-    {id: 3, place: null, bib: 3, age: null, sex: null, raceNo: null, handicap: null, time_raw: null, city: null, time: null, fName: "Sciel", lName: "Jeanne", division: "F30-39"},
-    {id: 4, place: null, bib: 4, age: null, sex: null, raceNo: null, handicap: null, time_raw: null, city: null, time: null, fName: "Lune", lName: "Acuse", division: "F30-39"},
-    {id: 5, place: null, bib: 5, age: null, sex: null, raceNo: null, handicap: null, time_raw: null, city: null, time: null, fName: "Verso", lName: "L'vange", division: "M40-49"},
-    {id: 6, place: null, bib: 54, age: null, sex: null, raceNo: null, handicap: null, time_raw: null, city: null, time: null, fName: "Monoco", lName: "Gestral", division: "M50-59"}
-  ]
+    {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Gustave", lName: "Pierre", division: "M30-39"},
+    {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Maelle", lName: "Pierre", division: "F10-19"},
+    {id: 3, place: null, bib: 3, age: 32, sex: "F", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Sciel", lName: "Jeanne", division: "F30-39"},
+    {id: 4, place: null, bib: 4, age: 32, sex: "F", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Lune", lName: "Acuse", division: "F30-39"},
+    {id: 5, place: null, bib: 5, age: 45, sex: "M", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Verso", lName: "L'vange", division: "M40-49"},
+    {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Monoco", lName: "Gestral", division: "M50-59"}
+  ];
 
-  const [displayRecords, setDisplayRecords] = useState([]);
+  // TODO: displayRecords starter to be replaced with await fetchAllUsers()
+  const [displayRecords, setDisplayRecords] = useState(records);
+  const [timerDisplayRecords, setTimerDisplayRecords] = useState([]);
   const [tab, setTab] = useState("timer");
   const [place, setPlace] = useState(1);
   const [timerOn, setTimerOn] = useState(false);
@@ -31,12 +35,12 @@ function App() {
   function startTimer() {
     setStartTime(performance.now());
     setTimerOn(true);
-  }
+  };
 
   // function stopTimer() {
   //   setTimerOn(false);
   //   // TODO: create race end button away from timer UI to avoid accidents
-  // }
+  // };
 
 
   // -------------- DB LOGIC --------------
@@ -44,48 +48,47 @@ function App() {
   //   // TODO: fetch user records from backend
   //   // return as list
   //   return records;
-  // }
+  // };
 
   // async function fetchLastDBRecord() {
     // TODO: retrieve time and placement of last record in DB
-  // }
+  // };
 
   async function updateDBRecord() {
     // TODO: update user record in DB
-  }
+  };
 
   function resetDBRecord() {
     // TODO: set DB record time and place back to null
-  }
+  };
 
   function updateUserRecord(record) {
     updateDBRecord(record);
-    // IDs will already be assigned when entrants are added
     // TODO: add new time and placement
     // TODO: send to backend function and use SQL to update single record only
     // instead of updating entire array/db
     // temporary until backend is established
     records = records.map((oldRecord) => {
       return (oldRecord.id === record.id) ? record : oldRecord
-    })
-    setDisplayRecords((prevRecords) => {
+    });
+    setTimerDisplayRecords((prevRecords) => {
       return [...prevRecords, record];
     });
-  }
+  };
 
 
   // -------------- FRONT END DISPLAY LOGIC --------------
   async function fetchUserRecord(bib) {
-    const userRecord = records.find((record) => {
+    const userRecord = displayRecords.find((record) => {
       return record.bib === bib;
     });
     return userRecord;
-  }
+  };
 
   // takes 2 records => resets old record and updates new record
   function editUserRecords({ oldRecord: oldR, newRecord: newR }) {
     resetDBRecord(oldR);
-    setDisplayRecords((prevRecords) =>
+    setTimerDisplayRecords((prevRecords) =>
       prevRecords.map((record) => {
         return record.id === oldR.id ? newR : record
       })
@@ -94,7 +97,7 @@ function App() {
 
   function deleteRecord(recordToDelete) {
     resetDBRecord(recordToDelete);
-    setDisplayRecords((prevRecords) => {
+    setTimerDisplayRecords((prevRecords) => {
       // filter out deleted record
       const filteredRecords = prevRecords.filter((record) =>
         record.id !== recordToDelete.id
@@ -105,22 +108,32 @@ function App() {
       );
     });
     setPlace(prev => prev - 1);
-  }
+  };
 
 
   // -------------- RACER LOGIC --------------
-  function addRacer() {
-    console.log('add racer')
-  }
+  function addRacer(racerData) {
+    const newRacer = {
+      ...racerData,
+      id: nextID,
+      place: null,
+      time: null,
+      timeRaw: null,
+      bib: parseInt(racerData.bib),
+      raceNo: parseInt(racerData.raceNo)
+    };
+    nextID += 1;
+    setDisplayRecords(prev => [...prev, newRacer]);
+  };
 
   function editRacer({ oldData: oldR, newData: newR }) {
-    console.log(oldR)
-    console.log(newR)
-  }
+    console.log(oldR);
+    console.log(newR);
+  };
 
   function deleteRacer() {
-    console.log('delete racer')
-  }
+    console.log('delete racer');
+  };
 
 
   return (
@@ -143,7 +156,7 @@ function App() {
                               startTime={startTime}
                               startTimer={startTimer}
                               setStartTime={setStartTime}
-                              displayRecords={displayRecords}
+                              timerDisplayRecords={timerDisplayRecords}
                               editRecords={editUserRecords}
                               fetchRecord={fetchUserRecord}
                               deleteRecord={deleteRecord}
@@ -152,17 +165,17 @@ function App() {
         }
         {tab === "categories" && <CategoriesTab />}
         {tab === "racers" && <RacersTab
-                              records={records}
+                              records={displayRecords}
                               addRacer={addRacer}
                               editRacer={editRacer}
                               deleteRacer={deleteRacer}
                             />
         }
-        {tab === "results" && <ResultsTab displayRecords={displayRecords} />}
+        {tab === "results" && <ResultsTab timerDisplayRecords={timerDisplayRecords} />}
       </div>
       <Footer />
     </div>
   );
-}
+};
 
 export default App;

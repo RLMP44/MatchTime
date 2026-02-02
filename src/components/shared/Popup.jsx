@@ -11,10 +11,14 @@ function Popup(props) {
 
   // ----------------- RACER HANDLING LOGIC -----------------
   async function handleSubmit(event) {
-    console.log(formData)
     const button = event.target.id;
 
-    if (button === 'save-button') {
+    if (button === 'save-button' && props.crud === "Add" && props.tab === "racer") {
+      console.log("adding racer");
+      props.addRacer(formData);
+      setFormData({});
+    }
+    else if (button === 'save-button' && props.crud === "Edit" && props.tab === "racer") {
       // use object spreading to updated only updated fields in racer record
       var updatedRecord = {
         ...props.data,
@@ -36,7 +40,9 @@ function Popup(props) {
           let title = field === "fName" ? "First Name" : field === "lName" ? "Last Name" : titleize(field);
           return (
             <p key={field}>
-              {title}: <input className={`${field}-input`}
+              {title}: <input
+                className={`${field}-input`}
+                value={formData[field] || ""}
                 onChange={event =>
                   setFormData({...formData, [field]: event.target.value})
                 }>

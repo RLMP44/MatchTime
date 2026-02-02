@@ -75,7 +75,7 @@ footer {
 .racer-tab-btn {
   border: none;
   padding: .5rem 1rem;
-  margin-top: .25rem;
+  margin-bottom: .25rem;
   color: var(--color-primary);
   font-size: 16px;
   border-radius: 0 0 20px 20px;

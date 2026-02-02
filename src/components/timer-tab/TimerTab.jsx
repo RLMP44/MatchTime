@@ -6,7 +6,7 @@ function TimerTab(props) {
     <div className="timer-tab">
       <div className="records-display-container">
         <RecordDisplay />
-        {props.displayRecords.map(record =>
+        {props.timerDisplayRecords.map(record =>
           <RecordDisplay
             key={record.id}
             data={record}
@@ -27,7 +27,7 @@ function TimerTab(props) {
         startTimer={props.startTimer}
         updateUserRecord={props.updateUserRecord}
         fetchRecord={props.fetchRecord}
-        displayRecords={props.displayRecords}
+        timerDisplayRecords={props.timerDisplayRecords}
         />
     </div>
   );

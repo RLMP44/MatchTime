@@ -6,7 +6,7 @@ function RacerDisplay(props) {
   function handlePopUp() {
     setIsDisplayed(isDisplayed === "none" ? "" : "none");
   }
-  const racerAttributes = ['bib#', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'race#', 'division'];
+  const racerAttributes = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
   const buttonTypes = ['cancel', 'save', 'done'];
 
   return (
