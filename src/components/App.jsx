@@ -24,6 +24,9 @@ function App() {
 
   // TODO: displayRecords starter to be replaced with await fetchAllUsers()
   const [displayRecords, setDisplayRecords] = useState(records);
+  // TODO: timerDisplayRecords to be a filtered version of displayRecords
+  // filter for time/rawTime, and also order by ascension (not calculating handicaps yet)
+  // this way timerDisplayRecords is updated with user data if prev not found
   const [timerDisplayRecords, setTimerDisplayRecords] = useState([]);
   const [tab, setTab] = useState("timer");
   const [place, setPlace] = useState(1);
