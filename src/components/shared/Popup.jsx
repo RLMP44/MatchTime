@@ -19,15 +19,33 @@ function Popup(props) {
     }
     else if (button === 'save-button' && props.crud === "Edit" && props.tab === "racer") {
       // use object spreading to updated only updated fields in racer record
-      var updatedRecord = {
+      var updatedRacer = {
         ...props.data,
         ...formData,
       };
-      props.editRacer({ newData: updatedRecord, oldData: props.data });
+      props.editRacer({ newData: updatedRacer, oldData: props.data });
     } else if (button === 'cancel-button') {
       console.log('cancelled');
+    } else if (button === "update-button") {
+      const user = (props.bibNum !== props.data.bib) ? await props.fetchRecord(parseInt(props.bibNum)): props.data;
+      const newTime = (props.time !== props.data.time) ? props.time : props.data.time;
+      // {...data} clones the data
+      var updatedRecord = {
+        ...props.data,
+        id: user.id,
+        bib: user.bib,
+        time: newTime,
+        fName: user.fName,
+        lName: user.lName
+      };
+
+      props.editRecords({oldRecord: props.data, newRecord: updatedRecord});
+    } else if (button === "delete-button") {
+      props.deleteRecord(props.data)
+    } else {
+      console.log('cancelled')
     }
-    props.setIsDisplayed("none");
+    props.setIsDisplayed(false);
   }
 
   return (
@@ -43,7 +61,7 @@ function Popup(props) {
                 <p key={field} className={`${field}`}>
                   {title}: <input
                     className={`${field}-input`}
-                    value={formData[field] || ""}
+                    value={formData[field] ?? props.data?.[field] ?? ""}
                     onChange={event =>
                       setFormData({...formData, [field]: event.target.value})
                     }>

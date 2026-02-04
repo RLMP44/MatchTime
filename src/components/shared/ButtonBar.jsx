@@ -5,7 +5,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 function ButtonBar(props) {
-  const [isDisplayed, setIsDisplayed] = useState("none");
+  const [isDisplayed, setIsDisplayed] = useState(false);
   const racerAttributes = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
   const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
 
@@ -13,7 +13,6 @@ function ButtonBar(props) {
   function handlePopUp(event) {
     const button = event.currentTarget.id;
     if (button === 'add-btn') {
-      console.log('here')
       props.setCrud("Add");
       props.setButtonTypes(['cancel', 'add']);
       props.setPopUpFields(racerAttributes);
@@ -26,7 +25,7 @@ function ButtonBar(props) {
       props.setButtonTypes(['cancel', 'export']);
       props.setPopUpFields(importExportFields);
     };
-    setIsDisplayed(isDisplayed === "none" ? "" : "none");
+    setIsDisplayed(!isDisplayed);
   };
 
   return (
@@ -37,7 +36,7 @@ function ButtonBar(props) {
         <button id='export-btn' className={`${props.tab}-tab-btn`} alt={`Export ${props.tab}`} onClick={handlePopUp}><FileUploadIcon /></button>
       </div>
       {/* ------------- POPUP ------------- */}
-      <div style={{display: isDisplayed}}>
+      <div style={{display: isDisplayed ? "" : "none"}}>
         <Popup
           setIsDisplayed={setIsDisplayed}
           tab={props.tab}

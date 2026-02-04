@@ -4,7 +4,8 @@ import ButtonBar from "../shared/ButtonBar";
 
 function RacersTab(props) {
   const basicButtonTypes = ['cancel', 'save', 'done'];
-
+  const [crud, setCrud] = useState('');
+  const [popUpFields, setPopUpFields] = useState([]);
   const [buttonTypes, setButtonTypes] = useState(basicButtonTypes);
 
   return (
@@ -16,25 +17,25 @@ function RacersTab(props) {
             key={racer.id}
             data={racer}
             tab={"racer"}
-            crud={props.crud}
-            setCrud={props.setCrud}
+            crud={crud}
+            setCrud={setCrud}
             buttons={buttonTypes}
             setButtonTypes={setButtonTypes}
-            popUpFields={props.popUpFields}
-            setPopUpFields={props.setPopUpFields}
+            popUpFields={popUpFields}
+            setPopUpFields={setPopUpFields}
             editRacer={props.editRacer}
             deleteRacer={props.deleteRacer}
           />)}
       </div>
       <ButtonBar
         tab={"racer"}
-        crud={props.crud}
-        setCrud={props.setCrud}
+        crud={crud}
+        setCrud={setCrud}
         addRacer={props.addRacer}
         setButtonTypes={setButtonTypes}
         buttons={buttonTypes}
-        popUpFields={props.popUpFields}
-        setPopUpFields={props.setPopUpFields}
+        popUpFields={popUpFields}
+        setPopUpFields={setPopUpFields}
       />
     </div>
   );
