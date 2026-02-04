@@ -7,8 +7,6 @@ function Popup(props) {
   function titleize(string) {
     return String(string).charAt(0).toUpperCase() + String(string).slice(1);
 }
-console.log(props.crud)
-
 
   // ----------------- RACER HANDLING LOGIC -----------------
   async function handleSubmit(event) {
@@ -36,23 +34,25 @@ console.log(props.crud)
     <div className="dialog">
       <h4 className="title">{titleize(props.crud)} {titleize(props.tab)}</h4>
       <div className="border"></div>
-      <div className="popup-content">
-        {props.popUpFields?.length > 0 && (
-          props.popUpFields.map(field => {
-            let title = field === "fName" ? "First Name" : field === "lName" ? "Last Name" : titleize(field);
-            return (
-              <p key={field}>
-                {title}: <input
-                  className={`${field}-input`}
-                  value={formData[field] || ""}
-                  onChange={event =>
-                    setFormData({...formData, [field]: event.target.value})
-                  }>
-                </input>
-              </p>
-            );
-          })
-        )}
+      <div className="popup-body">
+        <div className={`popup-content ${props.crud}`}>
+          {props.popUpFields?.length > 0 && (
+            props.popUpFields.map(field => {
+              let title = field === "fName" ? "First Name" : field === "lName" ? "Last Name" : titleize(field);
+              return (
+                <p key={field} className={`${field}`}>
+                  {title}: <input
+                    className={`${field}-input`}
+                    value={formData[field] || ""}
+                    onChange={event =>
+                      setFormData({...formData, [field]: event.target.value})
+                    }>
+                  </input>
+                </p>
+              );
+            })
+          )}
+        </div>
         {props.buttons?.length > 0 && (
           <div className="popup-buttons-container">
             {props.buttons.map(button =>
