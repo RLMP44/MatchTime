@@ -6,19 +6,25 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 function ButtonBar(props) {
   const [isDisplayed, setIsDisplayed] = useState("none");
+  const racerAttributes = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
+  const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
+
 
   function handlePopUp(event) {
     const button = event.currentTarget.id;
     if (button === 'add-btn') {
       console.log('here')
       props.setCrud("Add");
-      props.setButtonTypes(['cancel', 'add', 'done']);
+      props.setButtonTypes(['cancel', 'add']);
+      props.setPopUpFields(racerAttributes);
     } else if (button === 'import-btn') {
       props.setCrud("Import");
-      props.setButtonTypes(['cancel', 'import', 'done']);
+      props.setButtonTypes(['cancel', 'import']);
+      props.setPopUpFields(importExportFields);
     } else if (button === 'export-btn') {
       props.setCrud("Export");
-      props.setButtonTypes(['cancel', 'export', 'done']);
+      props.setButtonTypes(['cancel', 'export']);
+      props.setPopUpFields(importExportFields);
     };
     setIsDisplayed(isDisplayed === "none" ? "" : "none");
   };
@@ -38,7 +44,8 @@ function ButtonBar(props) {
           crud={props.crud}
           addRacer={props.addRacer}
           buttons={props.buttons}
-          fields={props.fields}
+          popUpFields={props.popUpFields}
+          setPopUpFields={props.setPopUpFields}
         />
       </div>
     </div>

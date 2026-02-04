@@ -3,7 +3,6 @@ import RacerDisplay from "./RacerDisplay";
 import ButtonBar from "../shared/ButtonBar";
 
 function RacersTab(props) {
-  const racerAttributes = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
   const basicButtonTypes = ['cancel', 'save', 'done'];
 
   const [buttonTypes, setButtonTypes] = useState(basicButtonTypes);
@@ -21,6 +20,8 @@ function RacersTab(props) {
             setCrud={props.setCrud}
             buttons={buttonTypes}
             setButtonTypes={setButtonTypes}
+            popUpFields={props.popUpFields}
+            setPopUpFields={props.setPopUpFields}
             editRacer={props.editRacer}
             deleteRacer={props.deleteRacer}
           />)}
@@ -32,7 +33,8 @@ function RacersTab(props) {
         addRacer={props.addRacer}
         setButtonTypes={setButtonTypes}
         buttons={buttonTypes}
-        fields={racerAttributes}
+        popUpFields={props.popUpFields}
+        setPopUpFields={props.setPopUpFields}
       />
     </div>
   );

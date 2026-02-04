@@ -34,6 +34,7 @@ function App() {
   const [startTime, setStartTime] = useState(null);
   const [buttonText, setButtonText] = useState("Start");
   const [crud, setCrud] = useState('');
+  const [popUpFields, setPopUpFields] = useState([]);
 
   // -------------- TIMER LOGIC --------------
   function startTimer() {
@@ -157,6 +158,8 @@ function App() {
                               setTimerOn={setTimerOn}
                               buttonText={buttonText}
                               setButtonText={setButtonText}
+                              popUpFields={popUpFields}
+                              setPopUpFields={setPopUpFields}
                               startTime={startTime}
                               startTimer={startTimer}
                               setStartTime={setStartTime}
@@ -172,6 +175,8 @@ function App() {
                               records={displayRecords}
                               crud={crud}
                               setCrud={setCrud}
+                              popUpFields={popUpFields}
+                              setPopUpFields={setPopUpFields}
                               addRacer={addRacer}
                               editRacer={editRacer}
                               deleteRacer={deleteRacer}

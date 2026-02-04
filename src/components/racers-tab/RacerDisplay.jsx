@@ -8,6 +8,7 @@ function RacerDisplay(props) {
 
   function handlePopUp() {
     props.setCrud("Edit")
+    props.setPopUpFields(racerAttributes);
     setIsDisplayed(isDisplayed === "none" ? "" : "none");
     props.setButtonTypes(isDisplayed === "none" ? editButtonTypes : []);
   }
@@ -27,7 +28,8 @@ function RacerDisplay(props) {
           data={props.data}
           tab={props.tab}
           crud={props.crud}
-          fields={racerAttributes}
+          popUpFields={props.popUpFields}
+          setPopUpFields={props.setPopUpFields}
           buttons={props.buttons}
           setButtonTypes={props.setButtonTypes}
           addRacer={props.addRacer}

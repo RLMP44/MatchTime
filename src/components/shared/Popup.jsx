@@ -37,20 +37,22 @@ console.log(props.crud)
       <h4 className="title">{titleize(props.crud)} {titleize(props.tab)}</h4>
       <div className="border"></div>
       <div className="popup-content">
-        {props.fields.map(field => {
-          let title = field === "fName" ? "First Name" : field === "lName" ? "Last Name" : titleize(field);
-          return (
-            <p key={field}>
-              {title}: <input
-                className={`${field}-input`}
-                value={formData[field] || ""}
-                onChange={event =>
-                  setFormData({...formData, [field]: event.target.value})
-                }>
-              </input>
-            </p>
-          );
-        })}
+        {props.popUpFields?.length > 0 && (
+          props.popUpFields.map(field => {
+            let title = field === "fName" ? "First Name" : field === "lName" ? "Last Name" : titleize(field);
+            return (
+              <p key={field}>
+                {title}: <input
+                  className={`${field}-input`}
+                  value={formData[field] || ""}
+                  onChange={event =>
+                    setFormData({...formData, [field]: event.target.value})
+                  }>
+                </input>
+              </p>
+            );
+          })
+        )}
         {props.buttons?.length > 0 && (
           <div className="popup-buttons-container">
             {props.buttons.map(button =>
