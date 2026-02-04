@@ -6,23 +6,36 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 function ButtonBar(props) {
   const [isDisplayed, setIsDisplayed] = useState("none");
-  function handlePopUp() {
+
+  function handlePopUp(event) {
+    const button = event.currentTarget.id;
+    if (button === 'add-btn') {
+      console.log('here')
+      props.setCrud("Add");
+      props.setButtonTypes(['cancel', 'add', 'done']);
+    } else if (button === 'import-btn') {
+      props.setCrud("Import");
+      props.setButtonTypes(['cancel', 'import', 'done']);
+    } else if (button === 'export-btn') {
+      props.setCrud("Export");
+      props.setButtonTypes(['cancel', 'export', 'done']);
+    };
     setIsDisplayed(isDisplayed === "none" ? "" : "none");
-  }
+  };
 
   return (
     <div>
       <div className={`buttons-bar ${props.tab}-bar`}>
-        <button className={`${props.tab}-tab-btn`} alt="Import Racers"><FileDownloadIcon /></button>
-        <button className={`${props.tab}-tab-btn`} alt="Add Racer" onClick={handlePopUp}><AddCircleIcon /></button>
-        <button className={`${props.tab}-tab-btn`} alt="Export Racers"><FileUploadIcon /></button>
+        <button id='import-btn' className={`${props.tab}-tab-btn`} alt={`Import ${props.tab}`} onClick={handlePopUp}><FileDownloadIcon /></button>
+        <button id='add-btn' className={`${props.tab}-tab-btn`} alt={`Add ${props.tab}`} onClick={handlePopUp}><AddCircleIcon /></button>
+        <button id='export-btn' className={`${props.tab}-tab-btn`} alt={`Export ${props.tab}`} onClick={handlePopUp}><FileUploadIcon /></button>
       </div>
       {/* ------------- POPUP ------------- */}
       <div style={{display: isDisplayed}}>
         <Popup
           setIsDisplayed={setIsDisplayed}
           tab={props.tab}
-          crud={"Add"}
+          crud={props.crud}
           addRacer={props.addRacer}
           buttons={props.buttons}
           fields={props.fields}

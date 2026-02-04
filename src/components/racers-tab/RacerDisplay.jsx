@@ -2,12 +2,15 @@ import Popup from "../shared/Popup";
 import { useState } from "react";
 
 function RacerDisplay(props) {
-  const [isDisplayed, setIsDisplayed] = useState("none");
-  function handlePopUp() {
-    setIsDisplayed(isDisplayed === "none" ? "" : "none");
-  }
   const racerAttributes = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
-  const buttonTypes = ['cancel', 'save', 'done'];
+  const [isDisplayed, setIsDisplayed] = useState("none");
+  const editButtonTypes = ['cancel', 'update', 'delete'];
+
+  function handlePopUp() {
+    props.setCrud("Edit")
+    setIsDisplayed(isDisplayed === "none" ? "" : "none");
+    props.setButtonTypes(isDisplayed === "none" ? editButtonTypes : []);
+  }
 
   return (
     <div>
@@ -22,10 +25,11 @@ function RacerDisplay(props) {
         <Popup
           setIsDisplayed={setIsDisplayed}
           data={props.data}
-          tab={"racer"}
-          crud={"edit"}
+          tab={props.tab}
+          crud={props.crud}
           fields={racerAttributes}
-          buttons={buttonTypes}
+          buttons={props.buttons}
+          setButtonTypes={props.setButtonTypes}
           addRacer={props.addRacer}
           editRacer={props.editRacer}
           deleteRacer={props.deleteRacer}

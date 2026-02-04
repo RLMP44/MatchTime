@@ -33,6 +33,7 @@ function App() {
   const [timerOn, setTimerOn] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [buttonText, setButtonText] = useState("Start");
+  const [crud, setCrud] = useState('');
 
   // -------------- TIMER LOGIC --------------
   function startTimer() {
@@ -169,6 +170,8 @@ function App() {
         {tab === "categories" && <CategoriesTab />}
         {tab === "racers" && <RacersTab
                               records={displayRecords}
+                              crud={crud}
+                              setCrud={setCrud}
                               addRacer={addRacer}
                               editRacer={editRacer}
                               deleteRacer={deleteRacer}

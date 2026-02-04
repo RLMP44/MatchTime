@@ -1,10 +1,12 @@
+import { useState } from "react";
 import RacerDisplay from "./RacerDisplay";
 import ButtonBar from "../shared/ButtonBar";
 
 function RacersTab(props) {
   const racerAttributes = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
-  const buttonTypes = ['cancel', 'save', 'done'];
+  const basicButtonTypes = ['cancel', 'save', 'done'];
 
+  const [buttonTypes, setButtonTypes] = useState(basicButtonTypes);
 
   return (
     <div className="racers-tab">
@@ -14,13 +16,21 @@ function RacersTab(props) {
           <RacerDisplay
             key={racer.id}
             data={racer}
+            tab={"racer"}
+            crud={props.crud}
+            setCrud={props.setCrud}
+            buttons={buttonTypes}
+            setButtonTypes={setButtonTypes}
             editRacer={props.editRacer}
             deleteRacer={props.deleteRacer}
           />)}
       </div>
       <ButtonBar
         tab={"racer"}
+        crud={props.crud}
+        setCrud={props.setCrud}
         addRacer={props.addRacer}
+        setButtonTypes={setButtonTypes}
         buttons={buttonTypes}
         fields={racerAttributes}
       />

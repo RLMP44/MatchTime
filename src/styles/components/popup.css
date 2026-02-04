@@ -54,7 +54,7 @@
   background-color: var(--color-primary);
 }
 
-#update-button {
+#update-button, #save-button, #add-button, #import-button, #export-button {
   background-color: var(--color-highlight);
 }
 
