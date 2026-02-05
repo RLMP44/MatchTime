@@ -11,6 +11,8 @@ function Popup(props) {
   // ----------------- RACER HANDLING LOGIC -----------------
   async function handleSubmit(event) {
     const button = event.target.id;
+    console.log(button)
+    console.log(props.tab)
 
     if (button === 'save-button' && props.crud === "Add" && props.tab === "racer") {
       console.log("adding racer");
@@ -18,7 +20,7 @@ function Popup(props) {
       setFormData({});
     }
     else if (button === 'save-button' && props.crud === "Edit" && props.tab === "racer") {
-      // use object spreading to updated only updated fields in racer record
+      // use object spreading to update only updated fields in racer record
       var updatedRacer = {
         ...props.data,
         ...formData,
@@ -26,18 +28,22 @@ function Popup(props) {
       props.editRacer({ newData: updatedRacer, oldData: props.data });
     } else if (button === 'cancel-button') {
       console.log('cancelled');
-    } else if (button === "update-button") {
-      const user = (props.bibNum !== props.data.bib) ? await props.fetchRecord(parseInt(props.bibNum)): props.data;
-      const newTime = (props.time !== props.data.time) ? props.time : props.data.time;
-      // {...data} clones the data
-      var updatedRecord = {
-        ...props.data,
-        id: user.id,
-        bib: user.bib,
-        time: newTime,
-        fName: user.fName,
-        lName: user.lName
-      };
+    } else if (button === "update-button" && props.tab === "timer") {
+      const bibChanged = formData.bib && formData.bib !== props.data.bib;
+      const timeChanged = formData.time && formData.time !== props.data.time;
+
+      let updatedRecord = { ...props.data };
+      if (bibChanged) {
+        const user = await props.fetchRecord(parseInt(formData.bib));
+        updatedRecord = {
+          ...updatedRecord,
+          ...user,
+          place: props.data.place,
+          time: updatedRecord.time
+        };
+      }
+
+      if (timeChanged) { updatedRecord.time = formData.time };
 
       props.editRecords({oldRecord: props.data, newRecord: updatedRecord});
     } else if (button === "delete-button") {
