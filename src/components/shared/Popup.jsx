@@ -14,12 +14,12 @@ function Popup(props) {
     console.log(button)
     console.log(props.tab)
 
-    if (button === 'save-button' && props.crud === "Add" && props.tab === "racer") {
+    if (button === 'add-button' && props.crud === "Add" && props.tab === "racer") {
       console.log("adding racer");
       props.addRacer(formData);
       setFormData({});
     }
-    else if (button === 'save-button' && props.crud === "Edit" && props.tab === "racer") {
+    else if (button === 'add-button' && props.crud === "Edit" && props.tab === "racer") {
       // use object spreading to update only updated fields in racer record
       var updatedRacer = {
         ...props.data,
@@ -49,7 +49,7 @@ function Popup(props) {
     } else if (button === "delete-button") {
       props.deleteRecord(props.data)
     } else {
-      console.log('cancelled')
+      console.log('something went wrong')
     }
     props.setIsDisplayed(false);
   }
