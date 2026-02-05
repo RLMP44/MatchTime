@@ -32,6 +32,7 @@ function RacerDisplay(props) {
           setPopUpFields={props.setPopUpFields}
           buttons={props.buttons}
           setButtonTypes={props.setButtonTypes}
+          setDisplayRecords={props.setDisplayRecords}
           addRacer={props.addRacer}
           editRacer={props.editRacer}
           deleteRacer={props.deleteRacer}

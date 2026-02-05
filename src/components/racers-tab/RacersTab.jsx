@@ -23,6 +23,7 @@ function RacersTab(props) {
             setButtonTypes={setButtonTypes}
             popUpFields={popUpFields}
             setPopUpFields={setPopUpFields}
+            setDisplayRecords={props.setDisplayRecords}
             editRacer={props.editRacer}
             deleteRacer={props.deleteRacer}
           />)}

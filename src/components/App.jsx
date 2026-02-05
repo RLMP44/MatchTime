@@ -131,8 +131,27 @@ function App() {
   };
 
   function editRacer({ oldData: oldR, newData: newR }) {
-    console.log(oldR);
-    console.log(newR);
+    // object spreading to update only new values
+    var updatedRacer = {
+      ...oldR,
+      ...newR,
+    };
+    setDisplayRecords(prev =>
+      prev.map(record =>
+        record.id === oldR.id ? updatedRacer : record
+      )
+    );
+    setTimerDisplayRecords(prev =>
+      prev.map(record => {
+        if (record.id !== oldR.id) {
+          return record;
+        }
+        return {
+          ...record,
+          ...newR
+        }
+      })
+    );
   };
 
   function deleteRacer() {
@@ -171,6 +190,7 @@ function App() {
         {tab === "categories" && <CategoriesTab />}
         {tab === "racers" && <RacersTab
                               records={displayRecords}
+                              setDisplayRecords={setDisplayRecords}
                               addRacer={addRacer}
                               editRacer={editRacer}
                               deleteRacer={deleteRacer}
