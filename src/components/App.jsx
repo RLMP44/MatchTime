@@ -65,7 +65,16 @@ function App() {
     // TODO: set DB record time and place back to null
   };
 
-  function updateUserRecord(record) {
+
+  // -------------- FRONT END DISPLAY LOGIC --------------
+  async function fetchUserRecord(bib) {
+    const userRecord = displayRecords.find((record) => {
+      return record.bib === bib;
+    });
+    return userRecord;
+  };
+
+  function updateDisplayRecord(record) {
     updateDBRecord(record);
     // TODO: add new time and placement
     // TODO: send to backend function and use SQL to update single record only
@@ -79,18 +88,10 @@ function App() {
     });
   };
 
-
-  // -------------- FRONT END DISPLAY LOGIC --------------
-  async function fetchUserRecord(bib) {
-    const userRecord = displayRecords.find((record) => {
-      return record.bib === bib;
-    });
-    return userRecord;
-  };
-
   // takes 2 records => resets old record and updates new record
   function editUserRecords({ oldRecord: oldR, newRecord: newR }) {
     resetDBRecord(oldR);
+    updateDBRecord(newR);
     setTimerDisplayRecords((prevRecords) =>
       prevRecords.map((record) => {
         return record.id === oldR.id ? newR : record
@@ -164,7 +165,7 @@ function App() {
                               editRecords={editUserRecords}
                               fetchRecord={fetchUserRecord}
                               deleteRecord={deleteRecord}
-                              updateUserRecord={updateUserRecord}
+                              updateDisplayRecord={updateDisplayRecord}
                             />
         }
         {tab === "categories" && <CategoriesTab />}

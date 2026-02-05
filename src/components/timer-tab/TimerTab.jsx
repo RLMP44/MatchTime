@@ -42,7 +42,7 @@ function TimerTab(props) {
         startTime={props.startTime}
         setStartTime={props.setStartTime}
         startTimer={props.startTimer}
-        updateUserRecord={props.updateUserRecord}
+        updateDisplayRecord={props.updateDisplayRecord}
         fetchRecord={props.fetchRecord}
         timerDisplayRecords={props.timerDisplayRecords}
         />

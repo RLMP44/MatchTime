@@ -50,7 +50,7 @@ function Timer(props) {
       bib: bib ?? currentRecord?.bib
     };
     setCurrentRecord(updatedRecord);
-    props.updateUserRecord(updatedRecord);
+    props.updateDisplayRecord(updatedRecord);
   }
 
   async function fetchAndSetRecord(newNum) {
