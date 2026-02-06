@@ -1,35 +1,18 @@
 import { useState } from "react";
+import Popup from "../shared/Popup";
 
 function RecordDisplay(props) {
-  let [isDisplayed, setIsDisplayed] = useState("none");
+  let [isDisplayed, setIsDisplayed] = useState(false);
   const [time, setTime] = useState(props?.data?.time || "");
   const [bibNum, setBibNum] = useState(props?.data?.bib || "");
+  const fields = ['bib', 'time'];
+  const editButtonTypes = ['cancel', 'update', 'delete'];
+
   function handlePopUp() {
-    setIsDisplayed(isDisplayed === "none" ? "" : "none");
-  }
-
-  async function handleSubmit(event) {
-    const button = event.target.id;
-    if (button === "update-button") {
-      const user = (bibNum !== props.data.bib) ? await props.fetchRecord(parseInt(bibNum)): props.data;
-      const newTime = (time !== props.data.time) ? time : props.data.time;
-      // {...data} clones the data
-      var updatedRecord = {
-        ...props.data,
-        id: user.id,
-        bib: user.bib,
-        time: newTime,
-        fName: user.fName,
-        lName: user.lName
-      };
-
-      props.editRecords({oldRecord: props.data, newRecord: updatedRecord});
-    } else if (button === "delete-button") {
-      props.deleteRecord(props.data)
-    } else {
-      console.log('cancelled')
-    }
-    setIsDisplayed("none")
+    props.setCrud("Edit")
+    props.setPopUpFields(fields);
+    setIsDisplayed(!isDisplayed);
+    props.setButtonTypes(!isDisplayed ? editButtonTypes : []);
   }
 
   return (
@@ -42,18 +25,27 @@ function RecordDisplay(props) {
       </div>
 
       {/* ------------- POPUP ------------- */}
-      <div className="dialog" style={{display: isDisplayed}}>
-        <h4 className="title">Edit Record</h4>
-        <div className="border"></div>
-        <div className="popup-content">
-          <p>Time: <input className='time-input' value={time} onChange={event => setTime(event.target.value)}></input></p>
-          <p>Bib#: <input className='bib-input' value={bibNum} onChange={event => setBibNum(event.target.value)}></input></p>
-          <div className="popup-buttons-container">
-            <button className="btn" id="cancel-button" onClick={handleSubmit}>Cancel</button>
-            <button className="btn" id="update-button" onClick={handleSubmit}>Update</button>
-            <button className="btn" id="delete-button" onClick={handleSubmit}>Delete</button>
-          </div>
-        </div>
+      <div style={{display: isDisplayed ? "" : "none"}}>
+        <Popup
+          setIsDisplayed={setIsDisplayed}
+          data={props.data}
+          tab={props.tab}
+          crud={props.crud}
+          time={time}
+          setTime={setTime}
+          bibNum={bibNum}
+          setBibNum={setBibNum}
+          popUpFields={props.popUpFields}
+          setPopUpFields={props.setPopUpFields}
+          buttons={props.buttonTypes}
+          setButtonTypes={props.setButtonTypes}
+          addRacer={props.addRacer}
+          editRacer={props.editRacer}
+          deleteRacer={props.deleteRacer}
+          editRecords={props.editRecords}
+          fetchRecord={props.fetchRecord}
+          deleteRecord={props.deleteRecord}
+        />
       </div>
     </div>
   );

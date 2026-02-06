@@ -1,10 +1,12 @@
+import { useState } from "react";
 import RacerDisplay from "./RacerDisplay";
 import ButtonBar from "../shared/ButtonBar";
 
 function RacersTab(props) {
-  const racerAttributes = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
-  const buttonTypes = ['cancel', 'save', 'done'];
-
+  const basicButtonTypes = ['cancel', 'save', 'done'];
+  const [crud, setCrud] = useState('');
+  const [popUpFields, setPopUpFields] = useState([]);
+  const [buttonTypes, setButtonTypes] = useState(basicButtonTypes);
 
   return (
     <div className="racers-tab">
@@ -14,15 +16,27 @@ function RacersTab(props) {
           <RacerDisplay
             key={racer.id}
             data={racer}
+            tab={"racer"}
+            crud={crud}
+            setCrud={setCrud}
+            buttons={buttonTypes}
+            setButtonTypes={setButtonTypes}
+            popUpFields={popUpFields}
+            setPopUpFields={setPopUpFields}
+            setDisplayRecords={props.setDisplayRecords}
             editRacer={props.editRacer}
             deleteRacer={props.deleteRacer}
           />)}
       </div>
       <ButtonBar
         tab={"racer"}
+        crud={crud}
+        setCrud={setCrud}
         addRacer={props.addRacer}
+        setButtonTypes={setButtonTypes}
         buttons={buttonTypes}
-        fields={racerAttributes}
+        popUpFields={popUpFields}
+        setPopUpFields={setPopUpFields}
       />
     </div>
   );

@@ -4,15 +4,13 @@ import TimerTab from "./timer-tab/TimerTab";
 import RacersTab from "./racers-tab/RacersTab";
 import CategoriesTab from "./CategoriesTab";
 import ResultsTab from "./ResultsTab";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import TimerIcon from '@mui/icons-material/Timer';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd';
 
 function App() {
-  // TODO: connect backend and generate IDs there
-  var nextID = 7;
   var records = [
     {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Gustave", lName: "Pierre", division: "M30-39"},
     {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Maelle", lName: "Pierre", division: "F10-19"},
@@ -24,6 +22,8 @@ function App() {
 
   // TODO: displayRecords starter to be replaced with await fetchAllUsers()
   const [displayRecords, setDisplayRecords] = useState(records);
+  // TODO: connect backend and generate IDs there
+  const nextID = useRef(7);
   // TODO: timerDisplayRecords to be a filtered version of displayRecords
   // filter for time/rawTime, and also order by ascension (not calculating handicaps yet)
   // this way timerDisplayRecords is updated with user data if prev not found
@@ -65,12 +65,25 @@ function App() {
     // TODO: set DB record time and place back to null
   };
 
-  function updateUserRecord(record) {
+
+  // -------------- FRONT END LOGIC --------------
+  async function fetchUserRecord(bib) {
+    const userRecord = displayRecords.find((record) => {
+      return record.bib === bib;
+    });
+    return userRecord;
+  };
+
+
+  // -------------- TIMER RECORD DISPLAY LOGIC --------------
+  // updates a single record with new time and/or placement
+  function updateDisplayRecord(record) {
     updateDBRecord(record);
     // TODO: add new time and placement
     // TODO: send to backend function and use SQL to update single record only
     // instead of updating entire array/db
     // temporary until backend is established
+    // TODO: recalculate placement if time is reduced or increased
     records = records.map((oldRecord) => {
       return (oldRecord.id === record.id) ? record : oldRecord
     });
@@ -79,18 +92,10 @@ function App() {
     });
   };
 
-
-  // -------------- FRONT END DISPLAY LOGIC --------------
-  async function fetchUserRecord(bib) {
-    const userRecord = displayRecords.find((record) => {
-      return record.bib === bib;
-    });
-    return userRecord;
-  };
-
-  // takes 2 records => resets old record and updates new record
+  // takes 2 records => replaces a previously displayed racer record with an updated racer record on timer record display, and resets the old record
   function editUserRecords({ oldRecord: oldR, newRecord: newR }) {
     resetDBRecord(oldR);
+    updateDBRecord(newR);
     setTimerDisplayRecords((prevRecords) =>
       prevRecords.map((record) => {
         return record.id === oldR.id ? newR : record
@@ -98,6 +103,7 @@ function App() {
     );
   };
 
+  // deletes a racer record from the timer record display and resets the racer's time/place in the DB
   function deleteRecord(recordToDelete) {
     resetDBRecord(recordToDelete);
     setTimerDisplayRecords((prevRecords) => {
@@ -110,30 +116,63 @@ function App() {
         record.place > recordToDelete.place ? { ...record, place: record.place - 1 } : record
       );
     });
+    // TODO: need to update places in DB
     setPlace(prev => prev - 1);
   };
 
 
   // -------------- RACER LOGIC --------------
+  // adds a new racer to the database and instantaneously updates displayed records in timer and racer tabs
   function addRacer(racerData) {
     const newRacer = {
       ...racerData,
-      id: nextID,
+      id: nextID.current,
       place: null,
       time: null,
       timeRaw: null,
       bib: parseInt(racerData.bib),
       raceNo: parseInt(racerData.raceNo)
     };
-    nextID += 1;
     setDisplayRecords(prev => [...prev, newRacer]);
+    // update timer display with relevant info in case a placement is recorded for an empty bib. update user info on timer display when info is added
+    setTimerDisplayRecords(prev =>
+      prev.map((record) => {
+        if (record.bib === newRacer.bib && record.lName === "Not Found") {
+          return { ...record, ...newRacer, place: record.place, time: record.time, timeRaw: record.timeRaw };
+        }
+        return record;
+      })
+    );
+    nextID.current += 1;
   };
 
+  // edits a racer's personal information and instantaneously updates the records displayed in timer tab and racers tab
   function editRacer({ oldData: oldR, newData: newR }) {
-    console.log(oldR);
-    console.log(newR);
+    // object spreading to update only new values
+    var updatedRacer = {
+      ...oldR,
+      ...newR,
+    };
+    setDisplayRecords(prev =>
+      prev.map(record =>
+        record.id === oldR.id ? updatedRacer : record
+      )
+    );
+    setTimerDisplayRecords(prev =>
+      prev.map(record => {
+        if (record.id !== oldR.id) {
+          return record;
+        }
+        return {
+          ...record,
+          ...newR
+        }
+      })
+    );
+    // TODO: update racer info in DB
   };
 
+  // deletes a racer from the database and from timer display (if relevant) and racers' tab
   function deleteRacer() {
     console.log('delete racer');
   };
@@ -156,6 +195,7 @@ function App() {
                               setTimerOn={setTimerOn}
                               buttonText={buttonText}
                               setButtonText={setButtonText}
+                              tab={tab}
                               startTime={startTime}
                               startTimer={startTimer}
                               setStartTime={setStartTime}
@@ -163,12 +203,13 @@ function App() {
                               editRecords={editUserRecords}
                               fetchRecord={fetchUserRecord}
                               deleteRecord={deleteRecord}
-                              updateUserRecord={updateUserRecord}
+                              updateDisplayRecord={updateDisplayRecord}
                             />
         }
         {tab === "categories" && <CategoriesTab />}
         {tab === "racers" && <RacersTab
                               records={displayRecords}
+                              setDisplayRecords={setDisplayRecords}
                               addRacer={addRacer}
                               editRacer={editRacer}
                               deleteRacer={deleteRacer}
