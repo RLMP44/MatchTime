@@ -12,7 +12,6 @@ function Timer(props) {
   const [lName, setLName] = useState(null);
   const [currentRecord, setCurrentRecord] = useState(null);
 
-
   // ---------------------- TIMER LOGIC ----------------------
   useEffect(() => {
     if (!props.timerOn) return;
@@ -41,24 +40,54 @@ function Timer(props) {
     return () => clearInterval(interval);
   }, [props.timerOn, props.startTime]);
 
+  // checks if the current bibNum has already been recorded and displayed
+  function checkBibDisplayed() {
+    const userRecord = props.timerDisplayRecords.find((record) => {
+      return record.bib === bibNum;
+    });
+    return userRecord !== undefined;
+  };
+
   // ---------------------- UPDATE LOGIC ----------------------
-  async function updateRecord({prevTime: prevTime, prevPlace: prevPlace, bib: bib}) {
-    // create and update copy to avoid bugging react useState
-    const updatedRecord = { ...currentRecord,
-      place: prevPlace ?? props.place,
-      time: prevTime ?? time,
-      bib: bib ?? currentRecord?.bib
-    };
-    setCurrentRecord(updatedRecord);
-    props.updateDisplayRecord(updatedRecord);
+  // uses the currentRecord in the timer tab as a base to update time, place, and bib with the next record, or to clear info for the next display
+  async function updateTimeAndPlace({prevTime: prevTime, prevPlace: prevPlace, bib: bib}) {
+    let updatedRecord = { ...currentRecord };
+    const bibDisplayed = checkBibDisplayed();
+    if (bibDisplayed) {
+      console.log("user already assigned place");
+    } else {
+      // create and update copy to avoid bugging react useState
+      updatedRecord = { ...currentRecord,
+        place: prevPlace ?? props.place,
+        time: prevTime ?? time,
+        bib: bib ?? currentRecord?.bib
+      };
+      setCurrentRecord(updatedRecord);
+      props.updateDisplayRecord(updatedRecord);
+    }
   }
 
+  // uses entered bib number to fetch the racer record and display their name in the timer
+  // if bib not found, displays "Not Found" as racer name
   async function fetchAndSetRecord(newNum) {
     const newRecord = await props.fetchRecord(parseInt(newNum))
-    // TODO: make sure not allowing users to be entered more than once
-    newRecord ? setCurrentRecord(newRecord) : setCurrentRecord({id: null, place: props.place, bib: newNum, time: time, fName: "", lName: "Not Found"});
-    setFName(newRecord ? newRecord.fName : "");
-    setLName(newRecord ? newRecord.lName : "");
+    if (newRecord) {
+      setCurrentRecord(newRecord);
+      setFName(newRecord.fName);
+      setLName(newRecord.lName);
+    } else {
+      // temporarily set id as bib number until backend is hooked up
+      setCurrentRecord({
+        id: newNum,
+        place: props.place,
+        bib: newNum,
+        time: time,
+        fName: "",
+        lName: "Not Found"
+      });
+      setFName("");
+      setLName("Not Found");
+    }
   }
 
   function reset() {
@@ -71,13 +100,13 @@ function Timer(props) {
     var target = event.target;
     if (target.value) {
       const updatedBibNum = (bibNum !== null) ? bibNum + target.value : target.value;
-      setBibNum(updatedBibNum);
-      fetchAndSetRecord(updatedBibNum);
+      setBibNum(parseInt(updatedBibNum));
+      fetchAndSetRecord(parseInt(updatedBibNum));
     } else if (target.id === "start-record-button" && props.buttonText === "Start") {
       props.setButtonText("Record");
       props.startTimer();
     } else if (target.id === "start-record-button") {
-      updateRecord({prevTime: null, prevPlace: null, bib: null});
+      updateTimeAndPlace({prevTime: null, prevPlace: null, bib: null});
       console.log("updating record")
       reset();
       props.setPlace(prev => prev + 1);
@@ -85,7 +114,7 @@ function Timer(props) {
       reset();
     } else if (target.id === "same-time-button") {
       const lastRecord = props.timerDisplayRecords.at(-1);
-      updateRecord({prevTime: lastRecord.time, prevPlace: lastRecord.place, bib: bibNum});
+      updateTimeAndPlace({prevTime: lastRecord.time, prevPlace: lastRecord.place, bib: bibNum});
       reset();
       props.setPlace(prev => prev + 1);
     }
