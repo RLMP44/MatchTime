@@ -1,45 +1,64 @@
 import { useState } from "react";
 
 function Popup(props) {
-  // TODO: make Popup component completely reusable and DRY
   const [formData, setFormData] = useState({});
 
   function titleize(string) {
     return String(string).charAt(0).toUpperCase() + String(string).slice(1);
-}
+  }
 
-  // ----------------- RACER HANDLING LOGIC -----------------
+  // adjusts formData to contain proper types
+  function formatRecord(data) {
+    return {
+      ...data,
+      bib: parseInt(data.bib),
+      age: parseInt(data.age),
+      raceNo: parseInt(data.raceNo)
+    };
+  }
+
+  // swaps recorded time and place to updated racer when bib is changed in timer diplay
+  async function switchRacers(data) {
+    const user = await props.fetchRecord(data.bib);
+    return {
+      ...data,
+      ...user,
+      place: props.data.place,
+      time: props.data.time
+    };
+  }
+
+  // updates single record in timer display (time or racer)
+  async function updateTimerDisplayRecord(data) {
+    const bibChanged = data.bib && data.bib !== props.data.bib;
+    const timeChanged = data.time && data.time !== props.data.time;
+    let updatedRecord = { ...props.data };
+
+    if (bibChanged) {
+      const newUser = await switchRacers(data);
+      updatedRecord = { ...updatedRecord, ...newUser };
+    }
+    if (timeChanged) { updatedRecord.time = data.time };
+
+    props.editRecords({oldRecord: props.data, newRecord: updatedRecord});
+  }
+
+
+  // ----------------- EVENT HANDLING LOGIC -----------------
   async function handleSubmit(event) {
     const button = event.target.id;
-    console.log(button)
-    console.log(props.tab)
+    let formattedForm = formatRecord(formData);
 
     if (button === 'add-button' && props.crud === "Add" && props.tab === "racer") {
-      console.log("adding racer");
-      props.addRacer(formData);
+      props.addRacer(formattedForm);
       setFormData({});
     } else if (button === 'update-button' && props.crud === "Edit" && props.tab === "racer") {
-      props.editRacer({ newData: formData, oldData: props.data });
+      props.editRacer({ newData: formattedForm, oldData: props.data });
     } else if (button === 'cancel-button') {
       console.log('cancelled');
     } else if (button === "update-button" && props.tab === "timer") {
-      const bibChanged = formData.bib && formData.bib !== props.data.bib;
-      const timeChanged = formData.time && formData.time !== props.data.time;
-
-      let updatedRecord = { ...props.data };
-      if (bibChanged) {
-        const user = await props.fetchRecord(parseInt(formData.bib));
-        updatedRecord = {
-          ...updatedRecord,
-          ...user,
-          place: props.data.place,
-          time: updatedRecord.time
-        };
-      }
-
-      if (timeChanged) { updatedRecord.time = formData.time };
-
-      props.editRecords({oldRecord: props.data, newRecord: updatedRecord});
+      updateTimerDisplayRecord(formattedForm);
+      // TODO: need to update records in DB
     } else if (button === "delete-button") {
       props.deleteRecord(props.data)
     } else {
