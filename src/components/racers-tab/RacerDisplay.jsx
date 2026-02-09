@@ -2,13 +2,11 @@ import Popup from "../shared/Popup";
 import { useState } from "react";
 
 function RacerDisplay(props) {
-  const racerAttributes = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
   const [isDisplayed, setIsDisplayed] = useState(false);
   const editButtonTypes = ['cancel', 'update', 'delete'];
 
   function handlePopUp() {
-    props.setCrud("Edit")
-    props.setPopUpFields(racerAttributes);
+    props.setCrud("edit")
     setIsDisplayed(!isDisplayed);
     props.setButtonTypes(!isDisplayed ? editButtonTypes : []);
   }

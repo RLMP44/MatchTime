@@ -6,25 +6,20 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 function ButtonBar(props) {
   const [isDisplayed, setIsDisplayed] = useState(false);
-  const racerAttributes = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
   const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
 
+  function getCrud(button) {
+    return button.split('-')[0];
+  }
 
   function handlePopUp(event) {
     const button = event.currentTarget.id;
-    if (button === 'add-btn') {
-      props.setCrud("Add");
-      props.setButtonTypes(['cancel', 'add']);
-      props.setPopUpFields(racerAttributes);
-    } else if (button === 'import-btn') {
-      props.setCrud("Import");
-      props.setButtonTypes(['cancel', 'import']);
+    const selectedCrud = getCrud(button);
+    props.setCrud(selectedCrud);
+    props.setButtonTypes(['cancel', selectedCrud]);
+    if (button === 'import-btn' || button === 'export-button') {
       props.setPopUpFields(importExportFields);
-    } else if (button === 'export-btn') {
-      props.setCrud("Export");
-      props.setButtonTypes(['cancel', 'export']);
-      props.setPopUpFields(importExportFields);
-    };
+    }
     setIsDisplayed(!isDisplayed);
   };
 
