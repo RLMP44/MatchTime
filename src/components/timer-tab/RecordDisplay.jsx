@@ -9,10 +9,10 @@ function RecordDisplay(props) {
   const editButtonTypes = ['cancel', 'update', 'delete'];
 
   function handlePopUp() {
-    props.setCrud("Edit")
+    props.setCrud("edit")
     props.setPopUpFields(fields);
     setIsDisplayed(!isDisplayed);
-    props.setButtonTypes(!isDisplayed ? editButtonTypes : []);
+    props.setButtonTypes(editButtonTypes);
   }
 
   return (

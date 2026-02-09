@@ -52,19 +52,14 @@ function Timer(props) {
   // uses the currentRecord in the timer tab as a base to update time, place, and bib with the next record, or to clear info for the next display
   async function updateTimeAndPlace({prevTime: prevTime, prevPlace: prevPlace, bib: bib}) {
     let updatedRecord = { ...currentRecord };
-    const bibDisplayed = checkBibDisplayed();
-    if (bibDisplayed) {
-      console.log("user already assigned place");
-    } else {
-      // create and update copy to avoid bugging react useState
-      updatedRecord = { ...currentRecord,
-        place: prevPlace ?? props.place,
-        time: prevTime ?? time,
-        bib: bib ?? currentRecord?.bib
-      };
-      setCurrentRecord(updatedRecord);
-      props.updateDisplayRecord(updatedRecord);
-    }
+    // create and update copy to avoid bugging react useState
+    updatedRecord = { ...currentRecord,
+      place: prevPlace ?? props.place,
+      time: prevTime ?? time,
+      bib: bib ?? currentRecord?.bib
+    };
+    setCurrentRecord(updatedRecord);
+    props.updateDisplayRecord(updatedRecord);
   }
 
   // uses entered bib number to fetch the racer record and display their name in the timer
@@ -105,11 +100,14 @@ function Timer(props) {
     } else if (target.id === "start-record-button" && props.buttonText === "Start") {
       props.setButtonText("Record");
       props.startTimer();
-    } else if (target.id === "start-record-button") {
+    } else if (target.id === "start-record-button" && !checkBibDisplayed()) {
       updateTimeAndPlace({prevTime: null, prevPlace: null, bib: null});
-      console.log("updating record")
       reset();
       props.setPlace(prev => prev + 1);
+    } else if (target.id === "start-record-button" && checkBibDisplayed()) {
+      // TODO: give user feedback
+      console.warn("user already recorded")
+      reset();
     } else if (target.id === "clear-button") {
       reset();
     } else if (target.id === "same-time-button") {

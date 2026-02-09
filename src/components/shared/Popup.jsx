@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { titleize, pluralize } from "../../utils/helpers";
 
 function Popup(props) {
   const [formData, setFormData] = useState({});
 
-  function titleize(string) {
-    return String(string).charAt(0).toUpperCase() + String(string).slice(1);
-  }
+  function setTitle(crud, target) {
+    return (crud === 'import' || crud === 'export') ? `${titleize(crud)} ${pluralize(titleize(target))}` : `${titleize(crud)} ${titleize(target)}`;
+  };
 
   // adjusts formData to contain proper types
   function formatRecord(data) {
@@ -15,7 +16,7 @@ function Popup(props) {
       age: parseInt(data.age),
       raceNo: parseInt(data.raceNo)
     };
-  }
+  };
 
   // swaps recorded time and place to updated racer when bib is changed in timer display
   async function switchRacers(data) {
@@ -26,7 +27,7 @@ function Popup(props) {
       place: props.data.place,
       time: props.data.time
     };
-  }
+  };
 
   // updates single record in timer display (time or racer)
   async function updateTimerDisplayRecord(data) {
@@ -37,11 +38,11 @@ function Popup(props) {
     if (bibChanged) {
       const newUser = await switchRacers(data);
       updatedRecord = { ...updatedRecord, ...newUser };
-    }
+    };
     if (timeChanged) { updatedRecord.time = data.time };
 
     props.editRecords({oldRecord: props.data, newRecord: updatedRecord});
-  }
+  };
 
 
   // ----------------- EVENT HANDLING LOGIC -----------------
@@ -60,13 +61,13 @@ function Popup(props) {
       props.deleteRecord(props.data)
     } else {
       console.log('something went wrong')
-    }
+    };
     props.setIsDisplayed(false);
-  }
+  };
 
   return (
     <div className="dialog">
-      <h4 className="title">{titleize(props.crud)} {titleize(props.tab)}</h4>
+      <h4 className="title">{setTitle(props.crud || '', props.tab || '')}</h4>
       <div className="border"></div>
       <div className="popup-body">
         <div className={`popup-content ${props.crud}`}>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { pluralize } from "../../utils/helpers";
 import Popup from "./Popup";
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -26,9 +27,9 @@ function ButtonBar(props) {
   return (
     <div>
       <div className={`buttons-bar ${props.tab}-bar`}>
-        <button id='import-btn' className={`${props.tab}-tab-btn`} alt={`Import ${props.tab}`} onClick={handlePopUp}><FileDownloadIcon /></button>
+        <button id='import-btn' className={`${props.tab}-tab-btn`} alt={`Import ${pluralize(props.tab)}`} onClick={handlePopUp}><FileDownloadIcon /></button>
         <button id='add-btn' className={`${props.tab}-tab-btn`} alt={`Add ${props.tab}`} onClick={handlePopUp}><AddCircleIcon /></button>
-        <button id='export-btn' className={`${props.tab}-tab-btn`} alt={`Export ${props.tab}`} onClick={handlePopUp}><FileUploadIcon /></button>
+        <button id='export-btn' className={`${props.tab}-tab-btn`} alt={`Export ${pluralize(props.tab)}`} onClick={handlePopUp}><FileUploadIcon /></button>
       </div>
       {/* ------------- POPUP ------------- */}
       <div style={{display: isDisplayed ? "" : "none"}}>
