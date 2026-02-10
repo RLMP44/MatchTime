@@ -21,12 +21,29 @@ function Popup(props) {
   // swaps recorded time and place to updated racer when bib is changed in timer display
   async function switchRacers(data) {
     const user = await props.fetchRecord(data.bib);
-    return {
-      ...data,
-      ...user,
-      place: props.data.place,
-      time: props.data.time
-    };
+    if (user) {
+      return {
+        ...data,
+        ...user,
+        place: props.data.place,
+        time: props.data.time
+      };
+    } else {
+      return {
+        place: props.data.place,
+        bib: data.bib,
+        age: null,
+        sex: null,
+        raceNo: null,
+        handicap: null,
+        timeRaw: null,
+        city: null,
+        time: props.data.time,
+        fName: null,
+        lName: "Not Found",
+        division: null
+      }
+    }
   };
 
   // updates single record in timer display (time or racer)
@@ -55,12 +72,14 @@ function Popup(props) {
       setFormData({});
     } else if (button === 'update-button' && props.crud === "edit" && props.tab === "racer") {
       props.editRacer({ newData: formattedForm, oldData: props.data });
+    } else if (button === "delete-button" && props.tab === "racer") {
+      props.deleteRacer(props.data);
     } else if (button === "update-button" && props.tab === "timer") {
       updateTimerDisplayRecord(formattedForm);
-    } else if (button === "delete-button") {
-      props.deleteDisplayedRecord(props.data)
+    } else if (button === "delete-button" && props.tab === "timer") {
+      props.deleteDisplayedRecord(props.data);
     } else {
-      console.log('something went wrong')
+      console.log('something went wrong');
     };
     props.setIsDisplayed(false);
   };
