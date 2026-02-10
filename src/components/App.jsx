@@ -20,7 +20,7 @@ function App() {
     {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Monoco", lName: "Gestral", division: "M50-59"}
   ];
 
-  // TODO: displayRecords starter to be replaced with await fetchAllUsers()
+  // TODO: displayRecords starter to be replaced with await fetchAllRacers()
   const [displayRecords, setDisplayRecords] = useState(records);
   // TODO: connect backend and generate IDs there
   const nextID = useRef(7);
@@ -47,8 +47,8 @@ function App() {
 
 
   // -------------- DB LOGIC --------------
-  // async function fetchAllUsers() {
-  //   // TODO: fetch user records from backend
+  // async function fetchAllRacers() {
+  //   // TODO: fetch racer records from backend
   //   // return as list
   //   return records;
   // };
@@ -58,7 +58,7 @@ function App() {
   // };
 
   async function updateDBRecord() {
-    // TODO: update user record in DB
+    // TODO: update racer/record in DB
   };
 
   function resetDBRecord() {
@@ -67,17 +67,17 @@ function App() {
 
 
   // -------------- FRONT END LOGIC --------------
-  async function fetchUserRecord(bib) {
-    const userRecord = displayRecords.find((record) => {
+  async function fetchRacerRecord(bib) {
+    const racerRecord = displayRecords.find((record) => {
       return record.bib === bib;
     });
-    return userRecord;
+    return racerRecord;
   };
 
 
   // -------------- TIMER RECORD DISPLAY LOGIC --------------
   // updates a single record with new time and/or placement
-  function updateDisplayRecord(record) {
+  function updateDisplayedRecord(record) {
     updateDBRecord(record);
     // TODO: add new time and placement
     // TODO: send to backend function and use SQL to update single record only
@@ -93,7 +93,7 @@ function App() {
   };
 
   // takes 2 records => replaces a previously displayed racer record with an updated racer record on timer record display, and resets the old record
-  function editUserRecords({ oldRecord: oldR, newRecord: newR }) {
+  function swapDisplayedRacers({ oldRecord: oldR, newRecord: newR }) {
     resetDBRecord(oldR);
     updateDBRecord(newR);
     setTimerDisplayRecords((prevRecords) =>
@@ -104,7 +104,7 @@ function App() {
   };
 
   // deletes a racer record from the timer record display and resets the racer's time/place in the DB
-  function deleteRecord(recordToDelete) {
+  function deleteDisplayedRecord(recordToDelete) {
     resetDBRecord(recordToDelete);
     setTimerDisplayRecords((prevRecords) => {
       // filter out deleted record
@@ -200,10 +200,10 @@ function App() {
                               startTimer={startTimer}
                               setStartTime={setStartTime}
                               timerDisplayRecords={timerDisplayRecords}
-                              editRecords={editUserRecords}
-                              fetchRecord={fetchUserRecord}
-                              deleteRecord={deleteRecord}
-                              updateDisplayRecord={updateDisplayRecord}
+                              editRecords={swapDisplayedRacers}
+                              fetchRecord={fetchRacerRecord}
+                              deleteDisplayedRecord={deleteDisplayedRecord}
+                              updateDisplayedRecord={updateDisplayedRecord}
                             />
         }
         {tab === "categories" && <CategoriesTab />}

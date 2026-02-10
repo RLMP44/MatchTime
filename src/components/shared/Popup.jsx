@@ -1,56 +1,75 @@
 import { useState } from "react";
+import { titleize, pluralize } from "../../utils/helpers";
 
 function Popup(props) {
-  // TODO: make Popup component completely reusable and DRY
   const [formData, setFormData] = useState({});
 
-  function titleize(string) {
-    return String(string).charAt(0).toUpperCase() + String(string).slice(1);
-}
+  function setTitle(crud, target) {
+    return (crud === 'import' || crud === 'export') ? `${titleize(crud)} ${pluralize(titleize(target))}` : `${titleize(crud)} ${titleize(target)}`;
+  };
 
-  // ----------------- RACER HANDLING LOGIC -----------------
+  // adjusts formData to contain proper types
+  function formatRecord(data) {
+    return {
+      ...data,
+      bib: parseInt(data.bib) || props.data.bib,
+      age: parseInt(data.age) || props.data.age,
+      raceNo: parseInt(data.raceNo) || props.data.raceNo
+    };
+  };
+
+  // swaps recorded time and place to updated racer when bib is changed in timer display
+  async function switchRacers(data) {
+    const user = await props.fetchRecord(data.bib);
+    return {
+      ...data,
+      ...user,
+      place: props.data.place,
+      time: props.data.time
+    };
+  };
+
+  // updates single record in timer display (time or racer)
+  async function updateTimerDisplayRecord(data) {
+    const bibChanged = data.bib && data.bib !== props.data.bib;
+    const timeChanged = data.time && data.time !== props.data.time;
+    let updatedRecord = { ...props.data };
+
+    if (bibChanged) {
+      const newUser = await switchRacers(data);
+      updatedRecord = { ...updatedRecord, ...newUser };
+    };
+    if (timeChanged) { updatedRecord.time = data.time };
+
+    props.editRecords({oldRecord: props.data, newRecord: updatedRecord});
+  };
+
+
+  // ----------------- EVENT HANDLING LOGIC -----------------
   async function handleSubmit(event) {
     const button = event.target.id;
-    console.log(button)
-    console.log(props.tab)
+    let formattedForm = formatRecord(formData);
 
-    if (button === 'add-button' && props.crud === "Add" && props.tab === "racer") {
-      console.log("adding racer");
-      props.addRacer(formData);
+    if (button === 'add-button' && props.crud === "add" && props.tab === "racer") {
+      props.addRacer(formattedForm);
       setFormData({});
-    } else if (button === 'update-button' && props.crud === "Edit" && props.tab === "racer") {
-      props.editRacer({ newData: formData, oldData: props.data });
-    } else if (button === 'cancel-button') {
-      console.log('cancelled');
+    } else if (button === 'update-button' && props.crud === "edit" && props.tab === "racer") {
+      props.editRacer({ newData: formattedForm, oldData: props.data });
     } else if (button === "update-button" && props.tab === "timer") {
-      const bibChanged = formData.bib && formData.bib !== props.data.bib;
-      const timeChanged = formData.time && formData.time !== props.data.time;
-
-      let updatedRecord = { ...props.data };
-      if (bibChanged) {
-        const user = await props.fetchRecord(parseInt(formData.bib));
-        updatedRecord = {
-          ...updatedRecord,
-          ...user,
-          place: props.data.place,
-          time: updatedRecord.time
-        };
-      }
-
-      if (timeChanged) { updatedRecord.time = formData.time };
-
-      props.editRecords({oldRecord: props.data, newRecord: updatedRecord});
+      updateTimerDisplayRecord(formattedForm);
     } else if (button === "delete-button") {
-      props.deleteRecord(props.data)
+      props.deleteDisplayedRecord(props.data)
     } else {
       console.log('something went wrong')
-    }
+    };
     props.setIsDisplayed(false);
-  }
+  };
+
+  // TODO: disallow chars in int fields, etc
 
   return (
     <div className="dialog">
-      <h4 className="title">{titleize(props.crud)} {titleize(props.tab)}</h4>
+      <h4 className="title">{setTitle(props.crud || '', props.tab || '')}</h4>
       <div className="border"></div>
       <div className="popup-body">
         <div className={`popup-content ${props.crud}`}>

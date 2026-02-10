@@ -29,7 +29,7 @@ function TimerTab(props) {
             setCrud={setCrud}
             editRecords={props.editRecords}
             fetchRecord={props.fetchRecord}
-            deleteRecord={props.deleteRecord}
+            deleteDisplayedRecord={props.deleteDisplayedRecord}
           />)}
       </div>
       <Timer
@@ -42,7 +42,7 @@ function TimerTab(props) {
         startTime={props.startTime}
         setStartTime={props.setStartTime}
         startTimer={props.startTimer}
-        updateDisplayRecord={props.updateDisplayRecord}
+        updateDisplayedRecord={props.updateDisplayedRecord}
         fetchRecord={props.fetchRecord}
         timerDisplayRecords={props.timerDisplayRecords}
         />
