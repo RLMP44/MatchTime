@@ -21,12 +21,29 @@ function Popup(props) {
   // swaps recorded time and place to updated racer when bib is changed in timer display
   async function switchRacers(data) {
     const user = await props.fetchRecord(data.bib);
-    return {
-      ...data,
-      ...user,
-      place: props.data.place,
-      time: props.data.time
-    };
+    if (user) {
+      return {
+        ...data,
+        ...user,
+        place: props.data.place,
+        time: props.data.time
+      };
+    } else {
+      return {
+        place: props.data.place,
+        bib: data.bib,
+        age: null,
+        sex: null,
+        raceNo: null,
+        handicap: null,
+        timeRaw: null,
+        city: null,
+        time: props.data.time,
+        fName: null,
+        lName: "Not Found",
+        division: null
+      }
+    }
   };
 
   // updates single record in timer display (time or racer)
