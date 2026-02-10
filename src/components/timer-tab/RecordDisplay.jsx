@@ -44,7 +44,7 @@ function RecordDisplay(props) {
           deleteRacer={props.deleteRacer}
           editRecords={props.editRecords}
           fetchRecord={props.fetchRecord}
-          deleteRecord={props.deleteRecord}
+          deleteDisplayedRecord={props.deleteDisplayedRecord}
         />
       </div>
     </div>

@@ -12,9 +12,9 @@ function Popup(props) {
   function formatRecord(data) {
     return {
       ...data,
-      bib: parseInt(data.bib),
-      age: parseInt(data.age),
-      raceNo: parseInt(data.raceNo)
+      bib: parseInt(data.bib) || props.data.bib,
+      age: parseInt(data.age) || props.data.age,
+      raceNo: parseInt(data.raceNo) || props.data.raceNo
     };
   };
 
@@ -58,12 +58,14 @@ function Popup(props) {
     } else if (button === "update-button" && props.tab === "timer") {
       updateTimerDisplayRecord(formattedForm);
     } else if (button === "delete-button") {
-      props.deleteRecord(props.data)
+      props.deleteDisplayedRecord(props.data)
     } else {
       console.log('something went wrong')
     };
     props.setIsDisplayed(false);
   };
+
+  // TODO: disallow chars in int fields, etc
 
   return (
     <div className="dialog">
