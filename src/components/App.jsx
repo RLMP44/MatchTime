@@ -5,6 +5,7 @@ import RacersTab from "./racers-tab/RacersTab";
 import CategoriesTab from "./CategoriesTab";
 import ResultsTab from "./ResultsTab";
 import { useState, useRef } from "react";
+import { checkIsPresent } from "../utils/helpers";
 import TimerIcon from '@mui/icons-material/Timer';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
@@ -65,6 +66,10 @@ function App() {
     // TODO: set DB record time and place back to null
   };
 
+  function deleteDBRacer() {
+    // TODO: delete racer from DB
+  }
+
 
   // -------------- FRONT END LOGIC --------------
   async function fetchRacerRecord(bib) {
@@ -84,8 +89,10 @@ function App() {
     // instead of updating entire array/db
     // temporary until backend is established
     // TODO: recalculate placement if time is reduced or increased
-    records = records.map((oldRecord) => {
-      return (oldRecord.id === record.id) ? record : oldRecord
+    setDisplayRecords((prevRecords) => {
+      return prevRecords.map((oldRecord) => {
+        return (oldRecord.id === record.id) ? record : oldRecord
+      });
     });
     setTimerDisplayRecords((prevRecords) => {
       return [...prevRecords, record];
@@ -169,12 +176,24 @@ function App() {
         }
       })
     );
-    // TODO: update racer info in DB
+    updateDBRecord(updatedRacer);
   };
 
   // deletes a racer from the database and from timer display (if relevant) and racers' tab
-  function deleteRacer() {
-    console.log('delete racer');
+  function deleteRacer(racerToDelete) {
+    const isDisplayed = checkIsPresent({ array: timerDisplayRecords, target: racerToDelete.bib, type: "bib" });
+    if (isDisplayed) {
+      deleteDisplayedRecord(racerToDelete);
+    };
+
+    setDisplayRecords(prev => {
+      const filtered = prev.filter(record =>
+        record.id !== racerToDelete.id
+      );
+      return filtered;
+    });
+
+    deleteDBRacer(racerToDelete);
   };
 
 

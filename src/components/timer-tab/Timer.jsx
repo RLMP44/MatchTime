@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { checkIsPresent } from "../../utils/helpers";
 
 function Timer(props) {
   const [time, setTime] = useState("0");
@@ -11,6 +12,7 @@ function Timer(props) {
   const [fName, setFName] = useState(null);
   const [lName, setLName] = useState(null);
   const [currentRecord, setCurrentRecord] = useState(null);
+
 
   // ---------------------- TIMER LOGIC ----------------------
   useEffect(() => {
@@ -40,13 +42,6 @@ function Timer(props) {
     return () => clearInterval(interval);
   }, [props.timerOn, props.startTime]);
 
-  // checks if the current bibNum has already been recorded and displayed
-  function checkBibDisplayed() {
-    const userRecord = props.timerDisplayRecords.find((record) => {
-      return record.bib === bibNum;
-    });
-    return userRecord !== undefined;
-  };
 
   // ---------------------- UPDATE LOGIC ----------------------
   // uses the currentRecord in the timer tab as a base to update time, place, and bib with the next record, or to clear info for the next display
@@ -100,11 +95,11 @@ function Timer(props) {
     } else if (target.id === "start-record-button" && props.buttonText === "Start") {
       props.setButtonText("Record");
       props.startTimer();
-    } else if (target.id === "start-record-button" && !checkBibDisplayed()) {
+    } else if (target.id === "start-record-button" && !checkIsPresent({ array: props.timerDisplayRecords, target: bibNum, type: "bib" })) {
       updateTimeAndPlace({prevTime: null, prevPlace: null, bib: null});
       reset();
       props.setPlace(prev => prev + 1);
-    } else if (target.id === "start-record-button" && checkBibDisplayed()) {
+    } else if (target.id === "start-record-button" && checkIsPresent({ array: props.timerDisplayRecords, target: bibNum, type: "bib" })) {
       // TODO: give user feedback
       console.warn("user already recorded")
       reset();

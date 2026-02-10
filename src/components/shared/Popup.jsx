@@ -55,12 +55,14 @@ function Popup(props) {
       setFormData({});
     } else if (button === 'update-button' && props.crud === "edit" && props.tab === "racer") {
       props.editRacer({ newData: formattedForm, oldData: props.data });
+    } else if (button === "delete-button" && props.tab === "racer") {
+      props.deleteRacer(props.data);
     } else if (button === "update-button" && props.tab === "timer") {
       updateTimerDisplayRecord(formattedForm);
-    } else if (button === "delete-button") {
-      props.deleteDisplayedRecord(props.data)
+    } else if (button === "delete-button" && props.tab === "timer") {
+      props.deleteDisplayedRecord(props.data);
     } else {
-      console.log('something went wrong')
+      console.log('something went wrong');
     };
     props.setIsDisplayed(false);
   };

@@ -18,10 +18,10 @@ function RecordDisplay(props) {
   return (
     <div>
       <div className="record-container" onClick={handlePopUp}>
-        <p>{ props.data ? props.data.place : <strong>Place</strong>}</p>
-        <p>{ props.data ? props.data.bib : <strong>Bib #</strong>}</p>
-        <p>{ props.data ? props.data.time : <strong>Time</strong>}</p>
-        <p>{ props.data ? `${props.data.fName} ${props.data.lName}` : <strong>Name</strong>}</p>
+        <p>{props.data.place}</p>
+        <p>{props.data.bib}</p>
+        <p>{props.data.time}</p>
+        <p>{props.data.fName} {props.data.lName}</p>
       </div>
 
       {/* ------------- POPUP ------------- */}
