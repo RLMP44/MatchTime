@@ -38,6 +38,7 @@ function ButtonBar(props) {
           tab={props.tab}
           crud={props.crud}
           addRacer={props.addRacer}
+          addCategory={props.addCategory}
           buttons={props.buttons}
           popUpFields={props.popUpFields}
         />

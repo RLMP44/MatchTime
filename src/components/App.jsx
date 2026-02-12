@@ -21,10 +21,22 @@ function App() {
     {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Monoco", lName: "Gestral", division: "M50-59"}
   ];
 
+  var categories = [
+    {id: 1, name: "F20-29", raceNo: 1, handicap: 0},
+    {id: 2, name: "M20-29", raceNo: 1, handicap: 0},
+    {id: 3, name: "F30-39", raceNo: 1, handicap: 0},
+    {id: 4, name: "M30-39", raceNo: 1, handicap: 0},
+    {id: 5, name: "F40-49", raceNo: 1, handicap: 0},
+    {id: 6, name: "M40-49", raceNo: 1, handicap: 0}
+  ];
+
   // TODO: displayRecords starter to be replaced with await fetchAllRacers()
   const [displayRecords, setDisplayRecords] = useState(records);
+  // TODO: displayRecords starter to be replaced with await fetchAllCategories()
+  const [displayCategories, setDisplayCategories] = useState(categories);
   // TODO: connect backend and generate IDs there
   const nextID = useRef(7);
+  const nextCatID = useRef(7);
   // TODO: timerDisplayRecords to be a filtered version of displayRecords
   // filter for time/rawTime, and also order by ascension (not calculating handicaps yet)
   // this way timerDisplayRecords is updated with user data if prev not found
@@ -72,6 +84,22 @@ function App() {
 
   // async function fetchAllCategories() {
   //   // TODO: get all categories from DB
+  // }
+
+  // async function addDBCategory() {
+  //    // TODO: add category in DB
+  // }
+
+  // async function updateDBCategory() {
+  //   // TODO: update category in DB
+  // };
+
+  // function deleteDBCategory() {
+  //   // TODO: set DB category time and place back to null
+  // };
+
+  // function deleteDBRacer() {
+  //   // TODO: delete racer from DB
   // }
 
 
@@ -202,14 +230,16 @@ function App() {
 
 
   // -------------- CATEGORY LOGIC --------------
-  function addCategory() {
+  function addCategory(category) {
     // TODO: add a category
     console.log('adding category');
+    console.log(category)
   };
 
-  function editCategory() {
+  function editCategory(updatedCat) {
     // TODO: edit a category
     console.log('editing category');
+    console.log(updatedCat)
   };
 
   function deleteCategory() {
@@ -248,6 +278,8 @@ function App() {
         }
         {tab === "categories" && <CategoriesTab
                               tab={tab}
+                              displayCategories={displayCategories}
+                              setDisplayCategories={setDisplayCategories}
                               addCategory={addCategory}
                               editCategory={editCategory}
                               deleteCategory={deleteCategory}

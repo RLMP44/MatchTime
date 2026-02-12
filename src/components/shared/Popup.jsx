@@ -12,9 +12,9 @@ function Popup(props) {
   function formatRecord(data) {
     return {
       ...data,
-      bib: parseInt(data.bib) || props.data.bib,
-      age: parseInt(data.age) || props.data.age,
-      raceNo: parseInt(data.raceNo) || props.data.raceNo
+      bib: parseInt(data?.bib) || props?.data?.bib || null,
+      age: parseInt(data?.age) || props?.data?.age || null,
+      raceNo: parseInt(data?.raceNo) || props?.data?.raceNo || null,
     };
   };
 
@@ -78,8 +78,15 @@ function Popup(props) {
       updateTimerDisplayRecord(formattedForm);
     } else if (button === "delete-button" && props.tab === "timer") {
       props.deleteDisplayedRecord(props.data);
+    } else if (button === "add-button" && props.tab === "categories") {
+      props.addCategory(formattedForm);
+      setFormData({});
+    } else if (button === "update-button" && props.tab === "categories") {
+      props.editCategory(formattedForm);
+    } else if (button === "delete-button" && props.tab === "categories") {
+      props.deleteCategory(props.data);
     } else {
-      console.log('something went wrong');
+      console.log('cancel');
     };
     props.setIsDisplayed(false);
   };

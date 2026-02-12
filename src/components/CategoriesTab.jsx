@@ -4,23 +4,40 @@ import ButtonBar from "./shared/ButtonBar";
 
 function CategoriesTab(props) {
   const [isDisplayed, setIsDisplayed] = useState(false);
-  const editButtonTypes = ['cancel', 'add'];
+  const editButtonTypes = ['cancel', 'update', 'delete'];
   const categoryFields = ['name', 'handicap', 'sex', 'plusFive', 'plusTen'];
 
   const [crud, setCrud] = useState('');
   const [popUpFields, setPopUpFields] = useState(categoryFields);
-  const [buttonTypes, setButtonTypes] = useState(editButtonTypes);
+  const [buttonTypes, setButtonTypes] = useState([]);
 
   function handlePopUp() {
+    setCrud("edit");
     setIsDisplayed(!isDisplayed);
+    setButtonTypes(!isDisplayed ? editButtonTypes : []);
   }
 
   return (
     <div className="categories-tab">
-      <div className="record-container racer-tab-record" onClick={handlePopUp}>
-        <p>Category</p>
-        <p>Race #</p>
-        <p>Handicap</p>
+      <div className="records-display-container categories-tab-record" onClick={handlePopUp}>
+        <div>
+          <div className="record-container">
+            <p><strong>Category</strong></p>
+            <p><strong>Race #</strong></p>
+            <p><strong>Handicap</strong></p>
+          </div>
+        </div>
+        {props.displayCategories.map((cat) => {
+          return (
+            <div key={cat.id} >
+              <div className="record-container" onClick={handlePopUp}>
+                <p>{cat.name}</p>
+                <p>{cat.raceNo}</p>
+                <p>{cat.handicap}</p>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* ------------- POPUP ------------- */}
