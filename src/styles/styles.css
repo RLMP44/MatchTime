@@ -72,7 +72,7 @@ footer {
   gap: 1px;
 }
 
-.racer-tab-btn {
+.button-bar-btn {
   border: none;
   padding: .5rem 1rem;
   margin-bottom: .25rem;
@@ -82,6 +82,6 @@ footer {
   background: linear-gradient(180deg, rgba(237, 99, 0, 0.5) 0%, rgba(56, 56, 55, 1) 100%);
 }
 
-.racer-tab-btn:hover {
+.button-bar-btn:hover {
   background: linear-gradient(180deg,rgba(237, 99, 0, 0.5) 0%, rgba(237, 99, 0, 1) 100%);
 }

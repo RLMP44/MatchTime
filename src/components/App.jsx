@@ -70,6 +70,10 @@ function App() {
     // TODO: delete racer from DB
   }
 
+  // async function fetchAllCategories() {
+  //   // TODO: get all categories from DB
+  // }
+
 
   // -------------- FRONT END LOGIC --------------
   async function fetchRacerRecord(bib) {
@@ -197,6 +201,23 @@ function App() {
   };
 
 
+  // -------------- CATEGORY LOGIC --------------
+  function addCategory() {
+    // TODO: add a category
+    console.log('adding category');
+  };
+
+  function editCategory() {
+    // TODO: edit a category
+    console.log('editing category');
+  };
+
+  function deleteCategory() {
+    // TODO: delete a category
+    console.log('deleting category');
+  };
+
+
   return (
     <div className="App">
       <Header />
@@ -225,7 +246,12 @@ function App() {
                               updateDisplayedRecord={updateDisplayedRecord}
                             />
         }
-        {tab === "categories" && <CategoriesTab />}
+        {tab === "categories" && <CategoriesTab
+                              tab={tab}
+                              addCategory={addCategory}
+                              editCategory={editCategory}
+                              deleteCategory={deleteCategory}
+                            />}
         {tab === "racers" && <RacersTab
                               records={displayRecords}
                               setDisplayRecords={setDisplayRecords}
