@@ -84,11 +84,12 @@ function App() {
 
   // async function fetchAllCategories() {
   //   // TODO: get all categories from DB
-  // }
+  // };
 
-  // async function addDBCategory() {
-  //    // TODO: add category in DB
-  // }
+  async function addDBCategory(newCategory) {
+     // TODO: add category in DB
+     console.log(newCategory);
+  };
 
   // async function updateDBCategory() {
   //   // TODO: update category in DB
@@ -100,7 +101,7 @@ function App() {
 
   // function deleteDBRacer() {
   //   // TODO: delete racer from DB
-  // }
+  // };
 
 
   // -------------- FRONT END LOGIC --------------
@@ -231,9 +232,9 @@ function App() {
 
   // -------------- CATEGORY LOGIC --------------
   function addCategory(category) {
-    // TODO: add a category
-    console.log('adding category');
-    console.log(category)
+    setDisplayCategories(prev => [...prev, { ...category, id: nextCatID.current }]);
+    addDBCategory(category);
+    nextCatID.current += 1;
   };
 
   function editCategory(updatedCat) {

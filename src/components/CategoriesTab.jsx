@@ -5,7 +5,7 @@ import ButtonBar from "./shared/ButtonBar";
 function CategoriesTab(props) {
   const [isDisplayed, setIsDisplayed] = useState(false);
   const editButtonTypes = ['cancel', 'update', 'delete'];
-  const categoryFields = ['name', 'handicap', 'sex', 'plusFive', 'plusTen'];
+  const categoryFields = ['name', 'handicap', 'raceNo', 'sex', 'plusFive', 'plusTen'];
 
   const [crud, setCrud] = useState('');
   const [popUpFields, setPopUpFields] = useState(categoryFields);

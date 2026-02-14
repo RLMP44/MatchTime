@@ -3,6 +3,8 @@ import { titleize, pluralize } from "../../utils/helpers";
 
 function Popup(props) {
   const [formData, setFormData] = useState({});
+      console.log(props.data)
+
 
   function setTitle(crud, target) {
     return (crud === 'import' || crud === 'export') ? `${titleize(crud)} ${pluralize(titleize(target))}` : `${titleize(crud)} ${titleize(target)}`;
