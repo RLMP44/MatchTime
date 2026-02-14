@@ -4,9 +4,9 @@ import ButtonBar from "./shared/ButtonBar";
 
 function CategoriesTab(props) {
   const [isDisplayed, setIsDisplayed] = useState(false);
-  const headers = ['Category', 'Race #', 'Handicap'];
+  const headers = ['category', 'raceNo', 'handicap'];
   const editButtonTypes = ['cancel', 'update', 'delete'];
-  const categoryFields = ['name', 'handicap', 'raceNo', 'sex', 'plusFive', 'plusTen'];
+  const categoryFields = ['category', 'handicap', 'raceNo', 'sex', 'plusFive', 'plusTen'];
 
   console.log(props.displayCategories[1])
   console.log(Object.keys(props.displayCategories[1]))
@@ -28,6 +28,7 @@ function CategoriesTab(props) {
           <Display
             key={category.id}
             setIsDisplayed={setIsDisplayed}
+            headers={headers}
             data={category}
             tab={props.tab}
             crud={crud}

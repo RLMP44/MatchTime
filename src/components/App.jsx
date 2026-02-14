@@ -22,12 +22,12 @@ function App() {
   ];
 
   var categories = [
-    {id: 1, name: "F20-29", raceNo: 1, handicap: 0},
-    {id: 2, name: "M20-29", raceNo: 1, handicap: 0},
-    {id: 3, name: "F30-39", raceNo: 1, handicap: 0},
-    {id: 4, name: "M30-39", raceNo: 1, handicap: 0},
-    {id: 5, name: "F40-49", raceNo: 1, handicap: 0},
-    {id: 6, name: "M40-49", raceNo: 1, handicap: 0}
+    {id: 1, category: "F20-29", raceNo: 1, handicap: 0},
+    {id: 2, category: "M20-29", raceNo: 1, handicap: 0},
+    {id: 3, category: "F30-39", raceNo: 1, handicap: 0},
+    {id: 4, category: "M30-39", raceNo: 1, handicap: 0},
+    {id: 5, category: "F40-49", raceNo: 1, handicap: 0},
+    {id: 6, category: "M40-49", raceNo: 1, handicap: 0}
   ];
 
   // TODO: displayRecords starter to be replaced with await fetchAllRacers()
