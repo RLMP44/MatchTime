@@ -8,16 +8,13 @@ function CategoriesTab(props) {
   const editButtonTypes = ['cancel', 'update', 'delete'];
   const categoryFields = ['category', 'handicap', 'raceNo', 'sex', 'plusFive', 'plusTen'];
 
-  console.log(props.displayCategories[1])
-  console.log(Object.keys(props.displayCategories[1]))
   const [crud, setCrud] = useState('');
   const [popUpFields, setPopUpFields] = useState(categoryFields);
-  const [buttonTypes, setButtonTypes] = useState([]);
+  const [buttonTypes, setButtonTypes] = useState(editButtonTypes);
 
   function handlePopUp() {
     setCrud("edit");
     setIsDisplayed(!isDisplayed);
-    setButtonTypes(!isDisplayed ? editButtonTypes : []);
   }
 
   return (
@@ -35,6 +32,7 @@ function CategoriesTab(props) {
             setCrud={setCrud}
             popUpFields={categoryFields}
             buttons={buttonTypes}
+            setButtonTypes={setButtonTypes}
             editCategory={props.editCategory}
             deleteCategory={props.deleteCategory}
           />
