@@ -237,10 +237,14 @@ function App() {
     nextCatID.current += 1;
   };
 
-  function editCategory(updatedCat) {
-    // TODO: edit a category
-    console.log('editing category');
-    console.log(updatedCat)
+  function editCategory({ newData: newData, oldData: oldData, }) {
+    const updatedCategory = {
+      ...oldData,
+      ...newData
+    };
+    setDisplayCategories(prev => prev.map(cat => {
+      return cat.id === updatedCategory.id ? updatedCategory : cat;
+    }));
   };
 
   function deleteCategory(catToDelete) {

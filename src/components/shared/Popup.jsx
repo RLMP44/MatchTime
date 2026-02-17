@@ -10,12 +10,11 @@ function Popup(props) {
 
   // adjusts formData to contain proper types
   function formatRecord(data) {
-    return {
-      ...data,
-      bib: parseInt(data?.bib) || props?.data?.bib || null,
-      age: parseInt(data?.age) || props?.data?.age || null,
-      raceNo: parseInt(data?.raceNo) || props?.data?.raceNo || null,
-    };
+    var formattedData = { ...data }
+    if (data.age) { formattedData.age = parseInt(data.age) }
+    if (data.bib) { formattedData.bib = parseInt(data.bib) }
+    if (data.raceNo) { formattedData.raceNo = parseInt(data.raceNo) }
+    return formattedData;
   };
 
   // swaps recorded time and place to updated racer when bib is changed in timer display
@@ -82,7 +81,7 @@ function Popup(props) {
       props.addCategory(formattedForm);
       setFormData({});
     } else if (button === "update-button" && props.tab === "categories") {
-      props.editCategory(formattedForm);
+      props.editCategory({ newData: formattedForm, oldData: props.data });
     } else if (button === "delete-button" && props.tab === "categories") {
       props.deleteCategory(props.data);
     } else {
