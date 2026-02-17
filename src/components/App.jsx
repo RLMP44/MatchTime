@@ -95,9 +95,9 @@ function App() {
   //   // TODO: update category in DB
   // };
 
-  // function deleteDBCategory() {
-  //   // TODO: set DB category time and place back to null
-  // };
+  function deleteDBCategory() {
+    // TODO: set DB category time and place back to null
+  };
 
   // function deleteDBRacer() {
   //   // TODO: delete racer from DB
@@ -243,9 +243,10 @@ function App() {
     console.log(updatedCat)
   };
 
-  function deleteCategory() {
-    // TODO: delete a category
-    console.log('deleting category');
+  function deleteCategory(catToDelete) {
+    setDisplayCategories(prev => prev.filter(cat => cat.id !== catToDelete.id));
+    // TODO: remove category from all racers with it currently listed
+    deleteDBCategory(catToDelete);
   };
 
 
