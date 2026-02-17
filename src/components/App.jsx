@@ -21,10 +21,22 @@ function App() {
     {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Monoco", lName: "Gestral", division: "M50-59"}
   ];
 
+  var categories = [
+    {id: 1, category: "F20-29", raceNo: 1, handicap: 0},
+    {id: 2, category: "M20-29", raceNo: 1, handicap: 0},
+    {id: 3, category: "F30-39", raceNo: 1, handicap: 0},
+    {id: 4, category: "M30-39", raceNo: 1, handicap: 0},
+    {id: 5, category: "F40-49", raceNo: 1, handicap: 0},
+    {id: 6, category: "M40-49", raceNo: 1, handicap: 0}
+  ];
+
   // TODO: displayRecords starter to be replaced with await fetchAllRacers()
   const [displayRecords, setDisplayRecords] = useState(records);
+  // TODO: displayRecords starter to be replaced with await fetchAllCategories()
+  const [displayCategories, setDisplayCategories] = useState(categories);
   // TODO: connect backend and generate IDs there
   const nextID = useRef(7);
+  const nextCatID = useRef(7);
   // TODO: timerDisplayRecords to be a filtered version of displayRecords
   // filter for time/rawTime, and also order by ascension (not calculating handicaps yet)
   // this way timerDisplayRecords is updated with user data if prev not found
@@ -69,6 +81,27 @@ function App() {
   function deleteDBRacer() {
     // TODO: delete racer from DB
   }
+
+  // async function fetchAllCategories() {
+  //   // TODO: get all categories from DB
+  // };
+
+  async function addDBCategory(newCategory) {
+     // TODO: add category in DB
+     console.log(newCategory);
+  };
+
+  // async function updateDBCategory() {
+  //   // TODO: update category in DB
+  // };
+
+  function deleteDBCategory() {
+    // TODO: set DB category time and place back to null
+  };
+
+  // function deleteDBRacer() {
+  //   // TODO: delete racer from DB
+  // };
 
 
   // -------------- FRONT END LOGIC --------------
@@ -197,6 +230,30 @@ function App() {
   };
 
 
+  // -------------- CATEGORY LOGIC --------------
+  function addCategory(category) {
+    setDisplayCategories(prev => [...prev, { ...category, id: nextCatID.current }]);
+    addDBCategory(category);
+    nextCatID.current += 1;
+  };
+
+  function editCategory({ newData: newData, oldData: oldData, }) {
+    const updatedCategory = {
+      ...oldData,
+      ...newData
+    };
+    setDisplayCategories(prev => prev.map(cat => {
+      return cat.id === updatedCategory.id ? updatedCategory : cat;
+    }));
+  };
+
+  function deleteCategory(catToDelete) {
+    setDisplayCategories(prev => prev.filter(cat => cat.id !== catToDelete.id));
+    // TODO: remove category from all racers with it currently listed
+    deleteDBCategory(catToDelete);
+  };
+
+
   return (
     <div className="App">
       <Header />
@@ -225,7 +282,14 @@ function App() {
                               updateDisplayedRecord={updateDisplayedRecord}
                             />
         }
-        {tab === "categories" && <CategoriesTab />}
+        {tab === "categories" && <CategoriesTab
+                              tab={tab}
+                              displayCategories={displayCategories}
+                              setDisplayCategories={setDisplayCategories}
+                              addCategory={addCategory}
+                              editCategory={editCategory}
+                              deleteCategory={deleteCategory}
+                            />}
         {tab === "racers" && <RacersTab
                               records={displayRecords}
                               setDisplayRecords={setDisplayRecords}

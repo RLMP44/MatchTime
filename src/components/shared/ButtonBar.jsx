@@ -27,9 +27,9 @@ function ButtonBar(props) {
   return (
     <div>
       <div className={`buttons-bar ${props.tab}-bar`}>
-        <button id='import-btn' className={`${props.tab}-tab-btn`} alt={`Import ${pluralize(props.tab)}`} onClick={handlePopUp}><FileDownloadIcon /></button>
-        <button id='add-btn' className={`${props.tab}-tab-btn`} alt={`Add ${props.tab}`} onClick={handlePopUp}><AddCircleIcon /></button>
-        <button id='export-btn' className={`${props.tab}-tab-btn`} alt={`Export ${pluralize(props.tab)}`} onClick={handlePopUp}><FileUploadIcon /></button>
+        <button id='import-btn' className="button-bar-btn" alt={`Import ${pluralize(props.tab)}`} onClick={handlePopUp}><FileDownloadIcon /></button>
+        <button id='add-btn' className="button-bar-btn" alt={`Add ${props.tab}`} onClick={handlePopUp}><AddCircleIcon /></button>
+        <button id='export-btn' className="button-bar-btn" alt={`Export ${pluralize(props.tab)}`} onClick={handlePopUp}><FileUploadIcon /></button>
       </div>
       {/* ------------- POPUP ------------- */}
       <div style={{display: isDisplayed ? "" : "none"}}>
@@ -38,9 +38,9 @@ function ButtonBar(props) {
           tab={props.tab}
           crud={props.crud}
           addRacer={props.addRacer}
+          addCategory={props.addCategory}
           buttons={props.buttons}
           popUpFields={props.popUpFields}
-          setPopUpFields={props.setPopUpFields}
         />
       </div>
     </div>

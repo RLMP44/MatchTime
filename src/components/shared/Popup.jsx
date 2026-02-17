@@ -10,12 +10,11 @@ function Popup(props) {
 
   // adjusts formData to contain proper types
   function formatRecord(data) {
-    return {
-      ...data,
-      bib: parseInt(data.bib) || props.data.bib,
-      age: parseInt(data.age) || props.data.age,
-      raceNo: parseInt(data.raceNo) || props.data.raceNo
-    };
+    var formattedData = { ...data }
+    if (data.age) { formattedData.age = parseInt(data.age) }
+    if (data.bib) { formattedData.bib = parseInt(data.bib) }
+    if (data.raceNo) { formattedData.raceNo = parseInt(data.raceNo) }
+    return formattedData;
   };
 
   // swaps recorded time and place to updated racer when bib is changed in timer display
@@ -78,8 +77,15 @@ function Popup(props) {
       updateTimerDisplayRecord(formattedForm);
     } else if (button === "delete-button" && props.tab === "timer") {
       props.deleteDisplayedRecord(props.data);
+    } else if (button === "add-button" && props.tab === "categories") {
+      props.addCategory(formattedForm);
+      setFormData({});
+    } else if (button === "update-button" && props.tab === "categories") {
+      props.editCategory({ newData: formattedForm, oldData: props.data });
+    } else if (button === "delete-button" && props.tab === "categories") {
+      props.deleteCategory(props.data);
     } else {
-      console.log('something went wrong');
+      console.log('cancel');
     };
     props.setIsDisplayed(false);
   };
