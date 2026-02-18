@@ -8,6 +8,7 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 function ButtonBar(props) {
   const [isDisplayed, setIsDisplayed] = useState(false);
   const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
+  const [crud, setCrud] = useState('edit')
 
   function getCrud(button) {
     return button.split('-')[0];
@@ -16,7 +17,7 @@ function ButtonBar(props) {
   function handlePopUp(event) {
     const button = event.currentTarget.id;
     const selectedCrud = getCrud(button);
-    props.setCrud(selectedCrud);
+    setCrud(selectedCrud);
     props.setButtonTypes(['cancel', selectedCrud]);
     if (button === 'import-btn' || button === 'export-button') {
       props.setPopUpFields(importExportFields);
@@ -36,9 +37,8 @@ function ButtonBar(props) {
         <Popup
           setIsDisplayed={setIsDisplayed}
           tab={props.tab}
-          crud={props.crud}
-          addRacer={props.addRacer}
-          addCategory={props.addCategory}
+          crud={crud}
+          add={props.add}
           buttons={props.buttons}
           popUpFields={props.popUpFields}
         />

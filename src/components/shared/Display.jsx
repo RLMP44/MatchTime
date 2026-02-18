@@ -6,7 +6,6 @@ function Display(props) {
   const shouldDisplayData = props.data && Object.keys(props?.data).length > 0;
 
   function handlePopUp() {
-    props.setCrud("edit")
     setIsDisplayed(!isDisplayed);
     props.setButtonTypes(props.buttons);
   };
@@ -41,7 +40,6 @@ function Display(props) {
       <div style={{display: isDisplayed ? "" : "none"}}>
         <Popup
           setIsDisplayed={setIsDisplayed}
-          setCrud={props.setCrud}
           data={props.data}
           tab={props.tab}
           crud={props.crud}
@@ -50,11 +48,8 @@ function Display(props) {
           buttons={props.buttons}
           setButtonTypes={props.setButtonTypes}
           setDisplayRecords={props.setDisplayRecords}
-          editCategory={props.editCategory}
-          deleteCategory={props.deleteCategory}
-          addRacer={props.addRacer}
-          editRacer={props.editRacer}
-          deleteRacer={props.deleteRacer}
+          edit={props.edit}
+          delete={props.delete}
         />
       </div>
     </div>

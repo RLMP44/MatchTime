@@ -86,22 +86,17 @@ function App() {
   //   // TODO: get all categories from DB
   // };
 
-  async function addDBCategory(newCategory) {
+  async function addDBCategory() {
      // TODO: add category in DB
-     console.log(newCategory);
   };
 
-  // async function updateDBCategory() {
-  //   // TODO: update category in DB
-  // };
+  async function updateDBCategory() {
+    // TODO: update category in DB
+  };
 
   function deleteDBCategory() {
     // TODO: set DB category time and place back to null
   };
-
-  // function deleteDBRacer() {
-  //   // TODO: delete racer from DB
-  // };
 
 
   // -------------- FRONT END LOGIC --------------
@@ -245,6 +240,7 @@ function App() {
     setDisplayCategories(prev => prev.map(cat => {
       return cat.id === updatedCategory.id ? updatedCategory : cat;
     }));
+    updateDBCategory(updatedCategory);
   };
 
   function deleteCategory(catToDelete) {
@@ -286,19 +282,25 @@ function App() {
                               tab={tab}
                               displayCategories={displayCategories}
                               setDisplayCategories={setDisplayCategories}
-                              addCategory={addCategory}
-                              editCategory={editCategory}
-                              deleteCategory={deleteCategory}
-                            />}
-        {tab === "racers" && <RacersTab
-                              records={displayRecords}
-                              setDisplayRecords={setDisplayRecords}
-                              addRacer={addRacer}
-                              editRacer={editRacer}
-                              deleteRacer={deleteRacer}
+                              add={addCategory}
+                              edit={editCategory}
+                              delete={deleteCategory}
                             />
         }
-        {tab === "results" && <ResultsTab timerDisplayRecords={timerDisplayRecords} />}
+        {tab === "racers" && <RacersTab
+                              tab={tab}
+                              records={displayRecords}
+                              setDisplayRecords={setDisplayRecords}
+                              add={addRacer}
+                              edit={editRacer}
+                              delete={deleteRacer}
+                            />
+        }
+        {tab === "results" && <ResultsTab
+                              tab={tab}
+                              timerDisplayRecords={timerDisplayRecords}
+                            />
+        }
       </div>
       <Footer />
     </div>

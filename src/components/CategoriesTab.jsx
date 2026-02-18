@@ -8,12 +8,10 @@ function CategoriesTab(props) {
   const editButtonTypes = ['cancel', 'update', 'delete'];
   const categoryFields = ['category', 'handicap', 'raceNo', 'sex', 'plusFive', 'plusTen'];
 
-  const [crud, setCrud] = useState('');
   const [popUpFields, setPopUpFields] = useState(categoryFields);
   const [buttonTypes, setButtonTypes] = useState(editButtonTypes);
 
   function handlePopUp() {
-    setCrud("edit");
     setIsDisplayed(!isDisplayed);
   }
 
@@ -28,22 +26,19 @@ function CategoriesTab(props) {
             headers={headers}
             data={category}
             tab={props.tab}
-            crud={crud}
-            setCrud={setCrud}
+            crud={'edit'}
             popUpFields={categoryFields}
             buttons={buttonTypes}
             setButtonTypes={setButtonTypes}
-            editCategory={props.editCategory}
-            deleteCategory={props.deleteCategory}
+            edit={props.edit}
+            delete={props.delete}
           />
         )}
       </div>
 
       <ButtonBar
         tab={props.tab}
-        crud={crud}
-        setCrud={setCrud}
-        addCategory={props.addCategory}
+        add={props.add}
         setButtonTypes={setButtonTypes}
         buttons={buttonTypes}
         popUpFields={popUpFields}

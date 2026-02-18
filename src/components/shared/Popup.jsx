@@ -57,7 +57,7 @@ function Popup(props) {
     };
     if (timeChanged) { updatedRecord.time = data.time };
 
-    props.editRecords({oldRecord: props.data, newRecord: updatedRecord});
+    props.edit({oldRecord: props.data, newRecord: updatedRecord});
   };
 
 
@@ -66,24 +66,17 @@ function Popup(props) {
     const button = event.target.id;
     let formattedForm = formatRecord(formData);
 
-    if (button === 'add-button' && props.crud === "add" && props.tab === "racer") {
-      props.addRacer(formattedForm);
-      setFormData({});
-    } else if (button === 'update-button' && props.crud === "edit" && props.tab === "racer") {
-      props.editRacer({ newData: formattedForm, oldData: props.data });
-    } else if (button === "delete-button" && props.tab === "racer") {
-      props.deleteRacer(props.data);
+   if (button === "delete-button" && props.tab === "timer") {
+      props.deleteDisplayedRecord(props.data);
     } else if (button === "update-button" && props.tab === "timer") {
       updateTimerDisplayRecord(formattedForm);
-    } else if (button === "delete-button" && props.tab === "timer") {
-      props.deleteDisplayedRecord(props.data);
-    } else if (button === "add-button" && props.tab === "categories") {
-      props.addCategory(formattedForm);
+    } else if (button === 'update-button') {
+      props.edit({ newData: formattedForm, oldData: props.data });
+    } else if (button === 'add-button') {
+      props.add(formattedForm);
       setFormData({});
-    } else if (button === "update-button" && props.tab === "categories") {
-      props.editCategory({ newData: formattedForm, oldData: props.data });
-    } else if (button === "delete-button" && props.tab === "categories") {
-      props.deleteCategory(props.data);
+    } else if (button === "delete-button") {
+      props.delete(props.data);
     } else {
       console.log('cancel');
     };
