@@ -12,7 +12,11 @@ function Display(props) {
 
   // checks the incoming fields and only displays those matching provided headers
   function checkShouldDisplayField(key) {
-    return key !== 'id' && props?.headers.includes(key);
+    if (key === 'lName' || key === 'fName') {
+      return key !== 'id' && props?.headers.includes('name');
+    } else {
+      return key !== 'id' && props?.headers.includes(key);
+    }
   };
 
   function setHeaders(headers) {
@@ -23,8 +27,14 @@ function Display(props) {
 
   // .filter always does callback(element, index, array), so variable is automatically passed in .filter
   function setDisplayData(data) {
+    var nameDisplayed = false;
     return Object.keys(data).filter(checkShouldDisplayField).map((key) => {
-      return checkShouldDisplayField(key) && <p key={key}>{ data[key] }</p>
+      if (!nameDisplayed && key === 'lName' || key === 'fName') {
+        nameDisplayed = true;
+        return <p key={'name'}>{ `${data['lName']}, ${data['fName']}` }</p>
+      } else if (key !== 'lName' && key !== 'fName') {
+        return <p key={key}>{ data[key] }</p>
+      }
     });
   };
 
