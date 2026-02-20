@@ -3,20 +3,31 @@ import { useState } from "react";
 
 function Display(props) {
   const [isDisplayed, setIsDisplayed] = useState(false);
+  const [popUpFields, setPopUpFields] = useState([]);
+  const [buttonTypes, setButtonTypes] = useState([]);
+  const [crud, setCrud] = useState([]);
+
   const shouldDisplayData = props.data && Object.keys(props?.data).length > 0;
+  const racerFields = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
+  const categoryFields = ['category', 'handicap', 'raceNo', 'sex', 'plusFive', 'plusTen'];
+  const editButtonTypes = ['cancel', 'update', 'delete'];
 
   function handlePopUp() {
     setIsDisplayed(!isDisplayed);
-    props.setButtonTypes(props.buttons);
+    setButtonTypes(editButtonTypes);
+    setCrud('edit');
+    if (props.tab === 'racers') {
+      setPopUpFields(racerFields);
+    } else if (props.tab === 'categories') {
+      setPopUpFields(categoryFields);
+    } else {
+      setPopUpFields([]);
+    }
   };
 
   // checks the incoming fields and only displays those matching provided headers
   function checkShouldDisplayField(key) {
-    if (key === 'lName' || key === 'fName') {
-      return key !== 'id' && props?.headers.includes('name');
-    } else {
-      return key !== 'id' && props?.headers.includes(key);
-    }
+    return key !== 'id' && props?.headers.includes(key);
   };
 
   function setHeaders(headers) {
@@ -27,14 +38,8 @@ function Display(props) {
 
   // .filter always does callback(element, index, array), so variable is automatically passed in .filter
   function setDisplayData(data) {
-    var nameDisplayed = false;
     return Object.keys(data).filter(checkShouldDisplayField).map((key) => {
-      if (!nameDisplayed && key === 'lName' || key === 'fName') {
-        nameDisplayed = true;
-        return <p key={'name'}>{ `${data['lName']}, ${data['fName']}` }</p>
-      } else if (key !== 'lName' && key !== 'fName') {
-        return <p key={key}>{ data[key] }</p>
-      }
+      return <p key={key}>{ data[key] }</p>
     });
   };
 
@@ -52,11 +57,10 @@ function Display(props) {
           setIsDisplayed={setIsDisplayed}
           data={props.data}
           tab={props.tab}
-          crud={props.crud}
-          popUpFields={props.popUpFields}
-          setPopUpFields={props.setPopUpFields}
-          buttons={props.buttons}
-          setButtonTypes={props.setButtonTypes}
+          crud={crud}
+          popUpFields={popUpFields}
+          buttons={buttonTypes}
+          setButtonTypes={setButtonTypes}
           setDisplayRecords={props.setDisplayRecords}
           edit={props.edit}
           delete={props.delete}
