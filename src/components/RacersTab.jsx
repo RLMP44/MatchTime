@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Display from "../shared/Display";
-import ButtonBar from "../shared/ButtonBar";
+import Display from "./shared/Display";
+import ButtonBar from "./shared/ButtonBar";
 
 function RacersTab(props) {
   const [isDisplayed, setIsDisplayed] = useState(false);
@@ -11,7 +11,7 @@ function RacersTab(props) {
   }
 
   return (
-    <div className="racers-tab">
+    <div className="racer-tab">
       <div className="records-display-container" onClick={handlePopUp}>
         <Display headers={headers}/>
         {props.records.map(racer =>

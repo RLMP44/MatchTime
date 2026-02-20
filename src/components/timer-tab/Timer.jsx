@@ -54,7 +54,7 @@ function Timer(props) {
       bib: bib ?? currentRecord?.bib
     };
     setCurrentRecord(updatedRecord);
-    props.updateDisplayedRecord(updatedRecord);
+    props.update(updatedRecord);
   }
 
   // uses entered bib number to fetch the racer record and display their name in the timer

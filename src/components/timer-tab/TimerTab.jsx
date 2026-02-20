@@ -1,37 +1,31 @@
 import { useState } from "react";
 import Timer from "./Timer";
-import RecordDisplay from "./RecordDisplay";
+import Display from "../shared/Display";
 
 function TimerTab(props) {
-  const [crud, setCrud] = useState('');
-  const [popUpFields, setPopUpFields] = useState([]);
-  const [buttonTypes, setButtonTypes] = useState([]);
+  let [isDisplayed, setIsDisplayed] = useState(false);
+  const headers = ['place', 'bib', 'time', 'lName', 'fName'];
+
+  function handlePopUp() {
+    setIsDisplayed(!isDisplayed);
+  }
 
   return (
     <div className="timer-tab">
-      <div className="records-display-container">
-        <div className="record-container">
-          <p><strong>Place</strong></p>
-          <p><strong>Bib #</strong></p>
-          <p><strong>Time</strong></p>
-          <p><strong>Name</strong></p>
-        </div>
+      <div className="records-display-container" onClick={handlePopUp}>
+        <Display headers={headers} />
         {props.timerDisplayRecords.map(record =>
-          <RecordDisplay
+          <Display
             key={record.id}
+            headers={headers}
             data={record}
             tab={props.tab}
-            crud={crud}
-            buttonTypes={buttonTypes}
-            setButtonTypes={setButtonTypes}
-            popUpFields={popUpFields}
-            setPopUpFields={setPopUpFields}
-            setCrud={setCrud}
-            editRecords={props.editRecords}
+            edit={props.edit}
             fetchRecord={props.fetchRecord}
-            deleteDisplayedRecord={props.deleteDisplayedRecord}
+            delete={props.delete}
           />)}
       </div>
+
       <Timer
         place={props.place}
         setPlace={props.setPlace}
@@ -42,7 +36,7 @@ function TimerTab(props) {
         startTime={props.startTime}
         setStartTime={props.setStartTime}
         startTimer={props.startTimer}
-        updateDisplayedRecord={props.updateDisplayedRecord}
+        update={props.update}
         fetchRecord={props.fetchRecord}
         timerDisplayRecords={props.timerDisplayRecords}
         />

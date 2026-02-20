@@ -66,9 +66,7 @@ function Popup(props) {
     const button = event.target.id;
     let formattedForm = formatRecord(formData);
 
-   if (button === "delete-button" && props.tab === "timer") {
-      props.deleteDisplayedRecord(props.data);
-    } else if (button === "update-button" && props.tab === "timer") {
+    if (button === "update-button" && props.tab === "timer") {
       updateTimerDisplayRecord(formattedForm);
     } else if (button === 'update-button') {
       props.edit({ newData: formattedForm, oldData: props.data });

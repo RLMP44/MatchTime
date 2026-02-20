@@ -1,7 +1,7 @@
 import Header from "./Header";
 import Footer from "./Footer";
 import TimerTab from "./timer-tab/TimerTab";
-import RacersTab from "./racers-tab/RacersTab";
+import RacersTab from "./RacersTab";
 import CategoriesTab from "./CategoriesTab";
 import ResultsTab from "./ResultsTab";
 import { useState, useRef } from "react";
@@ -256,8 +256,8 @@ function App() {
       <div className="main-content">
         <div className="tab-display">
           <button className={`tab-btn ${tab === "timer" ? "active" : ""}`} onClick={() => setTab("timer")} alt="Timer"><TimerIcon /></button>
-          <button className={`tab-btn ${tab === "categories" ? "active" : ""}`} onClick={() => setTab("categories")} alt="Categories"><FormatListBulletedAddIcon /></button>
-          <button className={`tab-btn ${tab === "racers" ? "active" : ""}`} onClick={() => setTab("racers")} alt="Racers"><DirectionsRunIcon /></button>
+          <button className={`tab-btn ${tab === "category" ? "active" : ""}`} onClick={() => setTab("category")} alt="Category"><FormatListBulletedAddIcon /></button>
+          <button className={`tab-btn ${tab === "racer" ? "active" : ""}`} onClick={() => setTab("racer")} alt="Racer"><DirectionsRunIcon /></button>
           <button className={`tab-btn ${tab === "results" ? "active" : ""}`} onClick={() => setTab("results")} alt="Results"><EmojiEventsIcon /></button>
         </div>
         {tab === "timer" && <TimerTab
@@ -272,13 +272,13 @@ function App() {
                               startTimer={startTimer}
                               setStartTime={setStartTime}
                               timerDisplayRecords={timerDisplayRecords}
-                              editRecords={swapDisplayedRacers}
+                              edit={swapDisplayedRacers}
                               fetchRecord={fetchRacerRecord}
-                              deleteDisplayedRecord={deleteDisplayedRecord}
-                              updateDisplayedRecord={updateDisplayedRecord}
+                              delete={deleteDisplayedRecord}
+                              update={updateDisplayedRecord}
                             />
         }
-        {tab === "categories" && <CategoriesTab
+        {tab === "category" && <CategoriesTab
                               tab={tab}
                               displayCategories={displayCategories}
                               setDisplayCategories={setDisplayCategories}
@@ -287,7 +287,7 @@ function App() {
                               delete={deleteCategory}
                             />
         }
-        {tab === "racers" && <RacersTab
+        {tab === "racer" && <RacersTab
                               tab={tab}
                               records={displayRecords}
                               setDisplayRecords={setDisplayRecords}
@@ -298,7 +298,7 @@ function App() {
         }
         {tab === "results" && <ResultsTab
                               tab={tab}
-                              timerDisplayRecords={timerDisplayRecords}
+                              records={timerDisplayRecords}
                             />
         }
       </div>

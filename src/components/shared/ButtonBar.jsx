@@ -26,9 +26,9 @@ function ButtonBar(props) {
     setButtonTypes(['cancel', selectedCrud]);
     if (button === 'import-btn' || button === 'export-btn') {
       setPopUpFields(importExportFields);
-    } else if (props.tab === 'racers') {
+    } else if (props.tab === 'racer') {
       setPopUpFields(racerFields);
-    } else if (props.tab === 'categories') {
+    } else if (props.tab === 'category') {
       setPopUpFields(categoryFields);
     } else {
       setPopUpFields([]);

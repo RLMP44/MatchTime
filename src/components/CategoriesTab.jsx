@@ -11,14 +11,14 @@ function CategoriesTab(props) {
   }
 
   return (
-    <div className="categories-tab">
-      <div className="records-display-container categories-tab-record" onClick={handlePopUp}>
+    <div className="category-tab">
+      <div className="records-display-container" onClick={handlePopUp}>
         <Display headers={headers} />
         {props.displayCategories.map(category =>
           <Display
             key={category.id}
-            setIsDisplayed={setIsDisplayed}
             headers={headers}
+            setIsDisplayed={setIsDisplayed}
             data={category}
             tab={props.tab}
             edit={props.edit}

@@ -10,16 +10,19 @@ function Display(props) {
   const shouldDisplayData = props.data && Object.keys(props?.data).length > 0;
   const racerFields = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
   const categoryFields = ['category', 'handicap', 'raceNo', 'sex', 'plusFive', 'plusTen'];
+  const timerRecordsEditFields = ['bib', 'time'];
   const editButtonTypes = ['cancel', 'update', 'delete'];
 
   function handlePopUp() {
     setIsDisplayed(!isDisplayed);
     setButtonTypes(editButtonTypes);
     setCrud('edit');
-    if (props.tab === 'racers') {
+    if (props.tab === 'racer') {
       setPopUpFields(racerFields);
-    } else if (props.tab === 'categories') {
+    } else if (props.tab === 'category') {
       setPopUpFields(categoryFields);
+    } else if (props.tab === 'timer') {
+      setPopUpFields(timerRecordsEditFields);
     } else {
       setPopUpFields([]);
     }
@@ -62,6 +65,7 @@ function Display(props) {
           buttons={buttonTypes}
           setButtonTypes={setButtonTypes}
           setDisplayRecords={props.setDisplayRecords}
+          fetchRecord={props.fetchRecord}
           edit={props.edit}
           delete={props.delete}
         />
