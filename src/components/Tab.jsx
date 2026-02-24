@@ -2,25 +2,25 @@ import { useState } from "react";
 import Display from "./shared/Display";
 import ButtonBar from "./shared/ButtonBar";
 
-function CategoriesTab(props) {
+function Tab(props) {
   const [isDisplayed, setIsDisplayed] = useState(false);
-  const headers = ['category', 'raceNo', 'handicap'];
 
   function handlePopUp() {
     setIsDisplayed(!isDisplayed);
   }
 
   return (
-    <div className="category-tab">
+    <div className="tab">
       <div className="records-display-container" onClick={handlePopUp}>
-        <Display headers={headers} />
-        {props.displayCategories.map(category =>
+        <Display headers={props.headers} />
+        {props.records.map(record =>
           <Display
-            key={category.id}
-            headers={headers}
+            key={record.id}
+            headers={props.headers}
             setIsDisplayed={setIsDisplayed}
-            data={category}
+            data={record}
             tab={props.tab}
+            setDisplayRecords={props.setDisplayRecords}
             edit={props.edit}
             delete={props.delete}
           />
@@ -35,4 +35,4 @@ function CategoriesTab(props) {
   );
 }
 
-export default CategoriesTab;
+export default Tab;

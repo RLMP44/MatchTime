@@ -1,9 +1,7 @@
 import Header from "./Header";
 import Footer from "./Footer";
 import TimerTab from "./timer-tab/TimerTab";
-import RacersTab from "./RacersTab";
-import CategoriesTab from "./CategoriesTab";
-import ResultsTab from "./ResultsTab";
+import Tab from "./Tab";
 import { useState, useRef } from "react";
 import { checkIsPresent } from "../utils/helpers";
 import TimerIcon from '@mui/icons-material/Timer';
@@ -46,6 +44,9 @@ function App() {
   const [timerOn, setTimerOn] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [buttonText, setButtonText] = useState("Start");
+  const categoryHeaders = ['category', 'raceNo', 'handicap'];
+  const racerHeaders = ['bib', 'fName', 'lName', 'division'];
+  const resultHeaders = ['place', 'time', 'bib', 'lName', 'fName', 'division', 'sex'];
 
   // -------------- TIMER LOGIC --------------
   function startTimer() {
@@ -258,7 +259,7 @@ function App() {
           <button className={`tab-btn ${tab === "timer" ? "active" : ""}`} onClick={() => setTab("timer")} alt="Timer"><TimerIcon /></button>
           <button className={`tab-btn ${tab === "category" ? "active" : ""}`} onClick={() => setTab("category")} alt="Category"><FormatListBulletedAddIcon /></button>
           <button className={`tab-btn ${tab === "racer" ? "active" : ""}`} onClick={() => setTab("racer")} alt="Racer"><DirectionsRunIcon /></button>
-          <button className={`tab-btn ${tab === "results" ? "active" : ""}`} onClick={() => setTab("results")} alt="Results"><EmojiEventsIcon /></button>
+          <button className={`tab-btn ${tab === "result" ? "active" : ""}`} onClick={() => setTab("result")} alt="Results"><EmojiEventsIcon /></button>
         </div>
         {tab === "timer" && <TimerTab
                               setPlace={setPlace}
@@ -278,26 +279,27 @@ function App() {
                               update={updateDisplayedRecord}
                             />
         }
-        {tab === "category" && <CategoriesTab
+        {tab === "category" && <Tab
                               tab={tab}
-                              displayCategories={displayCategories}
-                              setDisplayCategories={setDisplayCategories}
+                              headers={categoryHeaders}
+                              records={displayCategories}
                               add={addCategory}
                               edit={editCategory}
                               delete={deleteCategory}
                             />
         }
-        {tab === "racer" && <RacersTab
+        {tab === "racer" && <Tab
                               tab={tab}
+                              headers={racerHeaders}
                               records={displayRecords}
-                              setDisplayRecords={setDisplayRecords}
                               add={addRacer}
                               edit={editRacer}
                               delete={deleteRacer}
                             />
         }
-        {tab === "results" && <ResultsTab
+        {tab === "result" && <Tab
                               tab={tab}
+                              headers={resultHeaders}
                               records={timerDisplayRecords}
                             />
         }
