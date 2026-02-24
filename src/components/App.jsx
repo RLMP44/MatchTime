@@ -1,9 +1,6 @@
-import Header from "./Header";
-import Footer from "./Footer";
-import TimerTab from "./timer-tab/TimerTab";
-import RacersTab from "./racers-tab/RacersTab";
-import CategoriesTab from "./CategoriesTab";
-import ResultsTab from "./ResultsTab";
+import Header from "./shared/Header";
+import Footer from "./shared/Footer";
+import Tab from "./shared/Tab";
 import { useState, useRef } from "react";
 import { checkIsPresent } from "../utils/helpers";
 import TimerIcon from '@mui/icons-material/Timer';
@@ -47,6 +44,29 @@ function App() {
   const [startTime, setStartTime] = useState(null);
   const [buttonText, setButtonText] = useState("Start");
 
+  const timerHeaders = ['place', 'bib', 'time', 'lName', 'fName'];
+  const categoryHeaders = ['category', 'raceNo', 'handicap'];
+  const racerHeaders = ['bib', 'fName', 'lName', 'division'];
+  const resultHeaders = ['place', 'time', 'bib', 'lName', 'fName', 'division', 'sex'];
+  const headersObject = {
+    timer: timerHeaders,
+    category: categoryHeaders,
+    racer: racerHeaders,
+    result: resultHeaders
+  };
+
+  const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
+  const timerRecordsEditFields = ['bib', 'time'];
+  const categoryFields = ['category', 'handicap', 'raceNo', 'sex', 'plusFive', 'plusTen'];
+  const racerFields = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
+  const fieldsObject = {
+    timer: timerRecordsEditFields,
+    category: categoryFields,
+    racer: racerFields,
+    import: importExportFields,
+    export: importExportFields
+  };
+
   // -------------- TIMER LOGIC --------------
   function startTimer() {
     setStartTime(performance.now());
@@ -86,22 +106,17 @@ function App() {
   //   // TODO: get all categories from DB
   // };
 
-  async function addDBCategory(newCategory) {
+  async function addDBCategory() {
      // TODO: add category in DB
-     console.log(newCategory);
   };
 
-  // async function updateDBCategory() {
-  //   // TODO: update category in DB
-  // };
+  async function updateDBCategory() {
+    // TODO: update category in DB
+  };
 
   function deleteDBCategory() {
     // TODO: set DB category time and place back to null
   };
-
-  // function deleteDBRacer() {
-  //   // TODO: delete racer from DB
-  // };
 
 
   // -------------- FRONT END LOGIC --------------
@@ -245,6 +260,7 @@ function App() {
     setDisplayCategories(prev => prev.map(cat => {
       return cat.id === updatedCategory.id ? updatedCategory : cat;
     }));
+    updateDBCategory(updatedCategory);
   };
 
   function deleteCategory(catToDelete) {
@@ -260,45 +276,59 @@ function App() {
       <div className="main-content">
         <div className="tab-display">
           <button className={`tab-btn ${tab === "timer" ? "active" : ""}`} onClick={() => setTab("timer")} alt="Timer"><TimerIcon /></button>
-          <button className={`tab-btn ${tab === "categories" ? "active" : ""}`} onClick={() => setTab("categories")} alt="Categories"><FormatListBulletedAddIcon /></button>
-          <button className={`tab-btn ${tab === "racers" ? "active" : ""}`} onClick={() => setTab("racers")} alt="Racers"><DirectionsRunIcon /></button>
-          <button className={`tab-btn ${tab === "results" ? "active" : ""}`} onClick={() => setTab("results")} alt="Results"><EmojiEventsIcon /></button>
+          <button className={`tab-btn ${tab === "category" ? "active" : ""}`} onClick={() => setTab("category")} alt="Category"><FormatListBulletedAddIcon /></button>
+          <button className={`tab-btn ${tab === "racer" ? "active" : ""}`} onClick={() => setTab("racer")} alt="Racer"><DirectionsRunIcon /></button>
+          <button className={`tab-btn ${tab === "result" ? "active" : ""}`} onClick={() => setTab("result")} alt="Results"><EmojiEventsIcon /></button>
         </div>
-        {tab === "timer" && <TimerTab
+        {tab === "timer" && <Tab
+                              tab={tab}
+                              headers={headersObject[tab]}
+                              fields={fieldsObject[tab]}
                               setPlace={setPlace}
                               place={place}
                               timerOn={timerOn}
                               setTimerOn={setTimerOn}
                               buttonText={buttonText}
                               setButtonText={setButtonText}
-                              tab={tab}
                               startTime={startTime}
                               startTimer={startTimer}
                               setStartTime={setStartTime}
-                              timerDisplayRecords={timerDisplayRecords}
-                              editRecords={swapDisplayedRacers}
+                              records={timerDisplayRecords}
+                              edit={swapDisplayedRacers}
                               fetchRecord={fetchRacerRecord}
-                              deleteDisplayedRecord={deleteDisplayedRecord}
-                              updateDisplayedRecord={updateDisplayedRecord}
+                              delete={deleteDisplayedRecord}
+                              update={updateDisplayedRecord}
                             />
         }
-        {tab === "categories" && <CategoriesTab
+        {tab === "category" && <Tab
                               tab={tab}
-                              displayCategories={displayCategories}
-                              setDisplayCategories={setDisplayCategories}
-                              addCategory={addCategory}
-                              editCategory={editCategory}
-                              deleteCategory={deleteCategory}
-                            />}
-        {tab === "racers" && <RacersTab
-                              records={displayRecords}
-                              setDisplayRecords={setDisplayRecords}
-                              addRacer={addRacer}
-                              editRacer={editRacer}
-                              deleteRacer={deleteRacer}
+                              headers={headersObject[tab]}
+                              fields={fieldsObject[tab]}
+                              fieldsObj={fieldsObject}
+                              records={displayCategories}
+                              add={addCategory}
+                              edit={editCategory}
+                              delete={deleteCategory}
                             />
         }
-        {tab === "results" && <ResultsTab timerDisplayRecords={timerDisplayRecords} />}
+        {tab === "racer" && <Tab
+                              tab={tab}
+                              headers={headersObject[tab]}
+                              fields={fieldsObject[tab]}
+                              fieldsObj={fieldsObject}
+                              records={displayRecords}
+                              add={addRacer}
+                              edit={editRacer}
+                              delete={deleteRacer}
+                            />
+        }
+        {tab === "result" && <Tab
+                              tab={tab}
+                              headers={headersObject[tab]}
+                              fieldsObj={fieldsObject}
+                              records={timerDisplayRecords}
+                            />
+        }
       </div>
       <Footer />
     </div>

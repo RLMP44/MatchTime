@@ -3,12 +3,16 @@ import { useState } from "react";
 
 function Display(props) {
   const [isDisplayed, setIsDisplayed] = useState(false);
+  const [buttonTypes, setButtonTypes] = useState([]);
+  const [crud, setCrud] = useState([]);
+
   const shouldDisplayData = props.data && Object.keys(props?.data).length > 0;
+  const editButtonTypes = ['cancel', 'update', 'delete'];
 
   function handlePopUp() {
-    props.setCrud("edit")
     setIsDisplayed(!isDisplayed);
-    props.setButtonTypes(props.buttons);
+    setButtonTypes(editButtonTypes);
+    setCrud('edit');
   };
 
   // checks the incoming fields and only displays those matching provided headers
@@ -25,7 +29,7 @@ function Display(props) {
   // .filter always does callback(element, index, array), so variable is automatically passed in .filter
   function setDisplayData(data) {
     return Object.keys(data).filter(checkShouldDisplayField).map((key) => {
-      return checkShouldDisplayField(key) && <p key={key}>{ data[key] }</p>
+      return <p key={key}>{ data[key] }</p>
     });
   };
 
@@ -41,20 +45,16 @@ function Display(props) {
       <div style={{display: isDisplayed ? "" : "none"}}>
         <Popup
           setIsDisplayed={setIsDisplayed}
-          setCrud={props.setCrud}
           data={props.data}
           tab={props.tab}
-          crud={props.crud}
-          popUpFields={props.popUpFields}
-          setPopUpFields={props.setPopUpFields}
-          buttons={props.buttons}
-          setButtonTypes={props.setButtonTypes}
+          crud={crud}
+          popUpFields={props.fields}
+          buttons={buttonTypes}
+          setButtonTypes={setButtonTypes}
           setDisplayRecords={props.setDisplayRecords}
-          editCategory={props.editCategory}
-          deleteCategory={props.deleteCategory}
-          addRacer={props.addRacer}
-          editRacer={props.editRacer}
-          deleteRacer={props.deleteRacer}
+          fetchRecord={props.fetchRecord}
+          edit={props.edit}
+          delete={props.delete}
         />
       </div>
     </div>

@@ -3,7 +3,7 @@ export function titleize(string) {
 };
 
 export function pluralize(string) {
-  return string[-1] === 'y' ? string.replace('y', 'ies') : string + "s";
+  return string.at(-1) === 'y' ? string.replace('y', 'ies') : string + "s";
 };
 
 // checks if the current target is present in a given array

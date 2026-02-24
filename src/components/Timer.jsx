@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { checkIsPresent } from "../../utils/helpers";
+import { checkIsPresent } from "../utils/helpers";
 
 function Timer(props) {
   const [time, setTime] = useState("0");
@@ -54,13 +54,13 @@ function Timer(props) {
       bib: bib ?? currentRecord?.bib
     };
     setCurrentRecord(updatedRecord);
-    props.updateDisplayedRecord(updatedRecord);
+    props.update(updatedRecord);
   }
 
   // uses entered bib number to fetch the racer record and display their name in the timer
   // if bib not found, displays "Not Found" as racer name
-  async function fetchAndSetRecord(newNum) {
-    const newRecord = await props.fetchRecord(parseInt(newNum))
+  async function fetchAndSetRecord(newBib) {
+    const newRecord = await props.fetchRecord(parseInt(newBib))
     if (newRecord) {
       setCurrentRecord(newRecord);
       setFName(newRecord.fName);
@@ -68,9 +68,9 @@ function Timer(props) {
     } else {
       // temporarily set id as bib number until backend is hooked up
       setCurrentRecord({
-        id: newNum,
+        id: newBib,
         place: props.place,
-        bib: newNum,
+        bib: newBib,
         time: time,
         fName: "",
         lName: "Not Found"
@@ -95,18 +95,18 @@ function Timer(props) {
     } else if (target.id === "start-record-button" && props.buttonText === "Start") {
       props.setButtonText("Record");
       props.startTimer();
-    } else if (target.id === "start-record-button" && !checkIsPresent({ array: props.timerDisplayRecords, target: bibNum, type: "bib" })) {
+    } else if (target.id === "start-record-button" && !checkIsPresent({ array: props.records, target: bibNum, type: "bib" })) {
       updateTimeAndPlace({prevTime: null, prevPlace: null, bib: null});
       reset();
       props.setPlace(prev => prev + 1);
-    } else if (target.id === "start-record-button" && checkIsPresent({ array: props.timerDisplayRecords, target: bibNum, type: "bib" })) {
+    } else if (target.id === "start-record-button" && checkIsPresent({ array: props.records, target: bibNum, type: "bib" })) {
       // TODO: give user feedback
       console.warn("user already recorded")
       reset();
     } else if (target.id === "clear-button") {
       reset();
     } else if (target.id === "same-time-button") {
-      const lastRecord = props.timerDisplayRecords.at(-1);
+      const lastRecord = props.records.at(-1);
       updateTimeAndPlace({prevTime: lastRecord.time, prevPlace: lastRecord.place, bib: bibNum});
       reset();
       props.setPlace(prev => prev + 1);

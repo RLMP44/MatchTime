@@ -7,7 +7,9 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 function ButtonBar(props) {
   const [isDisplayed, setIsDisplayed] = useState(false);
-  const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
+  const [popUpFields, setPopUpFields] = useState([]);
+  const [buttonTypes, setButtonTypes] = useState([]);
+  const [crud, setCrud] = useState([]);
 
   function getCrud(button) {
     return button.split('-')[0];
@@ -16,11 +18,13 @@ function ButtonBar(props) {
   function handlePopUp(event) {
     const button = event.currentTarget.id;
     const selectedCrud = getCrud(button);
-    props.setCrud(selectedCrud);
-    props.setButtonTypes(['cancel', selectedCrud]);
-    if (button === 'import-btn' || button === 'export-button') {
-      props.setPopUpFields(importExportFields);
-    }
+    setCrud(selectedCrud);
+    setButtonTypes(['cancel', selectedCrud]);
+    if (selectedCrud === 'add') {
+      setPopUpFields(props.fieldsObj[props.tab]);
+    } else {
+      setPopUpFields(props.fieldsObj[selectedCrud]);
+    };
     setIsDisplayed(!isDisplayed);
   };
 
@@ -31,16 +35,16 @@ function ButtonBar(props) {
         <button id='add-btn' className="button-bar-btn" alt={`Add ${props.tab}`} onClick={handlePopUp}><AddCircleIcon /></button>
         <button id='export-btn' className="button-bar-btn" alt={`Export ${pluralize(props.tab)}`} onClick={handlePopUp}><FileUploadIcon /></button>
       </div>
+
       {/* ------------- POPUP ------------- */}
       <div style={{display: isDisplayed ? "" : "none"}}>
         <Popup
           setIsDisplayed={setIsDisplayed}
           tab={props.tab}
-          crud={props.crud}
-          addRacer={props.addRacer}
-          addCategory={props.addCategory}
-          buttons={props.buttons}
-          popUpFields={props.popUpFields}
+          crud={crud}
+          add={props.add}
+          buttons={buttonTypes}
+          popUpFields={popUpFields}
         />
       </div>
     </div>
