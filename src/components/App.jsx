@@ -55,13 +55,16 @@ function App() {
     result: resultHeaders
   };
 
+  const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
   const timerRecordsEditFields = ['bib', 'time'];
   const categoryFields = ['category', 'handicap', 'raceNo', 'sex', 'plusFive', 'plusTen'];
   const racerFields = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
   const fieldsObject = {
     timer: timerRecordsEditFields,
     category: categoryFields,
-    racer: racerFields
+    racer: racerFields,
+    import: importExportFields,
+    export: importExportFields
   };
 
   // -------------- TIMER LOGIC --------------
@@ -301,6 +304,7 @@ function App() {
                               tab={tab}
                               headers={headersObject[tab]}
                               fields={fieldsObject[tab]}
+                              fieldsObj={fieldsObject}
                               records={displayCategories}
                               add={addCategory}
                               edit={editCategory}
@@ -311,6 +315,7 @@ function App() {
                               tab={tab}
                               headers={headersObject[tab]}
                               fields={fieldsObject[tab]}
+                              fieldsObj={fieldsObject}
                               records={displayRecords}
                               add={addRacer}
                               edit={editRacer}
@@ -320,6 +325,7 @@ function App() {
         {tab === "result" && <Tab
                               tab={tab}
                               headers={headersObject[tab]}
+                              fieldsObj={fieldsObject}
                               records={timerDisplayRecords}
                             />
         }

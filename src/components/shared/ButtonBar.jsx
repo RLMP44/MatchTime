@@ -11,10 +11,6 @@ function ButtonBar(props) {
   const [buttonTypes, setButtonTypes] = useState([]);
   const [crud, setCrud] = useState([]);
 
-  const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
-  const racerFields = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
-  const categoryFields = ['category', 'handicap', 'raceNo', 'sex', 'plusFive', 'plusTen'];
-
   function getCrud(button) {
     return button.split('-')[0];
   }
@@ -24,15 +20,11 @@ function ButtonBar(props) {
     const selectedCrud = getCrud(button);
     setCrud(selectedCrud);
     setButtonTypes(['cancel', selectedCrud]);
-    if (button === 'import-btn' || button === 'export-btn') {
-      setPopUpFields(importExportFields);
-    } else if (props.tab === 'racer') {
-      setPopUpFields(racerFields);
-    } else if (props.tab === 'category') {
-      setPopUpFields(categoryFields);
+    if (selectedCrud === 'add') {
+      setPopUpFields(props.fieldsObj[props.tab]);
     } else {
-      setPopUpFields([]);
-    }
+      setPopUpFields(props.fieldsObj[selectedCrud]);
+    };
     setIsDisplayed(!isDisplayed);
   };
 
