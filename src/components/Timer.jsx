@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { checkIsPresent } from "../../utils/helpers";
+import { checkIsPresent } from "../utils/helpers";
 
 function Timer(props) {
   const [time, setTime] = useState("0");
@@ -95,18 +95,18 @@ function Timer(props) {
     } else if (target.id === "start-record-button" && props.buttonText === "Start") {
       props.setButtonText("Record");
       props.startTimer();
-    } else if (target.id === "start-record-button" && !checkIsPresent({ array: props.timerDisplayRecords, target: bibNum, type: "bib" })) {
+    } else if (target.id === "start-record-button" && !checkIsPresent({ array: props.records, target: bibNum, type: "bib" })) {
       updateTimeAndPlace({prevTime: null, prevPlace: null, bib: null});
       reset();
       props.setPlace(prev => prev + 1);
-    } else if (target.id === "start-record-button" && checkIsPresent({ array: props.timerDisplayRecords, target: bibNum, type: "bib" })) {
+    } else if (target.id === "start-record-button" && checkIsPresent({ array: props.records, target: bibNum, type: "bib" })) {
       // TODO: give user feedback
       console.warn("user already recorded")
       reset();
     } else if (target.id === "clear-button") {
       reset();
     } else if (target.id === "same-time-button") {
-      const lastRecord = props.timerDisplayRecords.at(-1);
+      const lastRecord = props.records.at(-1);
       updateTimeAndPlace({prevTime: lastRecord.time, prevPlace: lastRecord.place, bib: bibNum});
       reset();
       props.setPlace(prev => prev + 1);

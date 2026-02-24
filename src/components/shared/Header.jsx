@@ -1,4 +1,4 @@
-import logo from "../assets/matchTimeFull.jpg";
+import logo from "../../assets/matchTimeFull.jpg";
 
 function Header() {
   return (

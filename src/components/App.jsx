@@ -1,7 +1,6 @@
-import Header from "./Header";
-import Footer from "./Footer";
-import TimerTab from "./timer-tab/TimerTab";
-import Tab from "./Tab";
+import Header from "./shared/Header";
+import Footer from "./shared/Footer";
+import Tab from "./shared/Tab";
 import { useState, useRef } from "react";
 import { checkIsPresent } from "../utils/helpers";
 import TimerIcon from '@mui/icons-material/Timer';
@@ -44,9 +43,26 @@ function App() {
   const [timerOn, setTimerOn] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [buttonText, setButtonText] = useState("Start");
+
+  const timerHeaders = ['place', 'bib', 'time', 'lName', 'fName'];
   const categoryHeaders = ['category', 'raceNo', 'handicap'];
   const racerHeaders = ['bib', 'fName', 'lName', 'division'];
   const resultHeaders = ['place', 'time', 'bib', 'lName', 'fName', 'division', 'sex'];
+  const headersObject = {
+    timer: timerHeaders,
+    category: categoryHeaders,
+    racer: racerHeaders,
+    result: resultHeaders
+  };
+
+  const timerRecordsEditFields = ['bib', 'time'];
+  const categoryFields = ['category', 'handicap', 'raceNo', 'sex', 'plusFive', 'plusTen'];
+  const racerFields = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
+  const fieldsObject = {
+    timer: timerRecordsEditFields,
+    category: categoryFields,
+    racer: racerFields
+  };
 
   // -------------- TIMER LOGIC --------------
   function startTimer() {
@@ -261,18 +277,20 @@ function App() {
           <button className={`tab-btn ${tab === "racer" ? "active" : ""}`} onClick={() => setTab("racer")} alt="Racer"><DirectionsRunIcon /></button>
           <button className={`tab-btn ${tab === "result" ? "active" : ""}`} onClick={() => setTab("result")} alt="Results"><EmojiEventsIcon /></button>
         </div>
-        {tab === "timer" && <TimerTab
+        {tab === "timer" && <Tab
+                              tab={tab}
+                              headers={headersObject[tab]}
+                              fields={fieldsObject[tab]}
                               setPlace={setPlace}
                               place={place}
                               timerOn={timerOn}
                               setTimerOn={setTimerOn}
                               buttonText={buttonText}
                               setButtonText={setButtonText}
-                              tab={tab}
                               startTime={startTime}
                               startTimer={startTimer}
                               setStartTime={setStartTime}
-                              timerDisplayRecords={timerDisplayRecords}
+                              records={timerDisplayRecords}
                               edit={swapDisplayedRacers}
                               fetchRecord={fetchRacerRecord}
                               delete={deleteDisplayedRecord}
@@ -281,7 +299,8 @@ function App() {
         }
         {tab === "category" && <Tab
                               tab={tab}
-                              headers={categoryHeaders}
+                              headers={headersObject[tab]}
+                              fields={fieldsObject[tab]}
                               records={displayCategories}
                               add={addCategory}
                               edit={editCategory}
@@ -290,7 +309,8 @@ function App() {
         }
         {tab === "racer" && <Tab
                               tab={tab}
-                              headers={racerHeaders}
+                              headers={headersObject[tab]}
+                              fields={fieldsObject[tab]}
                               records={displayRecords}
                               add={addRacer}
                               edit={editRacer}
@@ -299,7 +319,7 @@ function App() {
         }
         {tab === "result" && <Tab
                               tab={tab}
-                              headers={resultHeaders}
+                              headers={headersObject[tab]}
                               records={timerDisplayRecords}
                             />
         }

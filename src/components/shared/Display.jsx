@@ -3,29 +3,16 @@ import { useState } from "react";
 
 function Display(props) {
   const [isDisplayed, setIsDisplayed] = useState(false);
-  const [popUpFields, setPopUpFields] = useState([]);
   const [buttonTypes, setButtonTypes] = useState([]);
   const [crud, setCrud] = useState([]);
 
   const shouldDisplayData = props.data && Object.keys(props?.data).length > 0;
-  const racerFields = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
-  const categoryFields = ['category', 'handicap', 'raceNo', 'sex', 'plusFive', 'plusTen'];
-  const timerRecordsEditFields = ['bib', 'time'];
   const editButtonTypes = ['cancel', 'update', 'delete'];
 
   function handlePopUp() {
     setIsDisplayed(!isDisplayed);
     setButtonTypes(editButtonTypes);
     setCrud('edit');
-    if (props.tab === 'racer') {
-      setPopUpFields(racerFields);
-    } else if (props.tab === 'category') {
-      setPopUpFields(categoryFields);
-    } else if (props.tab === 'timer') {
-      setPopUpFields(timerRecordsEditFields);
-    } else {
-      setPopUpFields([]);
-    }
   };
 
   // checks the incoming fields and only displays those matching provided headers
@@ -61,7 +48,7 @@ function Display(props) {
           data={props.data}
           tab={props.tab}
           crud={crud}
-          popUpFields={popUpFields}
+          popUpFields={props.fields}
           buttons={buttonTypes}
           setButtonTypes={setButtonTypes}
           setDisplayRecords={props.setDisplayRecords}
