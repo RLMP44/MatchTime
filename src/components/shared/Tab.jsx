@@ -11,7 +11,7 @@ function Tab(props) {
   }
 
   return (
-    <div className="tab">
+    <div className={`tab ${props.tab}-tab`}>
       <div className="records-display-container" onClick={handlePopUp}>
         <Display headers={props.headers} />
         {props.records.map(record =>
@@ -44,7 +44,6 @@ function Tab(props) {
                                   records={props.records}
                                 />
       }
-
       {props.tab !== 'timer' && <ButtonBar
                                   tab={props.tab}
                                   add={props.add}

@@ -1,0 +1,10 @@
+footer {
+  position: static;
+  text-align: center;
+  width: 100%;
+  height: 2.5rem;
+}
+
+footer p {
+  color: var(--color-highlight-fade);
+}

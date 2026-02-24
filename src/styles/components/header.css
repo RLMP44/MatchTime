@@ -1,0 +1,19 @@
+header {
+  background-color: var(--color-primary);
+  padding: 4px 32px;
+  box-shadow: 0px 2px 7px black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: .5rem;
+}
+
+header img {
+  height: 4rem;
+}
+
+header h1 {
+  color: var(--color-text-highlight);
+  font-family: "McLaren", cursive;
+  font-weight: 200;
+}

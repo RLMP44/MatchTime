@@ -75,8 +75,6 @@ function Popup(props) {
       setFormData({});
     } else if (button === "delete-button") {
       props.delete(props.data);
-    } else {
-      console.log('cancel');
     };
     props.setIsDisplayed(false);
   };

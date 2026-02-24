@@ -59,8 +59,8 @@ function Timer(props) {
 
   // uses entered bib number to fetch the racer record and display their name in the timer
   // if bib not found, displays "Not Found" as racer name
-  async function fetchAndSetRecord(newNum) {
-    const newRecord = await props.fetchRecord(parseInt(newNum))
+  async function fetchAndSetRecord(newBib) {
+    const newRecord = await props.fetchRecord(parseInt(newBib))
     if (newRecord) {
       setCurrentRecord(newRecord);
       setFName(newRecord.fName);
@@ -68,9 +68,9 @@ function Timer(props) {
     } else {
       // temporarily set id as bib number until backend is hooked up
       setCurrentRecord({
-        id: newNum,
+        id: newBib,
         place: props.place,
-        bib: newNum,
+        bib: newBib,
         time: time,
         fName: "",
         lName: "Not Found"
