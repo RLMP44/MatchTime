@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { titleize, pluralize } from "../../utils/helpers";
+import { useTranslation } from "react-i18next";
 
 function Popup(props) {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({});
 
   function setTitle(crud, target) {
@@ -89,7 +91,7 @@ function Popup(props) {
         <div className={`popup-content ${props.crud}`}>
           {props.popUpFields?.length > 0 && (
             props.popUpFields.map(field => {
-              let title = field === "fName" ? "First Name" : field === "lName" ? "Last Name" : titleize(field);
+              let title = t(`${field}`);
               return (
                 <p key={field} className={`${field}`}>
                   {title}: <input

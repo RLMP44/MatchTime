@@ -1,0 +1,17 @@
+{
+  "bib": "Bib #",
+  "age": "Age",
+  "sex": "Sex",
+  "raceNo": "Race #",
+  "handicap": "Handicap",
+  "timeRaw": "Raw Time",
+  "time": "Adjusted Time",
+  "city": "City",
+  "fName": "First Name",
+  "lName": "Last Name",
+  "division": "Division",
+  "category": "Category Name",
+  "plusFive": "+5",
+  "plusTen": "+10",
+  "place": "Place"
+}
