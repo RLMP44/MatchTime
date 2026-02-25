@@ -1,7 +1,9 @@
 import Popup from "../shared/Popup";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 function Display(props) {
+  const { t } = useTranslation();
   const [isDisplayed, setIsDisplayed] = useState(false);
   const [buttonTypes, setButtonTypes] = useState([]);
   const [crud, setCrud] = useState([]);
@@ -22,7 +24,7 @@ function Display(props) {
 
   function setHeaders(headers) {
     return headers.map((header) => {
-      return <p key={header}><strong>{header}</strong></p>
+      return <p key={header}><strong>{t(`${header}`)}</strong></p>
     });
   };
 
