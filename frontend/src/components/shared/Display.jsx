@@ -1,4 +1,4 @@
-import Popup from "../shared/Popup";
+import Popup from "./Popup";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 

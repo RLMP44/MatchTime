@@ -50,7 +50,7 @@ function Timer(props) {
     // create and update copy to avoid bugging react useState
     updatedRecord = { ...currentRecord,
       place: prevPlace ?? props.place,
-      time: prevTime ?? time,
+      timeRaw: prevTime ?? time,
       bib: bib ?? currentRecord?.bib
     };
     setCurrentRecord(updatedRecord);
@@ -71,7 +71,7 @@ function Timer(props) {
         id: newBib,
         place: props.place,
         bib: newBib,
-        time: time,
+        timeRaw: time,
         fName: "",
         lName: "Not Found"
       });
@@ -107,7 +107,7 @@ function Timer(props) {
       reset();
     } else if (target.id === "same-time-button") {
       const lastRecord = props.records.at(-1);
-      updateTimeAndPlace({prevTime: lastRecord.time, prevPlace: lastRecord.place, bib: bibNum});
+      updateTimeAndPlace({prevTime: lastRecord.timeRaw, prevPlace: lastRecord.place, bib: bibNum});
       reset();
       props.setPlace(prev => prev + 1);
     }

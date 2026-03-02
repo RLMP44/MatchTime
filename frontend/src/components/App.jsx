@@ -44,7 +44,7 @@ function App() {
   const [startTime, setStartTime] = useState(null);
   const [buttonText, setButtonText] = useState("Start");
 
-  const timerHeaders = ['place', 'bib', 'time', 'lName', 'fName'];
+  const timerHeaders = ['place', 'bib', 'timeRaw', 'lName', 'fName'];
   const categoryHeaders = ['category', 'raceNo', 'handicap'];
   const racerHeaders = ['bib', 'fName', 'lName', 'division'];
   const resultHeaders = ['place', 'time', 'bib', 'lName', 'fName', 'division', 'sex'];
@@ -56,7 +56,7 @@ function App() {
   };
 
   const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
-  const timerRecordsEditFields = ['bib', 'time'];
+  const timerRecordsEditFields = ['bib', 'timeRaw'];
   const categoryFields = ['category', 'handicap', 'raceNo', 'sex', 'plusFive', 'plusTen'];
   const racerFields = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
   const fieldsObject = {
