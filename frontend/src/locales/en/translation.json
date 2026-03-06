@@ -4,7 +4,7 @@
   "sex": "Sex",
   "raceNo": "Race #",
   "handicap": "Handicap",
-  "timeRaw": "Raw Time",
+  "timeRaw": "Time",
   "time": "Adjusted Time",
   "city": "City",
   "fName": "First Name",
@@ -13,5 +13,6 @@
   "category": "Category Name",
   "plusFive": "+5",
   "plusTen": "+10",
-  "place": "Place"
+  "place": "Place",
+  "name": "Name"
 }

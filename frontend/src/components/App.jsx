@@ -47,7 +47,7 @@ function App() {
   const timerHeaders = ['place', 'bib', 'timeRaw', 'lName', 'fName'];
   const categoryHeaders = ['category', 'raceNo', 'handicap'];
   const racerHeaders = ['bib', 'fName', 'lName', 'division'];
-  const resultHeaders = ['place', 'time', 'bib', 'lName', 'fName', 'division', 'sex'];
+  const resultHeaders = ['place', 'time', 'bib', 'lName', 'fName', 'city', 'division', 'sex'];
   const headersObject = {
     timer: timerHeaders,
     category: categoryHeaders,

@@ -13,7 +13,7 @@ function Tab(props) {
   return (
     <div className={`tab ${props.tab}-tab`}>
       <div className="records-display-container" onClick={handlePopUp}>
-        <Display headers={props.headers} />
+        <Display headers={props.headers} tab={props.tab} />
         {props.records.map(record =>
           <Display
             key={record.id}

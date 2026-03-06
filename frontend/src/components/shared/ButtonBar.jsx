@@ -18,6 +18,7 @@ function ButtonBar(props) {
   function handlePopUp(event) {
     const button = event.currentTarget.id;
     const selectedCrud = getCrud(button);
+    if (props.tab === "result" && selectedCrud != "export") { return }
     setCrud(selectedCrud);
     setButtonTypes(['cancel', selectedCrud]);
     if (selectedCrud === 'add') {

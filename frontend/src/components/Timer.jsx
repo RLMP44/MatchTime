@@ -118,7 +118,7 @@ function Timer(props) {
       <div className="timer-info-display">
         <h4>Time: {hour}:{min}:{sec}:{milli}</h4>
         <h4>Place: {props.place}</h4>
-        <h4>Bib#: {bibNum}</h4>
+        <h4>Bib #: {bibNum}</h4>
         <h4>Name: {fName && lName ? `${fName} ${lName}` : bibNum ? "Not Found" : ""}</h4>
       </div>
       <div className="timer-buttons-container">
