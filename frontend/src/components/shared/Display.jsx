@@ -1,20 +1,19 @@
 import Popup from "./Popup";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 function Display(props) {
-  const shouldDisplayData = props.data && Object.keys(props?.data).length > 0;
-  const editButtonTypes = ['cancel', 'update', 'delete'];
-  const displayData = transformData(props.data);
-
   const { t } = useTranslation();
   const [isDisplayed, setIsDisplayed] = useState(false);
   const [buttonTypes, setButtonTypes] = useState([]);
   const [crud, setCrud] = useState([]);
-  // useState to set up headers BEFORE first render to avoid flash on screen
-  const [updatedHeaders, setUpdatedHeaders] = useState(() => {
-    if (!props.headers) { return [] };
 
+  const shouldDisplayData = props.data && Object.keys(props?.data).length > 0;
+  const editButtonTypes = ['cancel', 'update', 'delete'];
+  const displayData = transformData(props.data);
+  // useState to set up headers BEFORE first render to avoid flash on screen
+  const [updatedHeaders] = useState(() => {
+    if (!props.headers) { return [] };
     const hasNameField = props.headers.includes('fName') ||
       props.headers.includes('lName');
 
@@ -23,7 +22,6 @@ function Display(props) {
         .filter(header => header !== 'fName' && header !== 'lName')
         .concat('name');
     }
-
     return props.headers
   });
 
@@ -31,6 +29,7 @@ function Display(props) {
   function transformData(data) {
     if (!data) return null;
     const { fName, lName, ...other } = data;
+
     if (fName || lName) {
       return { ...other, name: `${lName}, ${fName}` };
     }
@@ -44,22 +43,16 @@ function Display(props) {
     setCrud('edit');
   };
 
-  function setHeaders() {
-    return updatedHeaders.map((header) => {
-      return <p key={header}><strong>{t(`${header}`)}</strong></p>
-    });
-  };
-
 
   return (
     <div>
-      <div className="display-container display-record" onClick={handlePopUp}>
-        {!shouldDisplayData && setHeaders()}
-        {shouldDisplayData &&
-          updatedHeaders.map((header) => (
-            <p key={header}>{displayData[header]}</p>
-          ))
-        }
+      <div key={props.tab} className={`display-container ${props.tab}-display-grid`} onClick={handlePopUp}>
+        {updatedHeaders.map((header) => (
+          <p id={header} key={header}>{
+            shouldDisplayData ? (displayData[header] ?? ""): <strong>{t(`${header}`)}</strong>
+            }
+          </p>
+        ))}
       </div>
 
       {/* ------------- POPUP ------------- */}
