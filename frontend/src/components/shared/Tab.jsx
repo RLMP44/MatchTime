@@ -47,6 +47,7 @@ function Tab(props) {
       {props.tab !== 'timer' && <ButtonBar
                                   tab={props.tab}
                                   add={props.add}
+                                  categories={props.categories}
                                   fieldsObj={props.fieldsObj}
                                 />
       }
