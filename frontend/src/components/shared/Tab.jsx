@@ -22,6 +22,7 @@ function Tab(props) {
             setIsDisplayed={setIsDisplayed}
             data={record}
             tab={props.tab}
+            categories={props.categories}
             setDisplayRecords={props.setDisplayRecords}
             fetchRecord={props.fetchRecord}
             edit={props.edit}

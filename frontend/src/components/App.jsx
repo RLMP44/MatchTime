@@ -10,12 +10,12 @@ import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd
 
 function App() {
   var records = [
-    {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Gustave", lName: "Pierre", division: "M30-39"},
-    {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Maelle", lName: "Pierre", division: "F10-19"},
-    {id: 3, place: null, bib: 3, age: 32, sex: "F", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Sciel", lName: "Jeanne", division: "F30-39"},
-    {id: 4, place: null, bib: 4, age: 32, sex: "F", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Lune", lName: "Acuse", division: "F30-39"},
-    {id: 5, place: null, bib: 5, age: 45, sex: "M", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Verso", lName: "L'vange", division: "M40-49"},
-    {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Monoco", lName: "Gestral", division: "M50-59"}
+    {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Gustave", lName: "Pierre", division: "M30-39"},
+    {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Maelle", lName: "Pierre", division: "F10-19"},
+    {id: 3, place: null, bib: 3, age: 32, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Sciel", lName: "Jeanne", division: "F30-39"},
+    {id: 4, place: null, bib: 4, age: 32, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Lune", lName: "Acuse", division: "F30-39"},
+    {id: 5, place: null, bib: 5, age: 45, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Verso", lName: "L'vange", division: "M40-49"},
+    {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Monoco", lName: "Gestral", division: "M50-59"}
   ];
 
   var categories = [
