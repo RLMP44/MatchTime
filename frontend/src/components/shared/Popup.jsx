@@ -4,7 +4,8 @@ import { useTranslation } from "react-i18next";
 
 function Popup(props) {
   const { t } = useTranslation();
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({ ...props.data });
+  const sexes = ['F', 'M'];
 
   function setTitle(crud, target) {
     return (crud === 'import' || crud === 'export') ? `${titleize(crud)} ${pluralize(titleize(target))}` : `${titleize(crud)} ${titleize(target)}`;
@@ -87,7 +88,7 @@ function Popup(props) {
         {title}:
         <input
           className={`${field}-input`}
-          value={formData[field] ?? props.data?.[field] ?? ""}
+          value={formData[field] ?? ""}
           onChange={event =>
             setFormData({ ...formData, [field]: event.target.value })
           }
@@ -96,6 +97,16 @@ function Popup(props) {
     );
   };
 
+  function updateDivisionInfo({ field, categories, event }) {
+    const selectedCategory = categories.find(cat => cat.category === event.target.value)
+      setFormData({
+      ...formData,
+      [field]: event.target.value,
+      'sex': selectedCategory.sex,
+      'handicap': selectedCategory.handicap,
+      'raceNo': selectedCategory.raceNo
+    })
+  }
 
   function handleDivisionField({ field, title, categories = [] }) {
     return (
@@ -103,18 +114,7 @@ function Popup(props) {
         {title}:
           <select name={field}
             className={`${field}-select`}
-            onChange={event =>
-              {
-                const selectedCategory = categories.find(cat => cat['category'] === event.target.value)
-                console.log(selectedCategory)
-                setFormData({
-                ...formData,
-                [field]: event.target.value,
-                'sex': selectedCategory.sex,
-                'handicap': selectedCategory.handicap,
-                'raceNo': selectedCategory.raceNo
-              })}
-            }
+            onChange={event => updateDivisionInfo({ field, categories, event })}
             >
           {categories.map((division) => {
             return (
@@ -125,6 +125,34 @@ function Popup(props) {
       </>
     )
   };
+
+  function handleSexField({ field, title, editable }) {
+    const currentValue = formData[field] ?? null;
+    return (
+      <>
+      {title}:
+        {sexes.map((sex) => {
+          return (
+            <div key={`${sex}-${editable}`}>
+              <input
+                id={`${field}-${sex}`}
+                type='radio'
+                name={field}
+                className={`${field}-input`}
+                value={sex}
+                onChange={event =>
+                  setFormData({ ...formData, [field]: event.target.value })
+                }
+                disabled={!editable}
+                checked={currentValue === sex}
+              />
+              <label htmlFor={`${field}-${sex}`}>{sex}</label><br></br>
+            </div>
+          )
+        })}
+      </>
+    );
+  }
 
   // TODO: disallow chars in int fields, etc
 
@@ -138,12 +166,11 @@ function Popup(props) {
             props.popUpFields.map(field => {
               let title = t(`${field}`);
               return (
-                <p key={field} className={`${field}`}>
-                  {field === 'division'
-                    ? handleDivisionField({ field, title, categories: props?.categories })
-                    : handleGeneralFields({ field, title })
-                  }
-                </p>
+                <div key={field} className={`${field}`}>
+                  {field !== 'division' && field !== 'sex' && handleGeneralFields({ field, title })}
+                  {field === 'sex' && handleSexField({ field, title, editable: props.tab === 'category' })}
+                  {field === 'division' && handleDivisionField({ field, title, categories: props.categories })}
+                </div>
               );
             })
           )}
