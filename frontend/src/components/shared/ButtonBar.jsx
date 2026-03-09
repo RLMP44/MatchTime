@@ -45,6 +45,7 @@ function ButtonBar(props) {
           crud={crud}
           add={props.add}
           buttons={buttonTypes}
+          categories={props.categories}
           popUpFields={popUpFields}
         />
       </div>

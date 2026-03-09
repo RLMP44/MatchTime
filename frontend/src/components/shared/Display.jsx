@@ -65,6 +65,7 @@ function Display(props) {
           popUpFields={props.fields}
           buttons={buttonTypes}
           setButtonTypes={setButtonTypes}
+          categories={props.categories}
           setDisplayRecords={props.setDisplayRecords}
           fetchRecord={props.fetchRecord}
           edit={props.edit}

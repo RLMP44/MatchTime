@@ -10,21 +10,21 @@ import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd
 
 function App() {
   var records = [
-    {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Gustave", lName: "Pierre", division: "M30-39"},
-    {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Maelle", lName: "Pierre", division: "F10-19"},
-    {id: 3, place: null, bib: 3, age: 32, sex: "F", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Sciel", lName: "Jeanne", division: "F30-39"},
-    {id: 4, place: null, bib: 4, age: 32, sex: "F", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Lune", lName: "Acuse", division: "F30-39"},
-    {id: 5, place: null, bib: 5, age: 45, sex: "M", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Verso", lName: "L'vange", division: "M40-49"},
-    {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: null, timeRaw: null, city: "Lumiere", time: null, fName: "Monoco", lName: "Gestral", division: "M50-59"}
+    {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Gustave", lName: "Pierre", division: "M30-39"},
+    {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Maelle", lName: "Pierre", division: "F10-19"},
+    {id: 3, place: null, bib: 3, age: 32, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Sciel", lName: "Jeanne", division: "F30-39"},
+    {id: 4, place: null, bib: 4, age: 32, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Lune", lName: "Acuse", division: "F30-39"},
+    {id: 5, place: null, bib: 5, age: 45, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Verso", lName: "L'vange", division: "M40-49"},
+    {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Monoco", lName: "Gestral", division: "M50-59"}
   ];
 
   var categories = [
-    {id: 1, category: "F20-29", raceNo: 1, handicap: 0},
-    {id: 2, category: "M20-29", raceNo: 1, handicap: 0},
-    {id: 3, category: "F30-39", raceNo: 1, handicap: 0},
-    {id: 4, category: "M30-39", raceNo: 1, handicap: 0},
-    {id: 5, category: "F40-49", raceNo: 1, handicap: 0},
-    {id: 6, category: "M40-49", raceNo: 1, handicap: 0}
+    {id: 1, category: "F20-29", raceNo: 1, handicap: 0, sex: 'F'},
+    {id: 2, category: "M20-29", raceNo: 1, handicap: 0, sex: 'M'},
+    {id: 3, category: "F30-39", raceNo: 1, handicap: 0, sex: 'F'},
+    {id: 4, category: "M30-39", raceNo: 1, handicap: 0, sex: 'M'},
+    {id: 5, category: "F40-49", raceNo: 1, handicap: 0, sex: 'F'},
+    {id: 6, category: "M40-49", raceNo: 1, handicap: 0, sex: 'M'}
   ];
 
   // TODO: displayRecords starter to be replaced with await fetchAllRacers()
@@ -317,6 +317,7 @@ function App() {
                               fields={fieldsObject[tab]}
                               fieldsObj={fieldsObject}
                               records={displayRecords}
+                              categories={displayCategories}
                               add={addRacer}
                               edit={editRacer}
                               delete={deleteRacer}

@@ -102,3 +102,15 @@
 #delete-button {
   background-color: rgba(252, 32, 32, 0.901);
 }
+
+.division > select {
+  min-width: 50px;
+  width: 75px;
+  padding: .25rem;
+  border-radius: 4px;
+  background-color: var(--color-primary);
+}
+
+.division > select > option {
+  gap: .25rem;
+}

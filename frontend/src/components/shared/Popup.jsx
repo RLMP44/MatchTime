@@ -81,6 +81,51 @@ function Popup(props) {
     props.setIsDisplayed(false);
   };
 
+  function handleGeneralFields({ field, title }) {
+    return (
+      <>
+        {title}:
+        <input
+          className={`${field}-input`}
+          value={formData[field] ?? props.data?.[field] ?? ""}
+          onChange={event =>
+            setFormData({ ...formData, [field]: event.target.value })
+          }
+        />
+      </>
+    );
+  };
+
+
+  function handleDivisionField({ field, title, categories = [] }) {
+    return (
+      <>
+        {title}:
+          <select name={field}
+            className={`${field}-select`}
+            onChange={event =>
+              {
+                const selectedCategory = categories.find(cat => cat['category'] === event.target.value)
+                console.log(selectedCategory)
+                setFormData({
+                ...formData,
+                [field]: event.target.value,
+                'sex': selectedCategory.sex,
+                'handicap': selectedCategory.handicap,
+                'raceNo': selectedCategory.raceNo
+              })}
+            }
+            >
+          {categories.map((division) => {
+            return (
+              <option key={division.category} value={division.category}>{division.category}</option>
+            )})
+          };
+        </select>
+      </>
+    )
+  };
+
   // TODO: disallow chars in int fields, etc
 
   return (
@@ -94,13 +139,10 @@ function Popup(props) {
               let title = t(`${field}`);
               return (
                 <p key={field} className={`${field}`}>
-                  {title}: <input
-                    className={`${field}-input`}
-                    value={formData[field] ?? props.data?.[field] ?? ""}
-                    onChange={event =>
-                      setFormData({...formData, [field]: event.target.value})
-                    }>
-                  </input>
+                  {field === 'division'
+                    ? handleDivisionField({ field, title, categories: props?.categories })
+                    : handleGeneralFields({ field, title })
+                  }
                 </p>
               );
             })
