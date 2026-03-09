@@ -56,21 +56,23 @@ function Display(props) {
       </div>
 
       {/* ------------- POPUP ------------- */}
-      <div style={{display: isDisplayed ? "" : "none"}}>
-        <Popup
-          setIsDisplayed={setIsDisplayed}
-          data={props.data}
-          tab={props.tab}
-          crud={crud}
-          popUpFields={props.fields}
-          buttons={buttonTypes}
-          setButtonTypes={setButtonTypes}
-          categories={props.categories}
-          setDisplayRecords={props.setDisplayRecords}
-          fetchRecord={props.fetchRecord}
-          edit={props.edit}
-          delete={props.delete}
-        />
+      <div>
+        {isDisplayed && <Popup
+            key={props.data?.id ?? crypto.randomUUID()}
+            setIsDisplayed={setIsDisplayed}
+            data={props.data}
+            tab={props.tab}
+            crud={crud}
+            popUpFields={props.fields}
+            buttons={buttonTypes}
+            setButtonTypes={setButtonTypes}
+            categories={props.categories}
+            setDisplayRecords={props.setDisplayRecords}
+            fetchRecord={props.fetchRecord}
+            edit={props.edit}
+            delete={props.delete}
+          />
+        }
       </div>
     </div>
   );
