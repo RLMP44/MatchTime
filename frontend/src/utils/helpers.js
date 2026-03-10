@@ -7,9 +7,14 @@ export function pluralize(string) {
 };
 
 // checks if the current target is present in a given array
-export  function checkIsPresent({ array: records, target: target, type: type }) {
+export function checkIsPresent({ array: records, target: target, type: type }) {
   const userRecord = records.find((record) => {
     return record[type] === target;
   });
   return userRecord !== undefined;
 };
+
+// returns array
+export function range(start, end) {
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+}

@@ -10,12 +10,12 @@ import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd
 
 function App() {
   var records = [
-    {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Gustave", lName: "Pierre", division: "M30-39"},
-    {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Maelle", lName: "Pierre", division: "F10-19"},
-    {id: 3, place: null, bib: 3, age: 32, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Sciel", lName: "Jeanne", division: "F30-39"},
-    {id: 4, place: null, bib: 4, age: 32, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Lune", lName: "Acuse", division: "F30-39"},
-    {id: 5, place: null, bib: 5, age: 45, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Verso", lName: "L'vange", division: "M40-49"},
-    {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Monoco", lName: "Gestral", division: "M50-59"}
+    {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Gustave", lName: "Pierre", category: "M30-39", division: "10k"},
+    {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Maelle", lName: "Pierre", category: "F10-19", division: "23k"},
+    {id: 3, place: null, bib: 3, age: 32, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Sciel", lName: "Jeanne", category: "F30-39", division: "10k"},
+    {id: 4, place: null, bib: 4, age: 32, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Lune", lName: "Acuse", category: "F30-39", division: "15k"},
+    {id: 5, place: null, bib: 5, age: 45, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Verso", lName: "L'vange", category: "M40-49", division: "10k"},
+    {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Monoco", lName: "Gestral", category: "M50-59", division: "5k"}
   ];
 
   var categories = [
@@ -46,8 +46,8 @@ function App() {
 
   const timerHeaders = ['place', 'bib', 'timeRaw', 'lName', 'fName'];
   const categoryHeaders = ['category', 'raceNo', 'handicap'];
-  const racerHeaders = ['bib', 'fName', 'lName', 'division'];
-  const resultHeaders = ['place', 'time', 'bib', 'lName', 'fName', 'city', 'division', 'sex'];
+  const racerHeaders = ['bib', 'fName', 'lName', 'category', 'division'];
+  const resultHeaders = ['place', 'time', 'bib', 'lName', 'fName', 'city', 'category', 'division', 'sex'];
   const headersObject = {
     timer: timerHeaders,
     category: categoryHeaders,
@@ -58,7 +58,7 @@ function App() {
   const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
   const timerRecordsEditFields = ['bib', 'timeRaw'];
   const categoryFields = ['category', 'handicap', 'raceNo', 'sex', 'plusFive', 'plusTen'];
-  const racerFields = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
+  const racerFields = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'category', 'division'];
   const fieldsObject = {
     timer: timerRecordsEditFields,
     category: categoryFields,

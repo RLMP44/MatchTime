@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { titleize, pluralize } from "../../utils/helpers";
+import { titleize, pluralize, range } from "../../utils/helpers";
 import { useTranslation } from "react-i18next";
 
 function Popup(props) {
@@ -43,6 +43,7 @@ function Popup(props) {
         time: props.data.time,
         fName: null,
         lName: "Not Found",
+        category: null,
         division: null
       }
     }
@@ -82,13 +83,37 @@ function Popup(props) {
     props.setIsDisplayed(false);
   };
 
+
+  // ----------------- RENDERING LOGIC -----------------
+  // use lookup object to simplify rendering and limit branching
+  const fieldRenderers = {
+    category: ({ field, title }) =>
+      props.tab !== 'category'
+        ? handleCategoryField({ field, title, categories: props.categories })
+        : handleGeneralFields({ field, title }),
+
+    raceNo: ({ field, title }) =>
+      handleRaceNoField({ field, title, limit: 8 }),
+
+    sex: ({ field, title }) =>
+      handleSexField({ field, title, editable: props.tab === 'category' }),
+  };
+
+  function renderField(field, title) {
+    const renderer = fieldRenderers[field];
+    return renderer
+      ? renderer({ field, title })
+      : handleGeneralFields({ field, title });
+  };
+
+  // standard input forms for general fields
   function handleGeneralFields({ field, title }) {
     return (
       <>
         {title}:
         <input
           className={`${field}-input`}
-          value={formData[field] ?? ""}
+          value={formData[field] ?? ''}
           onChange={event =>
             setFormData({ ...formData, [field]: event.target.value })
           }
@@ -97,7 +122,8 @@ function Popup(props) {
     );
   };
 
-  function updateDivisionInfo({ field, categories, event }) {
+  // updates racer info upon selecting category from dropdown
+  function updateCategoryInfo({ field, categories, event }) {
     const selectedCategory = categories.find(cat => cat.category === event.target.value)
       setFormData({
       ...formData,
@@ -108,17 +134,20 @@ function Popup(props) {
     })
   }
 
-  function handleDivisionField({ field, title, categories = [] }) {
+  // creates dropdown for category field when adding a new racer
+  function handleCategoryField({ field, title, categories = [] }) {
     return (
       <>
         {title}:
           <select name={field}
             className={`${field}-select`}
-            onChange={event => updateDivisionInfo({ field, categories, event })}
+            value={formData[field] ?? ''}
+            onChange={event => updateCategoryInfo({ field, categories, event })}
             >
-          {categories.map((division) => {
+          <option value="" disabled>Select</option>
+          {categories.map((cat) => {
             return (
-              <option key={division.category} value={division.category}>{division.category}</option>
+              <option key={cat.category} value={cat.category}>{cat.category}</option>
             )})
           };
         </select>
@@ -126,6 +155,7 @@ function Popup(props) {
     )
   };
 
+  // radio selection for sex, disabled (auto filled) when adding new racer
   function handleSexField({ field, title, editable }) {
     const currentValue = formData[field] ?? null;
     return (
@@ -154,6 +184,27 @@ function Popup(props) {
     );
   }
 
+  function handleRaceNoField({ field, title, limit }) {
+    let raceSelections = range(1, limit);
+    return (
+      <>
+        {title}:
+          <select name={field}
+            className={`${field}-select`}
+            value={formData[field] ?? ''}
+            onChange={event => setFormData({ ...formData, [field]: event.target.value })}
+            >
+          <option value="" disabled>Select</option>
+          {raceSelections.map((num) => {
+            return (
+              <option key={num} value={num}>{num}</option>
+            )})
+          };
+        </select>
+      </>
+    )
+  }
+
   // TODO: disallow chars in int fields, etc
 
   return (
@@ -161,15 +212,13 @@ function Popup(props) {
       <h4 className="title">{setTitle(props.crud || '', props.tab || '')}</h4>
       <div className="border"></div>
       <div className="popup-body">
-        <div className={`popup-content ${props.crud}`}>
+        <div className={`popup-content ${props.crud}-${props.tab}`}>
           {props.popUpFields?.length > 0 && (
             props.popUpFields.map(field => {
               let title = t(`${field}`);
               return (
-                <div key={field} className={`${field}`}>
-                  {field !== 'division' && field !== 'sex' && handleGeneralFields({ field, title })}
-                  {field === 'sex' && handleSexField({ field, title, editable: props.tab === 'category' })}
-                  {field === 'division' && handleDivisionField({ field, title, categories: props.categories })}
+                <div key={field} className={field}>
+                  {renderField(field, title)}
                 </div>
               );
             })

@@ -18,7 +18,7 @@
 }
 
 .racer-display-grid {
-  grid-template-columns: 3fr 3fr 6fr;
+  grid-template-columns: 2fr 3fr 3fr 4fr;
   grid-template-rows: auto auto;
 }
 
@@ -28,7 +28,7 @@
 }
 
 .result-display-grid {
-  grid-template-columns: 1fr 1fr 2fr 3fr 3fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 2fr 3fr 2fr 1fr 1fr 1fr;
   grid-template-rows: auto auto;
 }
 
@@ -50,6 +50,6 @@
 .result-display-grid > #sex {
   grid-area: 1 / 6 / 2 / 7;
 }
-.result-display-grid > #division {
+.result-display-grid > #category {
   grid-area: 1 / 7 / 2 / 8;
 }
