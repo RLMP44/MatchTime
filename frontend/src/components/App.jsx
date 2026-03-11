@@ -1,7 +1,7 @@
 import Header from "./shared/Header";
 import Footer from "./shared/Footer";
-import Tab from "./shared/Tab";
-import TabButton from "./TabButton";
+import Tab from "./shared/tab/Tab";
+import TabButton from "./shared/tab/TabButton";
 import { useState, useRef } from "react";
 import { checkIsPresent } from "../utils/helpers";
 import TimerIcon from '@mui/icons-material/Timer';

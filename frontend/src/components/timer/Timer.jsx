@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { checkIsPresent, range } from "../utils/helpers";
+import { checkIsPresent, range } from "../../utils/helpers";
 import TimerButton from "./TimerButton";
 
 function Timer(props) {

@@ -1,4 +1,4 @@
-import { titleize } from "../utils/helpers";
+import { titleize } from "../../utils/helpers";
 
 function TimerButton(props) {
   // set id to provided number or string value
