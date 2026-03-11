@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { checkIsPresent } from "../utils/helpers";
+import { checkIsPresent, range } from "../utils/helpers";
+import TimerButton from "./TimerButton";
 
 function Timer(props) {
   const [time, setTime] = useState("0");
@@ -12,6 +13,8 @@ function Timer(props) {
   const [fName, setFName] = useState(null);
   const [lName, setLName] = useState(null);
   const [currentRecord, setCurrentRecord] = useState(null);
+
+  const timerNums = range(1, 9);
 
 
   // ---------------------- TIMER LOGIC ----------------------
@@ -92,8 +95,8 @@ function Timer(props) {
       const updatedBibNum = (bibNum !== null) ? bibNum + target.value : target.value;
       setBibNum(parseInt(updatedBibNum));
       fetchAndSetRecord(parseInt(updatedBibNum));
-    } else if (target.id === "start-record-button" && props.buttonText === "Start") {
-      props.setButtonText("Record");
+    } else if (target.id === "start-record-button" && props.buttonText === "start") {
+      props.setButtonText("record");
       props.startTimer();
     } else if (target.id === "start-record-button" && !checkIsPresent({ array: props.records, target: bibNum, type: "bib" })) {
       updateTimeAndPlace({prevTime: null, prevPlace: null, bib: null});
@@ -107,11 +110,13 @@ function Timer(props) {
       reset();
     } else if (target.id === "same-time-button") {
       const lastRecord = props.records.at(-1);
-      updateTimeAndPlace({prevTime: lastRecord.timeRaw, prevPlace: lastRecord.place, bib: bibNum});
-      reset();
-      props.setPlace(prev => prev + 1);
+      if (lastRecord) {
+        updateTimeAndPlace({prevTime: lastRecord?.timeRaw, prevPlace: lastRecord?.place, bib: bibNum});
+        reset();
+        props.setPlace(prev => prev + 1);
+      };
     }
-  }
+  };
 
   return (
     <div className="timer-display">
@@ -122,19 +127,41 @@ function Timer(props) {
         <h4>Name: {fName && lName ? `${fName} ${lName}` : bibNum ? "Not Found" : ""}</h4>
       </div>
       <div className="timer-buttons-container">
-        <button onClick={handleClick} id="button-1" className="timer-button timer-btn-reg" value="1">1</button>
-        <button onClick={handleClick} id="button-2" className="timer-button timer-btn-reg" value="2">2</button>
-        <button onClick={handleClick} id="button-3" className="timer-button timer-btn-reg" value="3">3</button>
-        <button onClick={handleClick} id="button-4" className="timer-button timer-btn-reg" value="4">4</button>
-        <button onClick={handleClick} id="button-5" className="timer-button timer-btn-reg" value="5">5</button>
-        <button onClick={handleClick} id="button-6" className="timer-button timer-btn-reg" value="6">6</button>
-        <button onClick={handleClick} id="button-7" className="timer-button timer-btn-reg" value="7">7</button>
-        <button onClick={handleClick} id="button-8" className="timer-button timer-btn-reg" value="8">8</button>
-        <button onClick={handleClick} id="button-9" className="timer-button timer-btn-reg" value="9">9</button>
-        <button onClick={handleClick} id="same-time-button" className="timer-button timer-btn-color">Same<br></br>Time</button>
-        <button onClick={handleClick} id="button-0" className="timer-button timer-btn-reg" value="0">0</button>
-        <button onClick={handleClick} id="clear-button" className="timer-button timer-btn-color">Clear</button>
-        <button onClick={handleClick} id="start-record-button" className="timer-button timer-btn-color">{props.buttonText}</button>
+        {timerNums.map((num) =>
+          <TimerButton
+            key={num}
+            value={num}
+            type={'reg'}
+            onClick={handleClick}
+          />
+        )}
+        <TimerButton
+          key={'same-time'}
+          value={'same-time'}
+          label={'Same Time'}
+          type={'color'}
+          onClick={handleClick}
+        />
+        <TimerButton
+          key={0}
+          value={0}
+          type={'reg'}
+          onClick={handleClick}
+        />
+        <TimerButton
+          key={'clear'}
+          value={'clear'}
+          label={'Clear'}
+          type={'color'}
+          onClick={handleClick}
+        />
+        <TimerButton
+          key={'start-record'}
+          value={'start-record'}
+          label={props.buttonText}
+          type={'color'}
+          onClick={handleClick}
+        />
       </div>
     </div>
   );
