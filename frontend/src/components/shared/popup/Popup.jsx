@@ -32,7 +32,7 @@ function Popup(props) {
         ...data,
         ...user,
         place: props.data.place,
-        time: props.data.time
+        timeRaw: props.data.timeRaw
       };
     } else {
       return {
@@ -42,9 +42,9 @@ function Popup(props) {
         sex: null,
         raceNo: null,
         handicap: null,
-        timeRaw: null,
+        timeRaw: props.data.timeRaw,
         city: null,
-        time: props.data.time,
+        time: null,
         fName: null,
         lName: "Not Found",
         category: null,
@@ -56,14 +56,14 @@ function Popup(props) {
   // updates single record in timer display (time or racer)
   async function updateTimerDisplayRecord(data) {
     const bibChanged = data.bib && data.bib !== props.data.bib;
-    const timeChanged = data.time && data.time !== props.data.time;
+    const timeChanged = data.timeRaw && data.timeRaw !== props.data.timeRaw;
     let updatedRecord = { ...props.data };
 
     if (bibChanged) {
       const newUser = await switchRacers(data);
       updatedRecord = { ...updatedRecord, ...newUser };
     };
-    if (timeChanged) { updatedRecord.time = data.time };
+    if (timeChanged) { updatedRecord.timeRaw = data.timeRaw };
 
     props.edit({oldRecord: props.data, newRecord: updatedRecord});
   };
