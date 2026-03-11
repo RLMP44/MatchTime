@@ -1,4 +1,4 @@
-import Popup from "./Popup";
+import Popup from "./popup/Popup";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -46,10 +46,16 @@ function Display(props) {
 
   return (
     <div>
-      <div key={props.tab} className={`display-container ${props.tab}-display-grid`} onClick={handlePopUp}>
+      <div
+        key={props.tab}
+        className={`display-container ${props.tab}-display-grid`}
+        onClick={handlePopUp}
+      >
         {updatedHeaders.map((header) => (
           <p id={header} key={header}>{
-            shouldDisplayData ? (displayData[header] ?? ""): <strong>{t(`${header}`)}</strong>
+            shouldDisplayData
+            ? (displayData[header] ?? "")
+            : <strong>{t(`${header}`)}</strong>
             }
           </p>
         ))}

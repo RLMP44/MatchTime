@@ -27,6 +27,12 @@
   grid-area: 5 / 1 / 6 / -1;
 }
 
+#same-time-button {
+  white-space: normal;
+  overflow-wrap: break-word;
+  padding: 0px 16px;
+}
+
 .timer-button {
   min-height: 4rem;
   min-width: 5rem;

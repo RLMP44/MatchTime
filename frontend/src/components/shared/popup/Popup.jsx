@@ -1,14 +1,18 @@
 import { useState } from "react";
-import { titleize, pluralize } from "../../utils/helpers";
+import { titleize, pluralize } from "../../../utils/helpers";
 import { useTranslation } from "react-i18next";
+import createFieldRenderers from "./fieldRenderers";
+import GeneralField from "./fields/GeneralField";
 
 function Popup(props) {
   const { t } = useTranslation();
   const [formData, setFormData] = useState({ ...props.data });
-  const sexes = ['F', 'M'];
+  const fieldRenderers = createFieldRenderers({ props, formData, setFormData });
 
   function setTitle(crud, target) {
-    return (crud === 'import' || crud === 'export') ? `${titleize(crud)} ${pluralize(titleize(target))}` : `${titleize(crud)} ${titleize(target)}`;
+    return (crud === 'import' || crud === 'export') ?
+      `${titleize(crud)} ${pluralize(titleize(target))}` :
+      `${titleize(crud)} ${titleize(target)}`;
   };
 
   // adjusts formData to contain proper types
@@ -43,6 +47,7 @@ function Popup(props) {
         time: props.data.time,
         fName: null,
         lName: "Not Found",
+        category: null,
         division: null
       }
     }
@@ -82,77 +87,19 @@ function Popup(props) {
     props.setIsDisplayed(false);
   };
 
-  function handleGeneralFields({ field, title }) {
-    return (
-      <>
-        {title}:
-        <input
-          className={`${field}-input`}
-          value={formData[field] ?? ""}
-          onChange={event =>
-            setFormData({ ...formData, [field]: event.target.value })
-          }
-        />
-      </>
-    );
+
+  // ----------------- RENDERING LOGIC -----------------
+  function renderField( field, title ) {
+    const renderer = fieldRenderers[field];
+    return renderer
+      ? renderer({ field, title })
+      : <GeneralField
+        field={field}
+        title={title}
+        formData={formData}
+        setFormData={setFormData}
+      />
   };
-
-  function updateDivisionInfo({ field, categories, event }) {
-    const selectedCategory = categories.find(cat => cat.category === event.target.value)
-      setFormData({
-      ...formData,
-      [field]: event.target.value,
-      'sex': selectedCategory.sex,
-      'handicap': selectedCategory.handicap,
-      'raceNo': selectedCategory.raceNo
-    })
-  }
-
-  function handleDivisionField({ field, title, categories = [] }) {
-    return (
-      <>
-        {title}:
-          <select name={field}
-            className={`${field}-select`}
-            onChange={event => updateDivisionInfo({ field, categories, event })}
-            >
-          {categories.map((division) => {
-            return (
-              <option key={division.category} value={division.category}>{division.category}</option>
-            )})
-          };
-        </select>
-      </>
-    )
-  };
-
-  function handleSexField({ field, title, editable }) {
-    const currentValue = formData[field] ?? null;
-    return (
-      <>
-      {title}:
-        {sexes.map((sex) => {
-          return (
-            <div key={`${sex}-${editable}`}>
-              <input
-                id={`${field}-${sex}`}
-                type='radio'
-                name={field}
-                className={`${field}-input`}
-                value={sex}
-                onChange={event =>
-                  setFormData({ ...formData, [field]: event.target.value })
-                }
-                disabled={!editable}
-                checked={currentValue === sex}
-              />
-              <label htmlFor={`${field}-${sex}`}>{sex}</label><br></br>
-            </div>
-          )
-        })}
-      </>
-    );
-  }
 
   // TODO: disallow chars in int fields, etc
 
@@ -160,21 +107,21 @@ function Popup(props) {
     <div className="dialog">
       <h4 className="title">{setTitle(props.crud || '', props.tab || '')}</h4>
       <div className="border"></div>
+
       <div className="popup-body">
-        <div className={`popup-content ${props.crud}`}>
+        <div className={`popup-content ${props.crud}-${props.tab}`}>
           {props.popUpFields?.length > 0 && (
             props.popUpFields.map(field => {
               let title = t(`${field}`);
               return (
-                <div key={field} className={`${field}`}>
-                  {field !== 'division' && field !== 'sex' && handleGeneralFields({ field, title })}
-                  {field === 'sex' && handleSexField({ field, title, editable: props.tab === 'category' })}
-                  {field === 'division' && handleDivisionField({ field, title, categories: props.categories })}
+                <div key={field} className={field}>
+                  {renderField(field, title)}
                 </div>
               );
             })
           )}
         </div>
+
         {props.buttons?.length > 0 && (
           <div className="popup-buttons-container">
             {props.buttons.map(button =>
@@ -189,6 +136,7 @@ function Popup(props) {
             )}
           </div>
         )}
+
       </div>
     </div>
   );

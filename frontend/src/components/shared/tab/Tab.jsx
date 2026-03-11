@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Display from "./Display";
-import ButtonBar from "./ButtonBar";
-import Timer from "../Timer";
+import Display from "../Display";
+import ButtonBar from "../ButtonBar";
+import Timer from "../../timer/Timer";
 
 function Tab(props) {
   const [isDisplayed, setIsDisplayed] = useState(false);

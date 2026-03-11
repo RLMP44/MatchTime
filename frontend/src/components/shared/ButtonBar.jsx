@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { pluralize } from "../../utils/helpers";
-import Popup from "./Popup";
+import Popup from "./popup/Popup";
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FileUploadIcon from '@mui/icons-material/FileUpload';

@@ -71,7 +71,7 @@
 .popup-content .raceNo {
   grid-area: 6 / 1 / 7 / 2;
 }
-.popup-content .division {
+.popup-content .category {
   grid-area: 6 / 2 / 7 / 3;
 }
 .popup-content .time {
@@ -103,7 +103,7 @@
   background-color: rgba(252, 32, 32, 0.901);
 }
 
-.division > select {
+.category > select {
   min-width: 50px;
   width: 75px;
   padding: .25rem;
@@ -111,6 +111,31 @@
   background-color: var(--color-primary);
 }
 
-.division > select > option {
+.category > select > option {
   gap: .25rem;
+}
+
+.add-category .category, .edit-category .category {
+  grid-area: 1 / 1 / 2 / 2;
+}
+.add-category .raceNo, .edit-category .raceNo {
+  grid-area: 1 / 2 / 2 / 3;
+}
+.add-category .handicap, .edit-category .handicap {
+  grid-area: 2 / 1 / 3 / 2;
+}
+.add-category .sex, .edit-category .sex {
+  grid-area: 2 / 2 / 3 / 3;
+}
+.add-category .plusFive, .edit-category .plusFive {
+  grid-area: 3 / 1 / 4 / 2;
+}
+.add-category .plusTen, .edit-category .plusTen {
+  grid-area: 3 / 2 / 4/ 3;
+}
+
+.raceNo select{
+  background-color: var(--color-primary);
+  padding: .25rem;
+  border-radius: 4px;
 }

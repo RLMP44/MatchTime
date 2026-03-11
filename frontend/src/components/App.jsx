@@ -1,6 +1,7 @@
 import Header from "./shared/Header";
 import Footer from "./shared/Footer";
-import Tab from "./shared/Tab";
+import Tab from "./shared/tab/Tab";
+import TabButton from "./shared/tab/TabButton";
 import { useState, useRef } from "react";
 import { checkIsPresent } from "../utils/helpers";
 import TimerIcon from '@mui/icons-material/Timer';
@@ -10,12 +11,12 @@ import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd
 
 function App() {
   var records = [
-    {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Gustave", lName: "Pierre", division: "M30-39"},
-    {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Maelle", lName: "Pierre", division: "F10-19"},
-    {id: 3, place: null, bib: 3, age: 32, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Sciel", lName: "Jeanne", division: "F30-39"},
-    {id: 4, place: null, bib: 4, age: 32, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Lune", lName: "Acuse", division: "F30-39"},
-    {id: 5, place: null, bib: 5, age: 45, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Verso", lName: "L'vange", division: "M40-49"},
-    {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Monoco", lName: "Gestral", division: "M50-59"}
+    {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Gustave", lName: "Pierre", category: "M30-39", division: "10k"},
+    {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Maelle", lName: "Pierre", category: "F10-19", division: "23k"},
+    {id: 3, place: null, bib: 3, age: 32, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Sciel", lName: "Jeanne", category: "F30-39", division: "10k"},
+    {id: 4, place: null, bib: 4, age: 32, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Lune", lName: "Acuse", category: "F30-39", division: "15k"},
+    {id: 5, place: null, bib: 5, age: 45, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Verso", lName: "L'vange", category: "M40-49", division: "10k"},
+    {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Monoco", lName: "Gestral", category: "M50-59", division: "5k"}
   ];
 
   var categories = [
@@ -42,12 +43,12 @@ function App() {
   const [place, setPlace] = useState(1);
   const [timerOn, setTimerOn] = useState(false);
   const [startTime, setStartTime] = useState(null);
-  const [buttonText, setButtonText] = useState("Start");
+  const [buttonText, setButtonText] = useState("start");
 
   const timerHeaders = ['place', 'bib', 'timeRaw', 'lName', 'fName'];
   const categoryHeaders = ['category', 'raceNo', 'handicap'];
-  const racerHeaders = ['bib', 'fName', 'lName', 'division'];
-  const resultHeaders = ['place', 'time', 'bib', 'lName', 'fName', 'city', 'division', 'sex'];
+  const racerHeaders = ['bib', 'fName', 'lName', 'category', 'division'];
+  const resultHeaders = ['place', 'time', 'bib', 'lName', 'fName', 'city', 'category', 'division', 'sex'];
   const headersObject = {
     timer: timerHeaders,
     category: categoryHeaders,
@@ -58,7 +59,7 @@ function App() {
   const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
   const timerRecordsEditFields = ['bib', 'timeRaw'];
   const categoryFields = ['category', 'handicap', 'raceNo', 'sex', 'plusFive', 'plusTen'];
-  const racerFields = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'division'];
+  const racerFields = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'category', 'division'];
   const fieldsObject = {
     timer: timerRecordsEditFields,
     category: categoryFields,
@@ -168,7 +169,9 @@ function App() {
       );
       // update placements of all subsequent records
       return filteredRecords.map((record) =>
-        record.place > recordToDelete.place ? { ...record, place: record.place - 1 } : record
+        record.place > recordToDelete.place
+        ? { ...record, place: record.place - 1 }
+        : record
       );
     });
     // TODO: need to update places in DB
@@ -177,7 +180,8 @@ function App() {
 
 
   // -------------- RACER LOGIC --------------
-  // adds a new racer to the database and instantaneously updates displayed records in timer and racer tabs
+  // adds a new racer to the database
+  // and instantaneously updates displayed records in timer and racer tabs
   function addRacer(racerData) {
     const newRacer = {
       ...racerData,
@@ -189,11 +193,18 @@ function App() {
       raceNo: parseInt(racerData.raceNo)
     };
     setDisplayRecords(prev => [...prev, newRacer]);
-    // update timer display with relevant info in case a placement is recorded for an empty bib. update user info on timer display when info is added
+    // update timer display with relevant info in case a placement is recorded
+    // for an empty bib. update user info on timer display when info is added
     setTimerDisplayRecords(prev =>
       prev.map((record) => {
         if (record.bib === newRacer.bib && record.lName === "Not Found") {
-          return { ...record, ...newRacer, place: record.place, time: record.time, timeRaw: record.timeRaw };
+          return {
+            ...record,
+            ...newRacer,
+            place: record.place,
+            time: record.time,
+            timeRaw: record.timeRaw
+          };
         }
         return record;
       })
@@ -201,7 +212,8 @@ function App() {
     nextID.current += 1;
   };
 
-  // edits a racer's personal information and instantaneously updates the records displayed in timer tab and racers tab
+  // edits a racer's personal information
+  // and instantaneously updates the records displayed in timer tab and racers tab
   function editRacer({ oldData: oldR, newData: newR }) {
     // object spreading to update only new values
     var updatedRacer = {
@@ -227,9 +239,15 @@ function App() {
     updateDBRecord(updatedRacer);
   };
 
-  // deletes a racer from the database and from timer display (if relevant) and racers' tab
+  // deletes a racer from the database
+  // and from timer display (if relevant) and racers' tab
   function deleteRacer(racerToDelete) {
-    const isDisplayed = checkIsPresent({ array: timerDisplayRecords, target: racerToDelete.bib, type: "bib" });
+    const isDisplayed = checkIsPresent({
+      array: timerDisplayRecords,
+      target: racerToDelete.bib,
+      type: "bib"
+    });
+
     if (isDisplayed) {
       deleteDisplayedRecord(racerToDelete);
     };
@@ -247,7 +265,10 @@ function App() {
 
   // -------------- CATEGORY LOGIC --------------
   function addCategory(category) {
-    setDisplayCategories(prev => [...prev, { ...category, id: nextCatID.current }]);
+    setDisplayCategories(prev =>
+      [...prev,
+        { ...category, id: nextCatID.current }
+      ]);
     addDBCategory(category);
     nextCatID.current += 1;
   };
@@ -275,11 +296,28 @@ function App() {
       <Header />
       <div className="main-content">
         <div className="tab-display">
-          <button className={`tab-btn ${tab === "timer" ? "active" : ""}`} onClick={() => setTab("timer")} alt="Timer"><TimerIcon /></button>
-          <button className={`tab-btn ${tab === "category" ? "active" : ""}`} onClick={() => setTab("category")} alt="Category"><FormatListBulletedAddIcon /></button>
-          <button className={`tab-btn ${tab === "racer" ? "active" : ""}`} onClick={() => setTab("racer")} alt="Racer"><DirectionsRunIcon /></button>
-          <button className={`tab-btn ${tab === "result" ? "active" : ""}`} onClick={() => setTab("result")} alt="Results"><EmojiEventsIcon /></button>
+          <TabButton
+            active={tab === "timer"}
+            icon={<TimerIcon />}
+            onClick={() => setTab("timer")}
+          />
+          <TabButton
+            active={tab === "category"}
+            icon={<FormatListBulletedAddIcon />}
+            onClick={() => setTab("category")}
+          />
+          <TabButton
+            active={tab === "racer"}
+            icon={<DirectionsRunIcon />}
+            onClick={() => setTab("racer")}
+          />
+          <TabButton
+            active={tab === "result"}
+            icon={<EmojiEventsIcon />}
+            onClick={() => setTab("result")}
+          />
         </div>
+
         {tab === "timer" && <Tab
                               tab={tab}
                               headers={headersObject[tab]}
