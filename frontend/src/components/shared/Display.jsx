@@ -1,6 +1,7 @@
 import Popup from "./popup/Popup";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { timeForDisplay } from "../../utils/helpers";
 
 function Display(props) {
   const { t } = useTranslation();
@@ -28,12 +29,22 @@ function Display(props) {
   // updates data to display "last name, first name" if names present in headers
   function transformData(data) {
     if (!data) return null;
-    const { fName, lName, ...other } = data;
+    console.log(data)
+    const { fName, lName, time, ...other } = data;
+    console.log(time)
+
+    let transObject = { ...other };
 
     if (fName || lName) {
-      return { ...other, name: `${lName}, ${fName}` };
+      transObject.name = `${lName ?? ""}, ${fName ?? ""}`;
     }
-    return data;
+
+    if (time) {
+      const { padHours, padMins, padSeconds, padMillis } = timeForDisplay(time);
+      transObject.time = `${padHours}:${padMins}:${padSeconds}:${padMillis}`;
+    }
+
+    return transObject;
   };
 
   function handlePopUp() {

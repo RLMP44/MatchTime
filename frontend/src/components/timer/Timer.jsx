@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { checkIsPresent, range } from "../../utils/helpers";
+import { checkIsPresent, range, timeForDisplay } from "../../utils/helpers";
 import TimerButton from "./TimerButton";
 
 function Timer(props) {
+  const [timeInMs, setTimeInMs] = useState(0);
   const [time, setTime] = useState("0");
   const [hour, setHour] = useState("HH");
   const [min, setMin] = useState("MM");
@@ -24,15 +25,8 @@ function Timer(props) {
     const interval = setInterval(() => {
       // performance.now() is the most accurate and can keep calculating in background
       const timeElapsed = (performance.now() - props.startTime);
-      const hours = Math.floor(timeElapsed / 3_600_000);
-      const mins = Math.floor((timeElapsed % 3_600_000) / 60_000);
-      const seconds = Math.floor((timeElapsed % 60000) / 1000);
-      const millis = (Math.floor(timeElapsed % 1000) / 10).toFixed(0);
-
-      const padHours = hours.toString().padStart(2, "0");
-      const padMins = mins.toString().padStart(2, "0");
-      const padSeconds = seconds.toString().padStart(2, "0");
-      const padMillis = millis.toString().padStart(2, "0");
+      setTimeInMs(timeElapsed);
+      const { padHours, padMins, padSeconds, padMillis } = timeForDisplay(timeElapsed);
 
       setHour(padHours);
       setMin(padMins);
@@ -48,12 +42,13 @@ function Timer(props) {
 
   // ---------------------- UPDATE LOGIC ----------------------
   // uses the currentRecord in the timer tab as a base to update time, place, and bib with the next record, or to clear info for the next display
-  async function updateTimeAndPlace({prevTime: prevTime, prevPlace: prevPlace, bib: bib}) {
+  async function updateTimeAndPlace({prevTime: prevTime, prevTimeInMs: prevTimeInMs, prevPlace: prevPlace, bib: bib}) {
     let updatedRecord = { ...currentRecord };
     // create and update copy to avoid bugging react useState
     updatedRecord = { ...currentRecord,
       place: prevPlace ?? props.place,
       timeRaw: prevTime ?? time,
+      timeInMs: prevTimeInMs ?? timeInMs,
       bib: bib ?? currentRecord?.bib
     };
     setCurrentRecord(updatedRecord);
@@ -66,6 +61,7 @@ function Timer(props) {
     const newRecord = await props.fetchRecord(parseInt(newBib))
     if (newRecord) {
       setCurrentRecord(newRecord);
+      newRecord.time = timeInMs * newRecord.handicap;
       setFName(newRecord.fName);
       setLName(newRecord.lName);
     } else {
@@ -75,6 +71,7 @@ function Timer(props) {
         place: props.place,
         bib: newBib,
         timeRaw: time,
+        timeInMs: timeInMs,
         fName: "",
         lName: "Not Found"
       });
@@ -99,7 +96,7 @@ function Timer(props) {
       props.setButtonText("record");
       props.startTimer();
     } else if (target.id === "start-record-button" && !checkIsPresent({ array: props.records, target: bibNum, type: "bib" })) {
-      updateTimeAndPlace({prevTime: null, prevPlace: null, bib: null});
+      updateTimeAndPlace({prevTime: null, prevTimeInMs: null, prevPlace: null, bib: null});
       reset();
       props.setPlace(prev => prev + 1);
     } else if (target.id === "start-record-button" && checkIsPresent({ array: props.records, target: bibNum, type: "bib" })) {
@@ -111,7 +108,7 @@ function Timer(props) {
     } else if (target.id === "same-time-button") {
       const lastRecord = props.records.at(-1);
       if (lastRecord) {
-        updateTimeAndPlace({prevTime: lastRecord?.timeRaw, prevPlace: lastRecord?.place, bib: bibNum});
+        updateTimeAndPlace({prevTime: lastRecord?.timeRaw, prevTimeInMs: lastRecord?.timeInMs, prevPlace: lastRecord?.place, bib: bibNum});
         reset();
         props.setPlace(prev => prev + 1);
       };
