@@ -29,7 +29,7 @@ export function setMinMaxAge(category) {
   return category;
 };
 
-export function timeForDisplay(milliseconds) {
+export function prepTimeForDisplay(milliseconds) {
   const hours = Math.floor(milliseconds / 3_600_000);
   const mins = Math.floor((milliseconds % 3_600_000) / 60_000);
   const seconds = Math.floor((milliseconds % 60000) / 1000);
@@ -41,4 +41,23 @@ export function timeForDisplay(milliseconds) {
   const padMillis = millis.toString().padStart(2, "0");
 
   return { padHours, padMins, padSeconds, padMillis };
+};
+
+export function timeForDisplay(milliseconds) {
+  const { padHours, padMins, padSeconds, padMillis } = prepTimeForDisplay(milliseconds);
+  return`${padHours}:${padMins}:${padSeconds}:${padMillis}`;
+};
+
+export function convertToMs(time) {
+  if (!time) return null;
+
+  const [hours, mins, seconds, millis] = time.split(":").map(stringNum => parseInt(stringNum));
+
+  const totalMs =
+    hours * 3_600_000 +
+    mins * 60_000 +
+    seconds * 1000 +
+    millis * 10;
+
+  return totalMs;
 };

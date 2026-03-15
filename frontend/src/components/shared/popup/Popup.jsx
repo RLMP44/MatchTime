@@ -98,6 +98,7 @@ function Popup(props) {
         title={title}
         formData={formData}
         setFormData={setFormData}
+        timerTab={props.tab === 'timer'}
       />
   };
 

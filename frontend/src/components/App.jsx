@@ -3,6 +3,7 @@ import Footer from "./shared/Footer";
 import Tab from "./shared/tab/Tab";
 import TabButton from "./shared/tab/TabButton";
 import { useState, useRef, useEffect } from "react";
+import handicapsJSON from '../handicaps.json';
 import { checkIsPresent, setMinMaxAge } from "../utils/helpers";
 import TimerIcon from '@mui/icons-material/Timer';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
@@ -11,12 +12,12 @@ import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd
 
 function App() {
   var records = [
-    {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: 0.996, timeRaw: null, timeInMs: null, city: "Lumiere", time: null, fName: "Gustave", lName: "Pierre", category: "M30-39", division: "10k"},
-    {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: 0.78, timeRaw: null, timeInMs: null, city: "Lumiere", time: null, fName: "Maelle", lName: "Pierre", category: "F10-19", division: "23k"},
-    {id: 3, place: null, bib: 3, age: 32, sex: "F", raceNo: 1, handicap: 0.97, timeRaw: null, timeInMs: null, city: "Lumiere", time: null, fName: "Sciel", lName: "Jeanne", category: "F30-39", division: "10k"},
-    {id: 4, place: null, bib: 4, age: 32, sex: "F", raceNo: 1, handicap: 0.97, timeRaw: null, timeInMs: null, city: "Lumiere", time: null, fName: "Lune", lName: "Acuse", category: "F30-39", division: "15k"},
-    {id: 5, place: null, bib: 5, age: 45, sex: "M", raceNo: 1, handicap: 0.84, timeRaw: null, timeInMs: null, city: "Lumiere", time: null, fName: "Verso", lName: "L'vange", category: "M40-49", division: "10k"},
-    {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: 0.795, timeRaw: null, timeInMs: null, city: "Lumiere", time: null, fName: "Monoco", lName: "Gestral", category: "M50-59", division: "5k"}
+    {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: 0.996, timeRaw: null, city: "Lumiere", fName: "Gustave", lName: "Pierre", category: "M30-39", division: "10k"},
+    {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: 0.78, timeRaw: null, city: "Lumiere", fName: "Maelle", lName: "Pierre", category: "F10-19", division: "23k"},
+    {id: 3, place: null, bib: 3, age: 32, sex: "F", raceNo: 1, handicap: 0.97, timeRaw: null, city: "Lumiere", fName: "Sciel", lName: "Jeanne", category: "F30-39", division: "10k"},
+    {id: 4, place: null, bib: 4, age: 32, sex: "F", raceNo: 1, handicap: 0.97, timeRaw: null, city: "Lumiere", fName: "Lune", lName: "Acuse", category: "F30-39", division: "15k"},
+    {id: 5, place: null, bib: 5, age: 45, sex: "M", raceNo: 1, handicap: 0.84, timeRaw: null, city: "Lumiere", fName: "Verso", lName: "L'vange", category: "M40-49", division: "10k"},
+    {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: 0.795, timeRaw: null, city: "Lumiere", fName: "Monoco", lName: "Gestral", category: "M50-59", division: "5k"}
   ];
 
   var categories = [
@@ -44,12 +45,12 @@ function App() {
   const [timerOn, setTimerOn] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [buttonText, setButtonText] = useState("start");
-  const [handicaps, setHandicaps] = useState(null);
+  const [handicaps, setHandicaps] = useState(handicapsJSON);
 
   const timerHeaders = ['place', 'bib', 'timeRaw', 'lName', 'fName'];
   const categoryHeaders = ['category', 'raceNo'];
   const racerHeaders = ['bib', 'fName', 'lName', 'category', 'division', 'handicap'];
-  const resultHeaders = ['place', 'time', 'bib', 'lName', 'fName', 'city', 'category', 'division', 'sex'];
+  const resultHeaders = ['place', 'timeRaw', 'bib', 'lName', 'fName', 'city', 'category', 'division', 'sex'];
   const headersObject = {
     timer: timerHeaders,
     category: categoryHeaders,
@@ -70,13 +71,13 @@ function App() {
   };
 
   // load handicaps from backend on first render
-  useEffect(() => {
-    async function loadHandicaps() {
-      const handicapsJSON = await fetchHandicaps();
-      setHandicaps(handicapsJSON);
-    }
-    loadHandicaps();
-  }, []);
+  // useEffect(() => {
+  //   async function loadHandicaps() {
+  //     const handicapsJSON = await fetchHandicaps();
+  //     setHandicaps(handicapsJSON);
+  //   }
+  //   loadHandicaps();
+  // }, []);
 
   // -------------- TIMER LOGIC --------------
   function startTimer() {
@@ -91,10 +92,10 @@ function App() {
 
 
   // -------------- DB LOGIC --------------
-  async function fetchHandicaps() {
-    const response = await fetch('/handicaps');
-    return response.json();
-  }
+  // async function fetchHandicaps() {
+  //   const response = await fetch('/handicaps');
+  //   return response.json();
+  // }
 
   // async function fetchAllRacers() {
   //   // TODO: fetch racer records from backend
@@ -202,7 +203,6 @@ function App() {
       ...racerData,
       id: nextID.current,
       place: null,
-      time: null,
       timeRaw: null,
       bib: parseInt(racerData.bib),
       raceNo: parseInt(racerData.raceNo),
@@ -218,8 +218,7 @@ function App() {
             ...record,
             ...newRacer,
             place: record.place,
-            time: record.time,
-            timeRaw: record.timeRaw
+            timeRaw: record.timeRaw,
           };
         }
         return record;

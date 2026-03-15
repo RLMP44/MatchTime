@@ -17,11 +17,17 @@ function Display(props) {
     if (!props.headers) { return [] };
     const hasNameField = props.headers.includes('fName') ||
       props.headers.includes('lName');
+    const resultTabTime = props.tab === 'result' && props.headers.includes('timeRaw');
 
     if (hasNameField) {
       return props.headers
         .filter(header => header !== 'fName' && header !== 'lName')
         .concat('name');
+    }
+    if (resultTabTime) {
+      return props.headers.map(header =>
+        header === "timeRaw" ? "Adjusted Time" : header
+      );
     }
     return props.headers
   });
@@ -29,9 +35,7 @@ function Display(props) {
   // updates data to display "last name, first name" if names present in headers
   function transformData(data) {
     if (!data) return null;
-    console.log(data)
-    const { fName, lName, time, ...other } = data;
-    console.log(time)
+    const { fName, lName, timeRaw, ...other } = data;
 
     let transObject = { ...other };
 
@@ -39,10 +43,10 @@ function Display(props) {
       transObject.name = `${lName ?? ""}, ${fName ?? ""}`;
     }
 
-    if (time) {
-      const { padHours, padMins, padSeconds, padMillis } = timeForDisplay(time);
-      transObject.time = `${padHours}:${padMins}:${padSeconds}:${padMillis}`;
-    }
+    if (timeRaw) {
+      let timeToDisplay = (props.tab === 'result') ? (timeRaw * props.data?.handicap) : timeRaw;
+      transObject.timeRaw = timeForDisplay(timeToDisplay);
+    };
 
     return transObject;
   };
