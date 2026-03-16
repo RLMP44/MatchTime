@@ -5,6 +5,7 @@
   "raceNo": "Race #",
   "handicap": "Handicap",
   "timeRaw": "Time",
+  "timeAdjusted": "Adjusted Time",
   "city": "City",
   "fName": "First Name",
   "lName": "Last Name",

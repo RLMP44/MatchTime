@@ -12,27 +12,32 @@ function Display(props) {
   const shouldDisplayData = props.data && Object.keys(props?.data).length > 0;
   const editButtonTypes = ['cancel', 'update', 'delete'];
   const displayData = transformData(props.data);
+
   // useState to set up headers BEFORE first render to avoid flash on screen
+  // condenses first and last names to 'name' in header
+  // changes timeRaw to timeAdjusted header for result tab
   const [updatedHeaders] = useState(() => {
     if (!props.headers) { return [] };
     const hasNameField = props.headers.includes('fName') ||
       props.headers.includes('lName');
     const resultTabTime = props.tab === 'result' && props.headers.includes('timeRaw');
+    let newHeaders = [...props.headers];
 
     if (hasNameField) {
-      return props.headers
+      newHeaders = newHeaders
         .filter(header => header !== 'fName' && header !== 'lName')
         .concat('name');
     }
     if (resultTabTime) {
-      return props.headers.map(header =>
-        header === "timeRaw" ? "Adjusted Time" : header
-      );
+      newHeaders = newHeaders
+        .filter(header => header !== "timeRaw")
+        .concat('timeAdjusted');
     }
-    return props.headers
+    return newHeaders;
   });
 
   // updates data to display "last name, first name" if names present in headers
+  // updates data to display adjusted time for timeAdjusted header in results
   function transformData(data) {
     if (!data) return null;
     const { fName, lName, timeRaw, ...other } = data;
@@ -46,6 +51,7 @@ function Display(props) {
     if (timeRaw) {
       let timeToDisplay = (props.tab === 'result') ? (timeRaw * props.data?.handicap) : timeRaw;
       transObject.timeRaw = timeForDisplay(timeToDisplay);
+      transObject.timeAdjusted = timeForDisplay(timeToDisplay);
     };
 
     return transObject;
