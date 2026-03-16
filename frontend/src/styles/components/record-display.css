@@ -18,7 +18,7 @@
 }
 
 .racer-display-grid {
-  grid-template-columns: 2fr 3fr 3fr 4fr;
+  grid-template-columns: 2fr 2fr 2fr 2fr 4fr;
   grid-template-rows: auto auto;
 }
 
@@ -38,7 +38,7 @@
 .result-display-grid > #bib {
   grid-area: 1 / 2 / 2 / 3;
 }
-.result-display-grid > #time {
+.result-display-grid > #timeAdjusted {
   grid-area: 1 / 3 / 2 / 4;
 }
 .result-display-grid > #name {

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { checkIsPresent, range } from "../../utils/helpers";
+import { checkIsPresent, range, prepTimeForDisplay } from "../../utils/helpers";
 import TimerButton from "./TimerButton";
 
 function Timer(props) {
-  const [time, setTime] = useState("0");
+  const [timeInMs, setTimeInMs] = useState(0);
   const [hour, setHour] = useState("HH");
   const [min, setMin] = useState("MM");
   const [sec, setSec] = useState("SS");
@@ -24,21 +24,13 @@ function Timer(props) {
     const interval = setInterval(() => {
       // performance.now() is the most accurate and can keep calculating in background
       const timeElapsed = (performance.now() - props.startTime);
-      const hours = Math.floor(timeElapsed / 3_600_000);
-      const mins = Math.floor((timeElapsed % 3_600_000) / 60_000);
-      const seconds = Math.floor((timeElapsed % 60000) / 1000);
-      const millis = (Math.floor(timeElapsed % 1000) / 10).toFixed(0);
-
-      const padHours = hours.toString().padStart(2, "0");
-      const padMins = mins.toString().padStart(2, "0");
-      const padSeconds = seconds.toString().padStart(2, "0");
-      const padMillis = millis.toString().padStart(2, "0");
+      setTimeInMs(timeElapsed);
+      const { padHours, padMins, padSeconds, padMillis } = prepTimeForDisplay(timeElapsed);
 
       setHour(padHours);
       setMin(padMins);
       setSec(padSeconds);
       setMilli(padMillis);
-      setTime(`${padHours}:${padMins}:${padSeconds}:${padMillis}`)
       // update timer loop at 30 Hz (30 updates per second)
     }, 30);
 
@@ -53,7 +45,7 @@ function Timer(props) {
     // create and update copy to avoid bugging react useState
     updatedRecord = { ...currentRecord,
       place: prevPlace ?? props.place,
-      timeRaw: prevTime ?? time,
+      timeRaw: prevTime ?? timeInMs,
       bib: bib ?? currentRecord?.bib
     };
     setCurrentRecord(updatedRecord);
@@ -74,7 +66,7 @@ function Timer(props) {
         id: newBib,
         place: props.place,
         bib: newBib,
-        timeRaw: time,
+        timeRaw: timeInMs,
         fName: "",
         lName: "Not Found"
       });
@@ -99,7 +91,7 @@ function Timer(props) {
       props.setButtonText("record");
       props.startTimer();
     } else if (target.id === "start-record-button" && !checkIsPresent({ array: props.records, target: bibNum, type: "bib" })) {
-      updateTimeAndPlace({prevTime: null, prevPlace: null, bib: null});
+      updateTimeAndPlace({prevTime: null, prevTimeInMs: null, prevPlace: null, bib: null});
       reset();
       props.setPlace(prev => prev + 1);
     } else if (target.id === "start-record-button" && checkIsPresent({ array: props.records, target: bibNum, type: "bib" })) {

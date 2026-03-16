@@ -2,8 +2,9 @@ import Header from "./shared/Header";
 import Footer from "./shared/Footer";
 import Tab from "./shared/tab/Tab";
 import TabButton from "./shared/tab/TabButton";
-import { useState, useRef } from "react";
-import { checkIsPresent } from "../utils/helpers";
+import { useState, useRef, useEffect } from "react";
+import handicapsJSON from '../handicaps.json';
+import { checkIsPresent, setMinMaxAge } from "../utils/helpers";
 import TimerIcon from '@mui/icons-material/Timer';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
@@ -11,21 +12,21 @@ import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd
 
 function App() {
   var records = [
-    {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Gustave", lName: "Pierre", category: "M30-39", division: "10k"},
-    {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Maelle", lName: "Pierre", category: "F10-19", division: "23k"},
-    {id: 3, place: null, bib: 3, age: 32, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Sciel", lName: "Jeanne", category: "F30-39", division: "10k"},
-    {id: 4, place: null, bib: 4, age: 32, sex: "F", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Lune", lName: "Acuse", category: "F30-39", division: "15k"},
-    {id: 5, place: null, bib: 5, age: 45, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Verso", lName: "L'vange", category: "M40-49", division: "10k"},
-    {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: 0, timeRaw: null, city: "Lumiere", time: null, fName: "Monoco", lName: "Gestral", category: "M50-59", division: "5k"}
+    {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: 0.996, timeRaw: null, city: "Lumiere", fName: "Gustave", lName: "Pierre", category: "M30-39", division: "10k"},
+    {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: 0.78, timeRaw: null, city: "Lumiere", fName: "Maelle", lName: "Pierre", category: "F10-19", division: "23k"},
+    {id: 3, place: null, bib: 3, age: 32, sex: "F", raceNo: 1, handicap: 0.97, timeRaw: null, city: "Lumiere", fName: "Sciel", lName: "Jeanne", category: "F30-39", division: "10k"},
+    {id: 4, place: null, bib: 4, age: 32, sex: "F", raceNo: 1, handicap: 0.97, timeRaw: null, city: "Lumiere", fName: "Lune", lName: "Acuse", category: "F30-39", division: "15k"},
+    {id: 5, place: null, bib: 5, age: 45, sex: "M", raceNo: 1, handicap: 0.84, timeRaw: null, city: "Lumiere", fName: "Verso", lName: "L'vange", category: "M40-49", division: "10k"},
+    {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: 0.795, timeRaw: null, city: "Lumiere", fName: "Monoco", lName: "Gestral", category: "M50-59", division: "5k"}
   ];
 
   var categories = [
-    {id: 1, category: "F20-29", raceNo: 1, handicap: 0, sex: 'F'},
-    {id: 2, category: "M20-29", raceNo: 1, handicap: 0, sex: 'M'},
-    {id: 3, category: "F30-39", raceNo: 1, handicap: 0, sex: 'F'},
-    {id: 4, category: "M30-39", raceNo: 1, handicap: 0, sex: 'M'},
-    {id: 5, category: "F40-49", raceNo: 1, handicap: 0, sex: 'F'},
-    {id: 6, category: "M40-49", raceNo: 1, handicap: 0, sex: 'M'}
+    {id: 1, category: "F20-29", raceNo: 1, sex: 'F', minAge: 20, maxAge: 29 },
+    {id: 2, category: "M20-29", raceNo: 1, sex: 'M', minAge: 20, maxAge: 29 },
+    {id: 3, category: "F30-39", raceNo: 1, sex: 'F', minAge: 30, maxAge: 39 },
+    {id: 4, category: "M30-39", raceNo: 1, sex: 'M', minAge: 30, maxAge: 39 },
+    {id: 5, category: "F40-49", raceNo: 1, sex: 'F', minAge: 40, maxAge: 49 },
+    {id: 6, category: "M40-49", raceNo: 1, sex: 'M', minAge: 40, maxAge: 49 }
   ];
 
   // TODO: displayRecords starter to be replaced with await fetchAllRacers()
@@ -44,11 +45,12 @@ function App() {
   const [timerOn, setTimerOn] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [buttonText, setButtonText] = useState("start");
+  const [handicaps, setHandicaps] = useState(handicapsJSON);
 
   const timerHeaders = ['place', 'bib', 'timeRaw', 'lName', 'fName'];
-  const categoryHeaders = ['category', 'raceNo', 'handicap'];
-  const racerHeaders = ['bib', 'fName', 'lName', 'category', 'division'];
-  const resultHeaders = ['place', 'time', 'bib', 'lName', 'fName', 'city', 'category', 'division', 'sex'];
+  const categoryHeaders = ['category', 'raceNo'];
+  const racerHeaders = ['bib', 'fName', 'lName', 'category', 'division', 'handicap'];
+  const resultHeaders = ['place', 'timeRaw', 'bib', 'lName', 'fName', 'city', 'category', 'division', 'sex'];
   const headersObject = {
     timer: timerHeaders,
     category: categoryHeaders,
@@ -58,7 +60,7 @@ function App() {
 
   const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
   const timerRecordsEditFields = ['bib', 'timeRaw'];
-  const categoryFields = ['category', 'handicap', 'raceNo', 'sex', 'plusFive', 'plusTen'];
+  const categoryFields = ['category', 'raceNo', 'sex', 'plusFive', 'plusTen'];
   const racerFields = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'category', 'division'];
   const fieldsObject = {
     timer: timerRecordsEditFields,
@@ -67,6 +69,15 @@ function App() {
     import: importExportFields,
     export: importExportFields
   };
+
+  // load handicaps from backend on first render
+  // useEffect(() => {
+  //   async function loadHandicaps() {
+  //     const handicapsJSON = await fetchHandicaps();
+  //     setHandicaps(handicapsJSON);
+  //   }
+  //   loadHandicaps();
+  // }, []);
 
   // -------------- TIMER LOGIC --------------
   function startTimer() {
@@ -81,6 +92,11 @@ function App() {
 
 
   // -------------- DB LOGIC --------------
+  // async function fetchHandicaps() {
+  //   const response = await fetch('/handicaps');
+  //   return response.json();
+  // }
+
   // async function fetchAllRacers() {
   //   // TODO: fetch racer records from backend
   //   // return as list
@@ -187,10 +203,10 @@ function App() {
       ...racerData,
       id: nextID.current,
       place: null,
-      time: null,
       timeRaw: null,
       bib: parseInt(racerData.bib),
-      raceNo: parseInt(racerData.raceNo)
+      raceNo: parseInt(racerData.raceNo),
+      handicap: handicaps[racerData.sex][racerData.age]
     };
     setDisplayRecords(prev => [...prev, newRacer]);
     // update timer display with relevant info in case a placement is recorded
@@ -202,8 +218,7 @@ function App() {
             ...record,
             ...newRacer,
             place: record.place,
-            time: record.time,
-            timeRaw: record.timeRaw
+            timeRaw: record.timeRaw,
           };
         }
         return record;
