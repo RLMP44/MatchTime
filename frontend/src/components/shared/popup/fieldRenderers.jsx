@@ -2,6 +2,7 @@ import CategoryField from "./fields/CategoryField";
 import GeneralField from "./fields/GeneralField";
 import RaceNoField from "./fields/RaceNoField";
 import SexField from "./fields/SexField";
+import TimeRawField from './fields/TimeRawField';
 
 // use lookup object to simplify rendering and limit branching
 function createFieldRenderers({ props, formData, setFormData }) {
@@ -41,6 +42,14 @@ function createFieldRenderers({ props, formData, setFormData }) {
         setFormData={setFormData}
         editable={props.tab === 'category'}
       />,
+
+    timeRaw: ({ field, title }) =>
+      <TimeRawField
+        field={field}
+        title={title}
+        formData={formData}
+        setFormData={setFormData}
+      />
   };
 
   return fieldRenderers;

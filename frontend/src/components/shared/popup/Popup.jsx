@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { titleize, pluralize } from "../../../utils/helpers";
+import { titleize, pluralize, convertToMs } from "../../../utils/helpers";
 import { useTranslation } from "react-i18next";
 import createFieldRenderers from "./fieldRenderers";
 import GeneralField from "./fields/GeneralField";
@@ -54,16 +54,17 @@ function Popup(props) {
   };
 
   // updates single record in timer display (time or racer)
+  // converts updated time into milliseconds
   async function updateTimerDisplayRecord(data) {
     const bibChanged = data.bib && data.bib !== props.data.bib;
-    const timeChanged = data.timeRaw && data.timeRaw !== props.data.timeRaw;
+    const timeChanged = data.timeRaw && convertToMs(data.timeRaw) !== props.data.timeRaw;
     let updatedRecord = { ...props.data };
 
     if (bibChanged) {
       const newUser = await switchRacers(data);
       updatedRecord = { ...updatedRecord, ...newUser };
     };
-    if (timeChanged) { updatedRecord.timeRaw = data.timeRaw };
+    if (timeChanged) { updatedRecord.timeRaw = convertToMs(data.timeRaw) };
 
     props.edit({oldRecord: props.data, newRecord: updatedRecord});
   };
