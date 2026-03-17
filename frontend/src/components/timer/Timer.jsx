@@ -75,6 +75,7 @@ function Timer(props) {
     }
   }
 
+  // resets names and bib # displayed next to timer
   function reset() {
     setBibNum(null);
     setFName(null);
@@ -83,31 +84,75 @@ function Timer(props) {
 
   function handleClick(event) {
     var target = event.target;
-    if (target.value) {
-      const updatedBibNum = (bibNum !== null) ? bibNum + target.value : target.value;
-      setBibNum(parseInt(updatedBibNum));
-      fetchAndSetRecord(parseInt(updatedBibNum));
-    } else if (target.id === "start-record-button" && props.buttonText === "start") {
+    var value = target.value;
+    const isStartRecordButton = target.id === "start-record-button";
+    const isClearButton = target.id === "clear-button";
+    const isSameTimeButton = target.id === "same-time-button";
+
+    const racerAlreadyRecorded = isStartRecordButton
+      && checkIsPresent({ array: props.records, target: bibNum, type: "bib" });
+    const recordNewRacer = isStartRecordButton
+      && !checkIsPresent({ array: props.records, target: bibNum, type: "bib" });
+    const noRacerSelected = isStartRecordButton
+      && !bibNum && props.buttonText === "record";
+    const startTimer = isStartRecordButton
+      && props.buttonText === "start"
+
+    if (value && !isNaN(value)) {
+      const updated = bibNum !== null ? bibNum + value : value;
+      const parsed = parseInt(updated);
+      setBibNum(parsed);
+      fetchAndSetRecord(parsed);
+      return;
+    }
+
+    if (startTimer) {
       props.setButtonText("record");
       props.startTimer();
-    } else if (target.id === "start-record-button" && !checkIsPresent({ array: props.records, target: bibNum, type: "bib" })) {
-      updateTimeAndPlace({prevTime: null, prevTimeInMs: null, prevPlace: null, bib: null});
+      return;
+    };
+
+    if (noRacerSelected) {
+      return;
+    };
+
+    if (recordNewRacer) {
+      updateTimeAndPlace({
+        prevTime: null,
+        prevTimeInMs: null,
+        prevPlace: null,
+        bib: null
+      });
       reset();
       props.setPlace(prev => prev + 1);
-    } else if (target.id === "start-record-button" && checkIsPresent({ array: props.records, target: bibNum, type: "bib" })) {
+      return;
+    };
+
+    if (racerAlreadyRecorded) {
       // TODO: give user feedback
       console.warn("user already recorded")
       reset();
-    } else if (target.id === "clear-button") {
+      return;
+    };
+
+    if (isClearButton) {
       reset();
-    } else if (target.id === "same-time-button") {
+      return;
+    };
+
+    if (isSameTimeButton) {
       const lastRecord = props.records.at(-1);
       if (lastRecord) {
-        updateTimeAndPlace({prevTime: lastRecord?.timeRaw, prevPlace: lastRecord?.place, bib: bibNum});
+        updateTimeAndPlace({
+          prevTime: lastRecord?.timeRaw,
+          prevPlace: lastRecord?.place,
+          bib: bibNum
+        });
         reset();
         props.setPlace(prev => prev + 1);
       };
-    }
+      return;
+    };
   };
 
   return (
