@@ -1,20 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { checkIsPresent, range, prepTimeForDisplay } from "../../utils/helpers";
 import TimerButton from "./TimerButton";
 
 function Timer(props) {
   const [timeInMs, setTimeInMs] = useState(0);
-  const [hour, setHour] = useState("HH");
-  const [min, setMin] = useState("MM");
-  const [sec, setSec] = useState("SS");
-  const [milli, setMilli] = useState("mm");
+  const [displayTime, setDisplayTime] = useState({
+    hour: "HH",
+    min: "MM",
+    sec: "SS",
+    milli: "mm"
+  })
 
   const [bibNum, setBibNum] = useState(null);
-  const [fName, setFName] = useState(null);
-  const [lName, setLName] = useState(null);
   const [currentRecord, setCurrentRecord] = useState(null);
-
+  let fName = currentRecord?.fName ?? null;
+  let lName = currentRecord?.lName ?? null;
   const timerNums = range(1, 9);
+  const {
+    update,
+    place,
+    setPlace,
+    fetchRecord,
+    buttonText,
+    setButtonText,
+    records,
+    startTimer
+  } = props;
+  // set callback for timer to avoid starting it on render
 
 
   // ---------------------- TIMER LOGIC ----------------------
@@ -27,10 +39,12 @@ function Timer(props) {
       setTimeInMs(timeElapsed);
       const { padHours, padMins, padSeconds, padMillis } = prepTimeForDisplay(timeElapsed);
 
-      setHour(padHours);
-      setMin(padMins);
-      setSec(padSeconds);
-      setMilli(padMillis);
+      setDisplayTime({
+        hour: padHours,
+        min: padMins,
+        sec: padSeconds,
+        milli: padMillis
+      })
       // update timer loop at 30 Hz (30 updates per second)
     }, 30);
 
@@ -39,126 +53,142 @@ function Timer(props) {
 
 
   // ---------------------- UPDATE LOGIC ----------------------
-  // uses the currentRecord in the timer tab as a base to update time, place, and bib with the next record, or to clear info for the next display
-  async function updateTimeAndPlace({prevTime: prevTime, prevPlace: prevPlace, bib: bib}) {
-    let updatedRecord = { ...currentRecord };
-    // create and update copy to avoid bugging react useState
-    updatedRecord = { ...currentRecord,
-      place: prevPlace ?? props.place,
-      timeRaw: prevTime ?? timeInMs,
-      bib: bib ?? currentRecord?.bib
-    };
-    setCurrentRecord(updatedRecord);
-    props.update(updatedRecord);
-  }
+  // uses the currentRecord in the timer tab as a base to update time, place,
+  // and bib with the next record, or to clear info for the next display
+  // useCallback to rerender only when dependencies update
+  const updateTimeAndPlace = useCallback(
+    ({ prevTime, prevPlace, bib }) => {
+      const updatedRecord = {
+        ...currentRecord,
+        place: prevPlace ?? place,
+        timeRaw: prevTime ?? timeInMs,
+        bib: bib ?? currentRecord?.bib
+      };
 
-  // uses entered bib number to fetch the racer record and display their name in the timer
+      setCurrentRecord(updatedRecord);
+      update(updatedRecord);
+    },
+    [currentRecord, update, place, timeInMs]
+  );
+
+  // uses entered bib # to fetch racer record and display name in timer
   // if bib not found, displays "Not Found" as racer name
-  async function fetchAndSetRecord(newBib) {
-    const newRecord = await props.fetchRecord(parseInt(newBib))
-    if (newRecord) {
-      setCurrentRecord(newRecord);
-      setFName(newRecord.fName);
-      setLName(newRecord.lName);
-    } else {
-      // temporarily set id as bib number until backend is hooked up
-      setCurrentRecord({
-        id: newBib,
-        place: props.place,
-        bib: newBib,
-        timeRaw: timeInMs,
-        fName: "",
-        lName: "Not Found"
-      });
-      setFName("");
-      setLName("Not Found");
-    }
-  }
+  const fetchAndSetRecord = useCallback(
+    async (newBib) => {
+      const parsedBib = parseInt(newBib);
+      const newRecord = await fetchRecord(parsedBib)
+      if (newRecord) {
+        setCurrentRecord(newRecord);
+      } else {
+        // temporarily set id as bib number until backend is hooked up
+        setCurrentRecord({
+          id: parsedBib,
+          place: place,
+          bib: parsedBib,
+          timeRaw: timeInMs,
+          fName: "",
+          lName: "Not Found"
+        });
+      }
+    }, [fetchRecord, place, timeInMs]
+  );
 
-  // resets names and bib # displayed next to timer
-  function reset() {
+  // resets names & bib # displayed next to timer
+  // useCallback to prevent unnecessary rerendering, esp when passed to children
+  const reset = useCallback(() => {
+    setCurrentRecord(null);
     setBibNum(null);
-    setFName(null);
-    setLName(null);
-  }
+  }, []);
 
-  function handleClick(event) {
-    var target = event.target;
-    var value = target.value;
-    const isStartRecordButton = target.id === "start-record-button";
-    const isClearButton = target.id === "clear-button";
-    const isSameTimeButton = target.id === "same-time-button";
+  const handleClick = useCallback(
+    (event) => {
+      var target = event.target;
+      var value = target.value;
+      const isStartRecordButton = target.id === "start-record-button";
+      const isClearButton = target.id === "clear-button";
+      const isSameTimeButton = target.id === "same-time-button";
 
-    const racerAlreadyRecorded = isStartRecordButton
-      && checkIsPresent({ array: props.records, target: bibNum, type: "bib" });
-    const recordNewRacer = isStartRecordButton
-      && !checkIsPresent({ array: props.records, target: bibNum, type: "bib" });
-    const noRacerSelected = isStartRecordButton
-      && !bibNum && props.buttonText === "record";
-    const startTimer = isStartRecordButton
-      && props.buttonText === "start"
+      const racerAlreadyRecorded = isStartRecordButton
+        && checkIsPresent({ array: records, target: bibNum, type: "bib" });
+      const recordNewRacer = isStartRecordButton && bibNum !== null
+        && !checkIsPresent({ array: records, target: bibNum, type: "bib" });
+      const noRacerSelected = isStartRecordButton
+        && !bibNum && buttonText === "record";
+      const shouldStartTimer = isStartRecordButton
+        && buttonText === "start";
 
-    if (value && !isNaN(value)) {
-      const updated = bibNum !== null ? bibNum + value : value;
-      const parsed = parseInt(updated);
-      setBibNum(parsed);
-      fetchAndSetRecord(parsed);
-      return;
-    }
+      if (value && !isNaN(value)) {
+        const updated = bibNum !== null ? bibNum + value : value;
+        const parsed = parseInt(updated);
+        setBibNum(parsed);
+        fetchAndSetRecord(parsed);
+        return;
+      }
 
-    if (startTimer) {
-      props.setButtonText("record");
-      props.startTimer();
-      return;
-    };
+      if (shouldStartTimer) {
+        setButtonText("record");
+        startTimer();
+        return;
+      };
 
-    if (noRacerSelected) {
-      return;
-    };
+      if (noRacerSelected) {
+        return;
+      };
 
-    if (recordNewRacer) {
-      updateTimeAndPlace({
-        prevTime: null,
-        prevTimeInMs: null,
-        prevPlace: null,
-        bib: null
-      });
-      reset();
-      props.setPlace(prev => prev + 1);
-      return;
-    };
-
-    if (racerAlreadyRecorded) {
-      // TODO: give user feedback
-      console.warn("user already recorded")
-      reset();
-      return;
-    };
-
-    if (isClearButton) {
-      reset();
-      return;
-    };
-
-    if (isSameTimeButton) {
-      const lastRecord = props.records.at(-1);
-      if (lastRecord) {
+      if (recordNewRacer) {
         updateTimeAndPlace({
-          prevTime: lastRecord?.timeRaw,
-          prevPlace: lastRecord?.place,
-          bib: bibNum
+          prevTime: null,
+          prevPlace: null,
+          bib: null
         });
         reset();
-        props.setPlace(prev => prev + 1);
+        setPlace(prev => prev + 1);
+        return;
       };
-      return;
-    };
-  };
+
+      if (racerAlreadyRecorded) {
+        // TODO: give user feedback
+        console.warn("user already recorded")
+        reset();
+        return;
+      };
+
+      if (isClearButton) {
+        reset();
+        return;
+      };
+
+      if (isSameTimeButton) {
+        const lastRecord = records.at(-1);
+        if (lastRecord) {
+          updateTimeAndPlace({
+            prevTime: lastRecord?.timeRaw,
+            prevPlace: lastRecord?.place,
+            bib: bibNum
+          });
+          reset();
+          setPlace(prev => prev + 1);
+        };
+        return;
+      };
+    },
+    [ // dependencies
+      bibNum,
+      fetchAndSetRecord,
+      reset,
+      records,
+      updateTimeAndPlace,
+      setPlace,
+      buttonText,
+      setButtonText,
+      startTimer
+    ]
+  );
 
   return (
     <div className="timer-display">
       <div className="timer-info-display">
-        <h4>Time: {hour}:{min}:{sec}:{milli}</h4>
+        <h4>Time: {displayTime.hour}:{displayTime.min}:{displayTime.sec}:{displayTime.milli}</h4>
         <h4>Place: {props.place}</h4>
         <h4>Bib #: {bibNum}</h4>
         <h4>Name: {fName && lName ? `${fName} ${lName}` : bibNum ? "Not Found" : ""}</h4>
