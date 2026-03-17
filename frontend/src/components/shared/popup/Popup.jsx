@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { titleize, pluralize } from "../../../utils/helpers";
+import { titleize, pluralize, convertToMs } from "../../../utils/helpers";
 import { useTranslation } from "react-i18next";
 import createFieldRenderers from "./fieldRenderers";
 import GeneralField from "./fields/GeneralField";
@@ -27,12 +27,15 @@ function Popup(props) {
   // swaps recorded time and place to updated racer when bib is changed in timer display
   async function switchRacers(data) {
     const user = await props.fetchRecord(data.bib);
+    const timeInMs = typeof(props.data.timeRaw) === 'string'
+      ? convertToMs(props.data.timeRaw)
+      : props.data.timeRaw
     if (user) {
       return {
         ...data,
         ...user,
         place: props.data.place,
-        timeRaw: props.data.timeRaw
+        timeRaw: timeInMs
       };
     } else {
       return {
@@ -42,7 +45,7 @@ function Popup(props) {
         sex: null,
         raceNo: null,
         handicap: null,
-        timeRaw: props.data.timeRaw,
+        timeRaw: timeInMs,
         city: null,
         time: null,
         fName: null,
@@ -57,14 +60,19 @@ function Popup(props) {
   // converts updated time into milliseconds
   async function updateTimerDisplayRecord(data) {
     const bibChanged = data.bib && data.bib !== props.data.bib;
-    const timeChanged = data.timeRaw && data.timeRaw !== props.data.timeRaw;
+    const timeInMs = typeof(data.timeRaw) === "string"
+      ? convertToMs(data.timeRaw)
+      : data.timeRaw;
+    const timeChanged = timeInMs && timeInMs !== props.data.timeRaw;
     let updatedRecord = { ...props.data };
 
     if (bibChanged) {
       const newUser = await switchRacers(data);
       updatedRecord = { ...updatedRecord, ...newUser };
     };
-    if (timeChanged) { updatedRecord.timeRaw = data.timeRaw };
+    if (timeChanged) {
+      updatedRecord.timeRaw = timeInMs;
+    };
     props.edit({oldRecord: props.data, newRecord: updatedRecord});
   };
 
