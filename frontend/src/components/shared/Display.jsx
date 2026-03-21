@@ -5,7 +5,7 @@ import { timeForDisplay } from "../../utils/helpers";
 
 // updates data to display "last name, first name" if names present in headers
 // updates data to display adjusted time for timeAdjusted header in results
-function transformData(data) {
+function transformData({ data, tab }) {
   if (!data) return null;
   const { fName, lName, timeRaw, ...other } = data;
 
@@ -16,7 +16,7 @@ function transformData(data) {
   }
 
   if (timeRaw) {
-    let timeToDisplay = (data.tab === 'result') ? (timeRaw * data.handicap) : timeRaw;
+    let timeToDisplay = (tab === 'result') ? (timeRaw * data.handicap) : timeRaw;
     transObject.timeRaw = timeForDisplay(timeToDisplay);
     transObject.timeAdjusted = timeForDisplay(timeToDisplay);
   };
@@ -32,7 +32,9 @@ function Display(props) {
 
   const shouldDisplayData = props.data && Object.keys(props?.data).length > 0;
   const editButtonTypes = ['cancel', 'update', 'delete'];
-  const displayData = useMemo(() => transformData(props.data), [props.data]);
+  const displayData = useMemo(() => transformData(
+    { data: props.data, tab: props.tab }), [props.data, props.tab]
+  );
 
   // useState to set up headers BEFORE first render to avoid flash on screen
   // condenses first and last names to 'name' in header
