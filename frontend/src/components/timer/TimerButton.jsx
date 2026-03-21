@@ -1,4 +1,5 @@
 import { titleize } from "../../utils/helpers";
+import { memo } from "react";
 
 function TimerButton(props) {
   // set id to provided number or string value
@@ -22,4 +23,4 @@ function TimerButton(props) {
   );
 };
 
-export default TimerButton;
+export default memo(TimerButton);

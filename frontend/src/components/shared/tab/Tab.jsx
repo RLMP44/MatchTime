@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import Display from "../Display";
 import ButtonBar from "../ButtonBar";
-import Timer from "../../timer/Timer";
 
 function Tab(props) {
   const [isDisplayed, setIsDisplayed] = useState(false);
@@ -11,7 +10,7 @@ function Tab(props) {
   }
 
   return (
-    <div className={`tab ${props.tab}-tab`}>
+    <div className={props.tab !== 'timer' ? `tab ${props.tab}-tab` : 'tab'}>
       <div className="records-display-container" onClick={handlePopUp}>
         <Display headers={props.headers} tab={props.tab} />
         {props.records.map(record =>
@@ -30,21 +29,7 @@ function Tab(props) {
           />
         )}
       </div>
-      {props.tab === 'timer' && <Timer
-                                  place={props.place}
-                                  setPlace={props.setPlace}
-                                  buttonText={props.buttonText}
-                                  setButtonText={props.setButtonText}
-                                  timerOn={props.timerOn}
-                                  setTimerOn={props.setTimerOn}
-                                  startTime={props.startTime}
-                                  setStartTime={props.setStartTime}
-                                  startTimer={props.startTimer}
-                                  update={props.update}
-                                  fetchRecord={props.fetchRecord}
-                                  records={props.records}
-                                />
-      }
+
       {props.tab !== 'timer' && <ButtonBar
                                   tab={props.tab}
                                   add={props.add}
@@ -56,4 +41,4 @@ function Tab(props) {
   );
 }
 
-export default Tab;
+export default memo(Tab);

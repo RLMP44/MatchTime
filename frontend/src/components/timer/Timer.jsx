@@ -3,13 +3,20 @@ import { checkIsPresent, range, prepTimeForDisplay } from "../../utils/helpers";
 import TimerButton from "./TimerButton";
 
 function Timer(props) {
-  const [timeInMs, setTimeInMs] = useState(0);
+  const { timeInMs, startTimer } = props.timer;
   const [displayTime, setDisplayTime] = useState({
     hour: "HH",
     min: "MM",
     sec: "SS",
     milli: "mm"
-  })
+  });
+
+  useEffect(() => {
+    setDisplayTime(() => {
+      const { padHours, padMins, padSeconds, padMillis } = prepTimeForDisplay(timeInMs);
+      return { hour: padHours, min: padMins, sec: padSeconds, milli: padMillis };
+    });
+  }, [timeInMs]);
 
   const [bibNum, setBibNum] = useState(null);
   const [currentRecord, setCurrentRecord] = useState(null);
@@ -23,33 +30,8 @@ function Timer(props) {
     fetchRecord,
     buttonText,
     setButtonText,
-    records,
-    startTimer
+    records
   } = props;
-  // set callback for timer to avoid starting it on render
-
-
-  // ---------------------- TIMER LOGIC ----------------------
-  useEffect(() => {
-    if (!props.timerOn) return;
-
-    const interval = setInterval(() => {
-      // performance.now() is the most accurate and can keep calculating in background
-      const timeElapsed = (performance.now() - props.startTime);
-      setTimeInMs(timeElapsed);
-      const { padHours, padMins, padSeconds, padMillis } = prepTimeForDisplay(timeElapsed);
-
-      setDisplayTime({
-        hour: padHours,
-        min: padMins,
-        sec: padSeconds,
-        milli: padMillis
-      })
-      // update timer loop at 30 Hz (30 updates per second)
-    }, 30);
-
-    return () => clearInterval(interval);
-  }, [props.timerOn, props.startTime]);
 
 
   // ---------------------- UPDATE LOGIC ----------------------

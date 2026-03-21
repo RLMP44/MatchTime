@@ -2,13 +2,39 @@ import Header from "./shared/Header";
 import Footer from "./shared/Footer";
 import Tab from "./shared/tab/Tab";
 import TabButton from "./shared/tab/TabButton";
-import { useState, useRef, useEffect } from "react";
+import TimeKeeper from "./timer/TimeKeeper";
+import Timer from "./timer/Timer";
+
+import { useState, useRef, useCallback, useMemo, memo } from "react";
 import handicapsJSON from '../handicaps.json';
 import { checkIsPresent, setMinMaxAge } from "../utils/helpers";
 import TimerIcon from '@mui/icons-material/Timer';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd';
+
+const timerHeaders = ['place', 'bib', 'timeRaw', 'lName', 'fName'];
+const categoryHeaders = ['category', 'raceNo'];
+const racerHeaders = ['bib', 'fName', 'lName', 'category', 'division', 'handicap'];
+const resultHeaders = ['place', 'timeRaw', 'bib', 'lName', 'fName', 'city', 'category', 'division', 'sex'];
+const headersObject = {
+  timer: timerHeaders,
+  category: categoryHeaders,
+  racer: racerHeaders,
+  result: resultHeaders
+};
+
+const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
+const timerRecordsEditFields = ['bib', 'timeRaw'];
+const categoryFields = ['category', 'raceNo', 'sex', 'plusFive', 'plusTen'];
+const racerFields = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'category', 'division'];
+const fieldsObject = {
+  timer: timerRecordsEditFields,
+  category: categoryFields,
+  racer: racerFields,
+  import: importExportFields,
+  export: importExportFields
+};
 
 function App() {
   var records = [
@@ -42,34 +68,17 @@ function App() {
   const [timerDisplayRecords, setTimerDisplayRecords] = useState([]);
   const [tab, setTab] = useState("timer");
   const [place, setPlace] = useState(1);
-  const [timerOn, setTimerOn] = useState(false);
-  const [startTime, setStartTime] = useState(null);
   const [buttonText, setButtonText] = useState("start");
   const [handicaps, setHandicaps] = useState(handicapsJSON);
 
-  const timerHeaders = ['place', 'bib', 'timeRaw', 'lName', 'fName'];
-  const categoryHeaders = ['category', 'raceNo'];
-  const racerHeaders = ['bib', 'fName', 'lName', 'category', 'division', 'handicap'];
-  const resultHeaders = ['place', 'timeRaw', 'bib', 'lName', 'fName', 'city', 'category', 'division', 'sex'];
-  const headersObject = {
-    timer: timerHeaders,
-    category: categoryHeaders,
-    racer: racerHeaders,
-    result: resultHeaders
-  };
+  const headers = useMemo(() => headersObject[tab], [tab]);
+  const fields = useMemo(() => fieldsObject[tab], [tab]);
+  const memoCategories = useMemo(() => displayCategories, [displayCategories]);
+  const memoRecords = useMemo(() => displayRecords, [displayRecords]);
+  const memoTimerRecords = useMemo(() => timerDisplayRecords, [timerDisplayRecords]);
 
-  const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
-  const timerRecordsEditFields = ['bib', 'timeRaw'];
-  const categoryFields = ['category', 'raceNo', 'sex', 'plusFive', 'plusTen'];
-  const racerFields = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'category', 'division'];
-  const fieldsObject = {
-    timer: timerRecordsEditFields,
-    category: categoryFields,
-    racer: racerFields,
-    import: importExportFields,
-    export: importExportFields
-  };
 
+  // -------------- DB LOGIC --------------
   // load handicaps from backend on first render
   // useEffect(() => {
   //   async function loadHandicaps() {
@@ -79,19 +88,6 @@ function App() {
   //   loadHandicaps();
   // }, []);
 
-  // -------------- TIMER LOGIC --------------
-  function startTimer() {
-    setStartTime(performance.now());
-    setTimerOn(true);
-  };
-
-  // function stopTimer() {
-  //   setTimerOn(false);
-  //   // TODO: create race end button away from timer UI to avoid accidents
-  // };
-
-
-  // -------------- DB LOGIC --------------
   // async function fetchHandicaps() {
   //   const response = await fetch('/handicaps');
   //   return response.json();
@@ -137,17 +133,19 @@ function App() {
 
 
   // -------------- FRONT END LOGIC --------------
-  async function fetchRacerRecord(bib) {
+  const fetchRacerRecord = useCallback(
+    async (bib) => {
     const racerRecord = displayRecords.find((record) => {
       return record.bib === bib;
     });
     return racerRecord;
-  };
+    }, [displayRecords]
+  );
 
 
   // -------------- TIMER RECORD DISPLAY LOGIC --------------
   // updates a single record with new time and/or placement
-  function updateDisplayedRecord(record) {
+  const updateDisplayedRecord = useCallback((record) => {
     updateDBRecord(record);
     // TODO: add new time and placement
     // TODO: send to backend function and use SQL to update single record only
@@ -162,10 +160,11 @@ function App() {
     setTimerDisplayRecords((prevRecords) => {
       return [...prevRecords, record];
     });
-  };
+  }, []);
 
   // takes 2 records => replaces a previously displayed racer record with an updated racer record on timer record display, and resets the old record
-  function swapDisplayedRacers({ oldRecord: oldR, newRecord: newR }) {
+  const swapDisplayedRacers = useCallback(
+    ({ oldRecord: oldR, newRecord: newR }) => {
     resetDBRecord(oldR);
     updateDBRecord(newR);
     setTimerDisplayRecords((prevRecords) =>
@@ -173,10 +172,11 @@ function App() {
         return record.id === oldR.id ? newR : record
       })
     );
-  };
+  }, []);
 
   // deletes a racer record from the timer record display and resets the racer's time/place in the DB
-  function deleteDisplayedRecord(recordToDelete) {
+  const deleteDisplayedRecord = useCallback(
+    (recordToDelete) => {
     resetDBRecord(recordToDelete);
     setTimerDisplayRecords((prevRecords) => {
       // filter out deleted record
@@ -192,13 +192,14 @@ function App() {
     });
     // TODO: need to update places in DB
     setPlace(prev => prev - 1);
-  };
+  }, []);
 
 
   // -------------- RACER LOGIC --------------
   // adds a new racer to the database
   // and instantaneously updates displayed records in timer and racer tabs
-  function addRacer(racerData) {
+  const addRacer = useCallback(
+    (racerData) => {
     const newRacer = {
       ...racerData,
       id: nextID.current,
@@ -225,11 +226,12 @@ function App() {
       })
     );
     nextID.current += 1;
-  };
+  }, [handicaps]);
 
   // edits a racer's personal information
   // and instantaneously updates the records displayed in timer tab and racers tab
-  function editRacer({ oldData: oldR, newData: newR }) {
+  const editRacer = useCallback(
+    ({ oldData: oldR, newData: newR }) => {
     // object spreading to update only new values
     var updatedRacer = {
       ...oldR,
@@ -252,11 +254,12 @@ function App() {
       })
     );
     updateDBRecord(updatedRacer);
-  };
+  }, []);
 
   // deletes a racer from the database
   // and from timer display (if relevant) and racers' tab
-  function deleteRacer(racerToDelete) {
+  const deleteRacer = useCallback(
+    (racerToDelete) => {
     const isDisplayed = checkIsPresent({
       array: timerDisplayRecords,
       target: racerToDelete.bib,
@@ -275,20 +278,22 @@ function App() {
     });
 
     deleteDBRacer(racerToDelete);
-  };
+  }, [deleteDisplayedRecord, timerDisplayRecords]);
 
 
   // -------------- CATEGORY LOGIC --------------
-  function addCategory(category) {
+  const addCategory = useCallback(
+    (category) => {
     setDisplayCategories(prev =>
       [...prev,
         { ...category, id: nextCatID.current }
       ]);
     addDBCategory(category);
     nextCatID.current += 1;
-  };
+  }, []);
 
-  function editCategory({ newData: newData, oldData: oldData, }) {
+  const editCategory = useCallback(
+    ({ newData: newData, oldData: oldData, }) => {
     const updatedCategory = {
       ...oldData,
       ...newData
@@ -297,96 +302,125 @@ function App() {
       return cat.id === updatedCategory.id ? updatedCategory : cat;
     }));
     updateDBCategory(updatedCategory);
-  };
+  }, []);
 
-  function deleteCategory(catToDelete) {
+  const deleteCategory = useCallback(
+    (catToDelete) => {
     setDisplayCategories(prev => prev.filter(cat => cat.id !== catToDelete.id));
     // TODO: remove category from all racers with it currently listed
     deleteDBCategory(catToDelete);
-  };
+  }, []);
+
+
+  // -------------- TAB SWITCH LOGIC --------------
+  // create function once to prevent recreation every rerender
+  const goToTimer = useCallback(() => setTab("timer"), []);
+  const goToCategory = useCallback(() => setTab("category"), []);
+  const goToRacer = useCallback(() => setTab("racer"), []);
+  const goToResult = useCallback(() => setTab("result"), []);
+
+  const TIMER_ICON = <TimerIcon />;
+  const CATEGORY_ICON = <FormatListBulletedAddIcon />;
+  const RACER_ICON = <DirectionsRunIcon />;
+  const RESULT_ICON = <EmojiEventsIcon />;
+
+  const TabButtonBar = memo(function TabButtonBar({ tab, goToTimer, goToCategory, goToRacer, goToResult }) {
+  return (
+    <div className="tab-display">
+      <TabButton active={tab === "timer"} icon={TIMER_ICON} onClick={goToTimer} />
+      <TabButton active={tab === "category"} icon={CATEGORY_ICON} onClick={goToCategory} />
+      <TabButton active={tab === "racer"} icon={RACER_ICON} onClick={goToRacer} />
+      <TabButton active={tab === "result"} icon={RESULT_ICON} onClick={goToResult} />
+    </div>
+  );
+});
 
 
   return (
     <div className="App">
       <Header />
       <div className="main-content">
-        <div className="tab-display">
-          <TabButton
-            active={tab === "timer"}
-            icon={<TimerIcon />}
-            onClick={() => setTab("timer")}
-          />
-          <TabButton
-            active={tab === "category"}
-            icon={<FormatListBulletedAddIcon />}
-            onClick={() => setTab("category")}
-          />
-          <TabButton
-            active={tab === "racer"}
-            icon={<DirectionsRunIcon />}
-            onClick={() => setTab("racer")}
-          />
-          <TabButton
-            active={tab === "result"}
-            icon={<EmojiEventsIcon />}
-            onClick={() => setTab("result")}
-          />
-        </div>
+        <TabButtonBar
+          tab={tab}
+          goToTimer={goToTimer}
+          goToCategory={goToCategory}
+          goToRacer={goToRacer}
+          goToResult={goToResult}
+        />
 
-        {tab === "timer" && <Tab
+        <TimeKeeper>
+          {timer => (
+            <>
+              {tab === "timer" && (
+                <div className="timer-tab">
+                            <Tab
                               tab={tab}
-                              headers={headersObject[tab]}
-                              fields={fieldsObject[tab]}
+                              headers={headers}
+                              fields={fields}
                               setPlace={setPlace}
                               place={place}
-                              timerOn={timerOn}
-                              setTimerOn={setTimerOn}
                               buttonText={buttonText}
                               setButtonText={setButtonText}
-                              startTime={startTime}
-                              startTimer={startTimer}
-                              setStartTime={setStartTime}
-                              records={timerDisplayRecords}
+                              records={memoTimerRecords}
                               edit={swapDisplayedRacers}
                               fetchRecord={fetchRacerRecord}
                               delete={deleteDisplayedRecord}
                               update={updateDisplayedRecord}
                             />
-        }
-        {tab === "category" && <Tab
+                            <Timer
                               tab={tab}
-                              headers={headersObject[tab]}
-                              fields={fieldsObject[tab]}
-                              fieldsObj={fieldsObject}
-                              records={displayCategories}
-                              add={addCategory}
-                              edit={editCategory}
-                              delete={deleteCategory}
+                              timer={timer}
+                              headers={headers}
+                              fields={fields}
+                              setPlace={setPlace}
+                              place={place}
+                              buttonText={buttonText}
+                              setButtonText={setButtonText}
+                              records={memoTimerRecords}
+                              edit={swapDisplayedRacers}
+                              fetchRecord={fetchRacerRecord}
+                              delete={deleteDisplayedRecord}
+                              update={updateDisplayedRecord}
                             />
-        }
-        {tab === "racer" && <Tab
-                              tab={tab}
-                              headers={headersObject[tab]}
-                              fields={fieldsObject[tab]}
-                              fieldsObj={fieldsObject}
-                              records={displayRecords}
-                              categories={displayCategories}
-                              add={addRacer}
-                              edit={editRacer}
-                              delete={deleteRacer}
-                            />
-        }
-        {tab === "result" && <Tab
-                              tab={tab}
-                              headers={headersObject[tab]}
-                              fieldsObj={fieldsObject}
-                              records={timerDisplayRecords}
-                            />
-        }
+                </div>
+              )}
+              {tab === "category" && <Tab
+                                    tab={tab}
+                                    headers={headers}
+                                    fields={fields}
+                                    fieldsObj={fieldsObject}
+                                    records={memoCategories}
+                                    add={addCategory}
+                                    edit={editCategory}
+                                    delete={deleteCategory}
+                                  />
+              }
+              {tab === "racer" && <Tab
+                                    tab={tab}
+                                    headers={headers}
+                                    fields={fields}
+                                    fieldsObj={fieldsObject}
+                                    records={memoRecords}
+                                    categories={memoCategories}
+                                    add={addRacer}
+                                    edit={editRacer}
+                                    delete={deleteRacer}
+                                  />
+              }
+              {tab === "result" && <Tab
+                                    tab={tab}
+                                    headers={headers}
+                                    fieldsObj={fieldsObject}
+                                    records={memoTimerRecords}
+                                  />
+              }
+          </>
+        )}
+      </TimeKeeper>
       </div>
       <Footer />
     </div>
   );
 };
 
-export default App;
+export default memo(App);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { titleize, pluralize, convertToMs } from "../../../utils/helpers";
 import { useTranslation } from "react-i18next";
 import createFieldRenderers from "./fieldRenderers";
@@ -7,7 +7,10 @@ import GeneralField from "./fields/GeneralField";
 function Popup(props) {
   const { t } = useTranslation();
   const [formData, setFormData] = useState({ ...props.data });
-  const fieldRenderers = createFieldRenderers({ props, formData, setFormData });
+  const fieldRenderers = useMemo(
+    () => createFieldRenderers({ props, formData, setFormData }),
+    [props, formData]
+  );
 
   function setTitle(crud, target) {
     return (crud === 'import' || crud === 'export') ?
