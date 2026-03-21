@@ -324,16 +324,19 @@ function App() {
   const RACER_ICON = <DirectionsRunIcon />;
   const RESULT_ICON = <EmojiEventsIcon />;
 
-  const TabButtonBar = memo(function TabButtonBar({ tab, goToTimer, goToCategory, goToRacer, goToResult }) {
-  return (
-    <div className="tab-display">
-      <TabButton active={tab === "timer"} icon={TIMER_ICON} onClick={goToTimer} />
-      <TabButton active={tab === "category"} icon={CATEGORY_ICON} onClick={goToCategory} />
-      <TabButton active={tab === "racer"} icon={RACER_ICON} onClick={goToRacer} />
-      <TabButton active={tab === "result"} icon={RESULT_ICON} onClick={goToResult} />
-    </div>
-  );
-});
+  const TabButtonBar = memo(function TabButtonBar({
+    tab, goToTimer, goToCategory, goToRacer, goToResult
+  }) {
+    return (
+      <div className="tab-display">
+        <TabButton active={tab === "timer"} icon={TIMER_ICON} onClick={goToTimer} />
+        <TabButton active={tab === "category"} icon={CATEGORY_ICON} onClick={goToCategory} />
+        <TabButton active={tab === "racer"} icon={RACER_ICON} onClick={goToRacer} />
+        <TabButton active={tab === "result"} icon={RESULT_ICON} onClick={goToResult} />
+      </div>
+    );
+  }
+);
 
 
   return (

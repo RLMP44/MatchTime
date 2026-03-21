@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { checkIsPresent, range, prepTimeForDisplay } from "../../utils/helpers";
-import TimerButton from "./TimerButton";
+import { checkIsPresent, range, prepTimeForDisplay, titleize } from "../../utils/helpers";
 
 function Timer(props) {
   const { timeInMs, startTimer } = props.timer;
@@ -177,40 +176,12 @@ function Timer(props) {
       </div>
       <div className="timer-buttons-container">
         {timerNums.map((num) =>
-          <TimerButton
-            key={num}
-            value={num}
-            type={'reg'}
-            onClick={handleClick}
-          />
+          <button key={num} onClick={handleClick} id={`button-${num}`} className="timer-button timer-btn-reg" value={num}>{num}</button>
         )}
-        <TimerButton
-          key={'same-time'}
-          value={'same-time'}
-          label={'Same Time'}
-          type={'color'}
-          onClick={handleClick}
-        />
-        <TimerButton
-          key={0}
-          value={0}
-          type={'reg'}
-          onClick={handleClick}
-        />
-        <TimerButton
-          key={'clear'}
-          value={'clear'}
-          label={'Clear'}
-          type={'color'}
-          onClick={handleClick}
-        />
-        <TimerButton
-          key={'start-record'}
-          value={'start-record'}
-          label={props.buttonText}
-          type={'color'}
-          onClick={handleClick}
-        />
+        <button onClick={handleClick} id="same-time-button" className="timer-button timer-btn-color">Same<br></br>Time</button>
+        <button onClick={handleClick} id="button-0" className="timer-button timer-btn-reg" value="0">0</button>
+        <button onClick={handleClick} id="clear-button" className="timer-button timer-btn-color">Clear</button>
+        <button onClick={handleClick} id="start-record-button" className="timer-button timer-btn-color">{titleize(props.buttonText)}</button>
       </div>
     </div>
   );
