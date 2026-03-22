@@ -162,8 +162,7 @@ function Timer(props) {
       setPlace,
       buttonText,
       setButtonText,
-      startTimer,
-      currentRecord
+      startTimer
     ]
   );
 
