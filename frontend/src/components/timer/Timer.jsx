@@ -61,9 +61,9 @@ function Timer(props) {
       if (newRecord) {
         setCurrentRecord(newRecord);
       } else {
-        // temporarily set id as bib number until backend is hooked up
+        // temporarily set id as bib number +1 until backend is hooked up
         setCurrentRecord({
-          id: parsedBib,
+          id: parsedBib + 1,
           place: place,
           bib: parsedBib,
           timeRaw: timeInMs,
@@ -163,7 +163,8 @@ function Timer(props) {
       setPlace,
       buttonText,
       setButtonText,
-      startTimer
+      startTimer,
+      currentRecord
     ]
   );
 
