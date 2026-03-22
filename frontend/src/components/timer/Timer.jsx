@@ -89,9 +89,8 @@ function Timer(props) {
       const isClearButton = target.id === "clear-button";
       const isSameTimeButton = target.id === "same-time-button";
 
-      const racerAlreadyRecorded = isStartRecordButton
-        && checkIsPresent({ array: records, target: bibNum, type: "bib" })
-        || currentRecord?.bib == bibNum;
+      const racerAlreadyRecorded = isStartRecordButton || isSameTimeButton
+        && checkIsPresent({ array: records, target: bibNum, type: "bib" });
       const recordNewRacer = isStartRecordButton && bibNum !== null
         && !checkIsPresent({ array: records, target: bibNum, type: "bib" });
       const noRacerSelected = isStartRecordButton
