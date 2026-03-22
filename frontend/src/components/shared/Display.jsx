@@ -3,6 +3,8 @@ import { useState, memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { timeForDisplay } from "../../utils/helpers";
 
+const defaultHandicap = 1;
+
 // updates data to display "last name, first name" if names present in headers
 // updates data to display adjusted time for timeAdjusted header in results
 function transformData({ data, tab }) {
@@ -16,7 +18,7 @@ function transformData({ data, tab }) {
   }
 
   if (timeRaw) {
-    let timeToDisplay = (tab === 'result') ? (timeRaw * data.handicap) : timeRaw;
+    let timeToDisplay = (tab === 'result') ? (timeRaw * (data?.handicap || defaultHandicap)) : timeRaw;
     transObject.timeRaw = timeForDisplay(timeToDisplay);
     transObject.timeAdjusted = timeForDisplay(timeToDisplay);
   };

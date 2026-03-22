@@ -219,7 +219,7 @@ function App() {
             ...record,
             ...newRacer,
             place: record.place,
-            timeRaw: record.timeRaw,
+            timeRaw: record.timeRaw
           };
         }
         return record;
@@ -232,29 +232,37 @@ function App() {
   // and instantaneously updates the records displayed in timer tab and racers tab
   const editRacer = useCallback(
     ({ oldData: oldR, newData: newR }) => {
-    // object spreading to update only new values
-    var updatedRacer = {
-      ...oldR,
-      ...newR,
-    };
-    setDisplayRecords(prev =>
-      prev.map(record =>
-        record.id === oldR.id ? updatedRacer : record
-      )
-    );
-    setTimerDisplayRecords(prev =>
-      prev.map(record => {
-        if (record.id !== oldR.id) {
-          return record;
-        }
-        return {
-          ...record,
-          ...newR
-        }
-      })
-    );
-    updateDBRecord(updatedRacer);
-  }, []);
+      const ageChanged = oldR.age !== newR.age;
+      const sexChanged = oldR.sex !== newR.sex;
+      const handicapMissing = newR.handicap === undefined;
+
+      const shouldRecalculateHandicap =
+        handicapMissing ||
+        (ageChanged || sexChanged) && oldR.handicap === newR.handicap;
+
+      // object spreading to update only new values
+      var updatedRacer = {
+        ...oldR,
+        ...newR,
+        ...(shouldRecalculateHandicap && {
+          handicap: handicaps[newR.sex ?? oldR.sex][newR.age ?? oldR.age]
+        })
+      };
+
+      if (shouldRecalculateHandicap) {
+        updatedRacer.handicap = handicaps[updatedRacer.sex][updatedRacer.age];
+      };
+
+      setDisplayRecords(prev =>
+        prev.map(record => record.id === oldR.id ? updatedRacer : record)
+      );
+      setTimerDisplayRecords(prev =>
+        prev.map(record =>
+          (record.id !== oldR.id) ? record : { ...record, ...updatedRacer }
+        )
+      );
+      updateDBRecord(updatedRacer);
+  }, [handicaps]);
 
   // deletes a racer from the database
   // and from timer display (if relevant) and racers' tab
