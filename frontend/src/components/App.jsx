@@ -63,7 +63,7 @@ function App() {
   const nextID = useRef(7);
   const nextCatID = useRef(7);
   // TODO: timerDisplayRecords to be a filtered version of displayRecords
-  // filter for time/rawTime, and also order by ascension (not calculating handicaps yet)
+  // filter for time/rawTime, and also order by ascension
   // this way timerDisplayRecords is updated with user data if prev not found
   const [timerDisplayRecords, setTimerDisplayRecords] = useState([]);
   const [tab, setTab] = useState("timer");
@@ -144,34 +144,26 @@ function App() {
 
 
   // -------------- TIMER RECORD DISPLAY LOGIC --------------
-  // updates a single record with new time and/or placement
-  const updateDisplayedRecord = useCallback((record) => {
-    updateDBRecord(record);
-    // TODO: add new time and placement
-    // TODO: send to backend function and use SQL to update single record only
-    // instead of updating entire array/db
-    // temporary until backend is established
-    // TODO: recalculate placement if time is reduced or increased
-    setDisplayRecords((prevRecords) => {
-      return prevRecords.map((oldRecord) => {
-        return (oldRecord.id === record.id) ? record : oldRecord
-      });
-    });
-    setTimerDisplayRecords((prevRecords) => {
-      return [...prevRecords, record];
-    });
-  }, []);
-
-  // takes 2 records => replaces a previously displayed racer record with an updated racer record on timer record display, and resets the old record
-  const swapDisplayedRacers = useCallback(
-    ({ oldRecord: oldR, newRecord: newR }) => {
+  // takes 2 records => updates a single, previously displayed record
+  // with new time and/or placement on timer record display,
+  // resets the old record and updates all record displays
+  const updateDisplayedRecords = useCallback(
+    ({ oldRecord: oldR, newRecord: updated }) => {
     resetDBRecord(oldR);
-    updateDBRecord(newR);
-    setTimerDisplayRecords((prevRecords) =>
-      prevRecords.map((record) => {
-        return record.id === oldR.id ? newR : record
-      })
+    updateDBRecord(updated);
+    // TODO: recalculate placement if time is reduced or increased
+    setDisplayRecords(prev =>
+      prev.map(prevRecord =>
+        prevRecord.id === updated.id ? { ...updated } : prevRecord
+      )
     );
+    setTimerDisplayRecords(prev => {
+      const index = prev.findIndex(record => record?.id === oldR?.id);
+      if (index === -1) { return [...prev, updated] };
+      const updatedRecords = [...prev];
+      updatedRecords[index] = { ...updatedRecords[index], ...updated};
+      return updatedRecords;
+    });
   }, []);
 
   // deletes a racer record from the timer record display and resets the racer's time/place in the DB
@@ -231,7 +223,7 @@ function App() {
   // edits a racer's personal information
   // and instantaneously updates the records displayed in timer tab and racers tab
   const editRacer = useCallback(
-    ({ oldData: oldR, newData: newR }) => {
+    ({ oldRecord: oldR, newRecord: newR }) => {
       const ageChanged = oldR.age !== newR.age;
       const sexChanged = oldR.sex !== newR.sex;
       const handicapMissing = newR.handicap === undefined;
@@ -253,16 +245,9 @@ function App() {
         updatedRacer.handicap = handicaps[updatedRacer.sex][updatedRacer.age];
       };
 
-      setDisplayRecords(prev =>
-        prev.map(record => record.id === oldR.id ? updatedRacer : record)
-      );
-      setTimerDisplayRecords(prev =>
-        prev.map(record =>
-          (record.id !== oldR.id) ? record : { ...record, ...updatedRacer }
-        )
-      );
+      updateDisplayedRecords({ oldRecord: oldR, newRecord: updatedRacer })
       updateDBRecord(updatedRacer);
-  }, [handicaps]);
+  }, [handicaps, updateDisplayedRecords]);
 
   // deletes a racer from the database
   // and from timer display (if relevant) and racers' tab
@@ -343,8 +328,7 @@ function App() {
         <TabButton active={tab === "result"} icon={RESULT_ICON} onClick={goToResult} />
       </div>
     );
-  }
-);
+  });
 
 
   return (
@@ -373,25 +357,20 @@ function App() {
                               buttonText={buttonText}
                               setButtonText={setButtonText}
                               records={memoTimerRecords}
-                              edit={swapDisplayedRacers}
                               fetchRecord={fetchRacerRecord}
                               delete={deleteDisplayedRecord}
-                              update={updateDisplayedRecord}
+                              update={updateDisplayedRecords}
                             />
                             <Timer
                               tab={tab}
                               timer={timer}
-                              headers={headers}
-                              fields={fields}
                               setPlace={setPlace}
                               place={place}
                               buttonText={buttonText}
                               setButtonText={setButtonText}
                               records={memoTimerRecords}
-                              edit={swapDisplayedRacers}
                               fetchRecord={fetchRacerRecord}
-                              delete={deleteDisplayedRecord}
-                              update={updateDisplayedRecord}
+                              update={updateDisplayedRecords}
                             />
                 </div>
               )}
@@ -413,6 +392,7 @@ function App() {
                                     fieldsObj={fieldsObject}
                                     records={memoRecords}
                                     categories={memoCategories}
+                                    update={updateDisplayedRecords}
                                     add={addRacer}
                                     edit={editRacer}
                                     delete={deleteRacer}

@@ -76,7 +76,7 @@ function Popup(props) {
     if (timeChanged) {
       updatedRecord.timeRaw = timeInMs;
     };
-    props.edit({oldRecord: props.data, newRecord: updatedRecord});
+    props.update({ oldRecord: props.data, newRecord: updatedRecord })
   };
 
 
@@ -84,11 +84,10 @@ function Popup(props) {
   async function handleSubmit(event) {
     const button = event.target.id;
     let formattedForm = formatRecord(formData);
-
     if (button === "update-button" && props.tab === "timer") {
       updateTimerDisplayRecord(formattedForm);
     } else if (button === 'update-button') {
-      props.edit({ newData: formattedForm, oldData: props.data });
+      props.edit({ oldRecord: props.data, newRecord: formattedForm });
     } else if (button === 'add-button') {
       props.add(formattedForm);
       setFormData({});

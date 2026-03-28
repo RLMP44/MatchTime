@@ -47,7 +47,7 @@ function Timer(props) {
       };
 
       setCurrentRecord(updatedRecord);
-      update(updatedRecord);
+      update({ oldRecord: currentRecord, newRecord: updatedRecord });
     },
     [currentRecord, update, place, timeInMs]
   );
@@ -93,8 +93,8 @@ function Timer(props) {
         && checkIsPresent({ array: records, target: bibNum, type: "bib" });
       const recordNewRacer = isStartRecordButton && bibNum !== null
         && !checkIsPresent({ array: records, target: bibNum, type: "bib" });
-      const noRacerSelected = isStartRecordButton
-        && !bibNum && buttonText === "record";
+      const noRacerSelected = isStartRecordButton && buttonText === "record"
+        && !lName || !bibNum;
       const shouldStartTimer = isStartRecordButton
         && buttonText === "start";
 
@@ -113,6 +113,7 @@ function Timer(props) {
       };
 
       if (noRacerSelected) {
+        console.warn("No racer selected")
         return;
       };
 
@@ -129,7 +130,7 @@ function Timer(props) {
 
       if (racerAlreadyRecorded) {
         // TODO: give user feedback
-        console.warn("user already recorded")
+        console.warn("User already recorded")
         reset();
         return;
       };
@@ -155,6 +156,7 @@ function Timer(props) {
     },
     [ // dependencies
       bibNum,
+      lName,
       fetchAndSetRecord,
       reset,
       records,
