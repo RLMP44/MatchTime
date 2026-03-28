@@ -1,3 +1,5 @@
+import React from 'react';
+
 function TabButton(props) {
   return (
     <button
@@ -9,4 +11,4 @@ function TabButton(props) {
   );
 }
 
-export default TabButton;
+export default React.memo(TabButton);

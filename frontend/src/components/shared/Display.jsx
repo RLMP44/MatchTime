@@ -1,7 +1,30 @@
 import Popup from "./popup/Popup";
-import { useState } from "react";
+import { useState, memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { timeForDisplay } from "../../utils/helpers";
+
+const defaultHandicap = 1;
+
+// updates data to display "last name, first name" if names present in headers
+// updates data to display adjusted time for timeAdjusted header in results
+function transformData({ data, tab }) {
+  if (!data) return null;
+  const { fName, lName, timeRaw, ...other } = data;
+
+  let transObject = { ...other };
+
+  if (fName || lName) {
+    transObject.name = `${lName ?? ""}, ${fName ?? ""}`;
+  }
+
+  if (timeRaw) {
+    let timeToDisplay = (tab === 'result') ? (timeRaw * (data?.handicap || defaultHandicap)) : timeRaw;
+    transObject.timeRaw = timeForDisplay(timeToDisplay);
+    transObject.timeAdjusted = timeForDisplay(timeToDisplay);
+  };
+
+  return transObject;
+};
 
 function Display(props) {
   const { t } = useTranslation();
@@ -11,7 +34,9 @@ function Display(props) {
 
   const shouldDisplayData = props.data && Object.keys(props?.data).length > 0;
   const editButtonTypes = ['cancel', 'update', 'delete'];
-  const displayData = transformData(props.data);
+  const displayData = useMemo(() => transformData(
+    { data: props.data, tab: props.tab }), [props.data, props.tab]
+  );
 
   // useState to set up headers BEFORE first render to avoid flash on screen
   // condenses first and last names to 'name' in header
@@ -35,27 +60,6 @@ function Display(props) {
     }
     return newHeaders;
   });
-
-  // updates data to display "last name, first name" if names present in headers
-  // updates data to display adjusted time for timeAdjusted header in results
-  function transformData(data) {
-    if (!data) return null;
-    const { fName, lName, timeRaw, ...other } = data;
-
-    let transObject = { ...other };
-
-    if (fName || lName) {
-      transObject.name = `${lName ?? ""}, ${fName ?? ""}`;
-    }
-
-    if (timeRaw) {
-      let timeToDisplay = (props.tab === 'result') ? (timeRaw * props.data?.handicap) : timeRaw;
-      transObject.timeRaw = timeForDisplay(timeToDisplay);
-      transObject.timeAdjusted = timeForDisplay(timeToDisplay);
-    };
-
-    return transObject;
-  };
 
   function handlePopUp() {
     if (props.tab === "result") { return };
@@ -96,6 +100,7 @@ function Display(props) {
             categories={props.categories}
             setDisplayRecords={props.setDisplayRecords}
             fetchRecord={props.fetchRecord}
+            update={props.update}
             edit={props.edit}
             delete={props.delete}
           />
@@ -105,4 +110,4 @@ function Display(props) {
   );
 }
 
-export default Display;
+export default memo(Display);

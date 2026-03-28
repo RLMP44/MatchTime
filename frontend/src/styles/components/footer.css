@@ -1,6 +1,8 @@
 footer {
   position: static;
   text-align: center;
+  align-self: center;
+  align-content: center;
   width: 100%;
   height: 2.5rem;
 }
