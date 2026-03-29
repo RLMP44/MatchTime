@@ -32,9 +32,9 @@ function ButtonBar(props) {
   return (
     <div>
       <div className={`buttons-bar ${props.tab}-bar`}>
-        <button id='import-btn' className="button-bar-btn" alt={`Import ${pluralize(props.tab)}`} onClick={handlePopUp}><FileDownloadIcon /></button>
-        <button id='add-btn' className="button-bar-btn" alt={`Add ${props.tab}`} onClick={handlePopUp}><AddCircleIcon /></button>
-        <button id='export-btn' className="button-bar-btn" alt={`Export ${pluralize(props.tab)}`} onClick={handlePopUp}><FileUploadIcon /></button>
+        <button id='import-btn' className="button-bar-btn" aria-label={`Import ${pluralize(props.tab)}`} onClick={handlePopUp}><FileDownloadIcon /></button>
+        <button id='add-btn' className="button-bar-btn" aria-label={`Add ${props.tab}`} onClick={handlePopUp}><AddCircleIcon /></button>
+        <button id='export-btn' className="button-bar-btn" aria-label={`Export ${pluralize(props.tab)}`} onClick={handlePopUp}><FileUploadIcon /></button>
       </div>
 
       {/* ------------- POPUP ------------- */}
