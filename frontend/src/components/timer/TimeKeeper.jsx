@@ -6,17 +6,23 @@ function TimeKeeper({ children }) {
     const [timerOn, setTimerOn] = useState(false);
     const [startTime, setStartTime] = useState(null);
 
+    const updateTime = () => {
+      if (startTime == null) return;
+      // performance.now() is the most accurate and can keep calculating in background
+      setTimeInMs(performance.now() - startTime);
+    };
+
     useEffect(() => {
       if (!timerOn) return;
-
-      const interval = setInterval(() => {
-        // performance.now() is the most accurate and can keep calculating in background
-        setTimeInMs(performance.now() - startTime);
-        // update timer loop at 30 Hz (30 updates per second)
-      }, 30);
+      // update timer loop at 30 Hz (30 updates per second)
+      const interval = setInterval(updateTime, 30);
 
       return () => clearInterval(interval);
-    }, [timerOn, startTime]);
+    }, [timerOn]);
+
+    function manualUpdate() {
+      updateTime();
+    }
 
     function startTimer() {
       setStartTime(performance.now());
@@ -25,7 +31,7 @@ function TimeKeeper({ children }) {
 
     function stopTimer() {setTimerOn(false)};
 
-    return { timerOn, timeInMs, startTimer, stopTimer };
+    return { timerOn, timeInMs, startTimer, stopTimer, manualUpdate };
   }
   // move timer out of App to make it a stable function
   // turn into function to avoid starting it on render and multiple rerenders
