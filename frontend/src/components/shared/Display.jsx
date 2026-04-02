@@ -77,7 +77,7 @@ function Display(props) {
         onClick={handlePopUp}
       >
         {updatedHeaders.map((header) => (
-          <p id={header} key={header}>{
+          <p id={header} key={header} aria-label={`${header}`}>{
             shouldDisplayData
             ? (displayData[header] ?? "")
             : <strong>{t(`${header}`)}</strong>

@@ -125,9 +125,9 @@ function Popup(props) {
             props.popUpFields.map(field => {
               let title = t(`${field}`);
               return (
-                <div key={field} className={field}>
+                <label key={field} className={field}>
                   {renderField(field, title)}
-                </div>
+                </label>
               );
             })
           )}
