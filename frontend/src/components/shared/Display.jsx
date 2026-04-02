@@ -73,6 +73,7 @@ function Display(props) {
     <div>
       <div
         key={props.tab}
+        data-testid="record-row"
         className={`display-container ${props.tab}-display-grid`}
         onClick={handlePopUp}
       >

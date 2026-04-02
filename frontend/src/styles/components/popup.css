@@ -40,7 +40,7 @@
   border: none;
 }
 
-.popup-content div {
+.popup-content label {
   display: flex;
   align-items: center;
   gap: .5rem;
