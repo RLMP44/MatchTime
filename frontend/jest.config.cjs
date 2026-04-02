@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   testEnvironment: "jsdom",
   setupFilesAfterEnv: ["<rootDir>/src/setupTests.js"],
   transform: {
@@ -8,5 +8,6 @@ export default {
   moduleNameMapper: {
     "^react$": "<rootDir>/node_modules/react",
     "^react-dom$": "<rootDir>/node_modules/react-dom"
-  }
+  },
+  testPathIgnorePatterns: ['/playwright/'],
 };
