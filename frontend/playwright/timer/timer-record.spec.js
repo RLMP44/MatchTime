@@ -31,12 +31,12 @@ test.describe('Timer flow', () => {
     await page.getByRole('button', { name: /record/i }).click();
 
     // click on displayed record with bib # 4
-    page.getByTestId('record-row').filter({ hasText: '4' }).click();
+    page.getByTestId('timer-row').filter({ hasText: '4' }).click();
     await page.getByLabel(/bib #:/i).fill('2');
     await page.getByRole('button', { name: /update/i }).click();
 
     // verify displayed record has been swapped for racer with bib # 2
-    const updated = page.getByTestId('record-row').filter({ hasText: 'Pierre, Maelle' });
+    const updated = page.getByTestId('timer-row').filter({ hasText: 'Pierre, Maelle' });
     await expect(updated.getByText(/^2$/)).toBeVisible();
     await expect(updated.getByText('Pierre, Maelle')).toBeVisible();
 

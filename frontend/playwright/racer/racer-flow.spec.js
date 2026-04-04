@@ -34,7 +34,7 @@ test.describe('Racer tab flow', () => {
     await page.getByRole('button', { name: /^add$/i }).click();
 
     // verify values have been updated properly
-    const displayed = page.getByTestId('record-row').filter({ hasText: 'Dessendre, Alicia' });
+    const displayed = page.getByTestId('racer-row').filter({ hasText: 'Dessendre, Alicia' });
     await expect(displayed.getByText(/^6$/)).toBeVisible();
     await expect(displayed.getByText('F20-29')).toBeVisible();
     await expect(displayed.getByText('15k')).toBeVisible();
