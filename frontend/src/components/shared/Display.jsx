@@ -72,16 +72,18 @@ function Display(props) {
   return (
     <div>
       <div
-        key={props.tab}
-        data-testid={`${props.tab}-row`}
+        data-testid={props.isHeader ? `${props.tab}-header-row` : `${props.tab}-row`}
         className={`display-container ${props.tab}-display-grid`}
-        onClick={handlePopUp}
+        onClick={!props.isHeader ? handlePopUp : undefined}
       >
         {updatedHeaders.map((header) => (
-          <p id={header} key={header} aria-label={`${header}`}>{
-            shouldDisplayData
-            ? (displayData[header] ?? "")
-            : <strong>{t(`${header}`)}</strong>
+          <p
+            key={header}
+            data-testid={props.isHeader ? `${props.tab}-header-value` : `${props.tab}-row-value`}
+          >
+            {props.isHeader
+              ? <strong>{t(header)}</strong>
+              : (displayData[header] ?? "")
             }
           </p>
         ))}
