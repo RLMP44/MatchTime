@@ -33,7 +33,7 @@ function Display(props) {
   const [buttonTypes, setButtonTypes] = useState([]);
   const [crud, setCrud] = useState([]);
 
-  const shouldDisplayData = props.data && Object.keys(props?.data).length > 0;
+  const shouldDisplayData = !props.isHeader && props.data !== null;
   const editButtonTypes = ['cancel', 'update', 'delete'];
   const displayData = useMemo(() => transformData(
     { data: props.data, tab: props.tab }), [props.data, props.tab]
@@ -79,12 +79,13 @@ function Display(props) {
       >
         {updatedHeaders.map((header) => (
           <p
+            id={header}
             key={header}
             data-testid={props.isHeader ? `${props.tab}-header-value` : `${props.tab}-row-value`}
           >
-            {props.isHeader
-              ? <strong>{t(header)}</strong>
-              : (displayData[header] ?? "")
+            {shouldDisplayData
+              ? (displayData?.[header] ?? "")
+              : <strong>{t(header)}</strong>
             }
           </p>
         ))}

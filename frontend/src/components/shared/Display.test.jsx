@@ -102,8 +102,8 @@ describe("Display component", () => {
     expect(screen.queryByTestId("popup")).not.toBeInTheDocument();
   });
 
-  test("renders headers when no data is provided", () => {
-    render(<Display {...baseProps} data={null} />);
+  test("renders headers when isHeader is truthy", () => {
+    render(<Display {...baseProps} isHeader={true} />);
 
     expect(screen.getByText("name")).toBeInTheDocument();
     expect(screen.getByText("timeRaw")).toBeInTheDocument();
