@@ -9,6 +9,7 @@ const defaultHandicap = 1;
 // updates data to display adjusted time for timeAdjusted header in results
 function transformData({ data, tab }) {
   if (!data) return null;
+  if (tab === 'category') { return data };
   const { fName, lName, timeRaw, ...other } = data;
 
   let transObject = { ...other };

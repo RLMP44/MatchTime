@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { memo } from "react";
 import Display from "../Display";
 import ButtonBar from "../ButtonBar";
 
