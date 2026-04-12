@@ -1,12 +1,13 @@
 import React from 'react';
 
-function TabButton(props) {
+function TabButton({ icon, active, onClick, ...props }) {
   return (
     <button
-      className={`tab-btn ${props.active ? "active" : ""}`}
-      onClick={props.onClick}
+      { ...props }
+      className={`tab-btn ${active ? "active" : ""}`}
+      onClick={onClick}
     >
-    {props.icon}
+    {icon}
     </button>
   );
 }

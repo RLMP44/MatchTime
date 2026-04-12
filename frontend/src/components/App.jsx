@@ -322,10 +322,10 @@ function App() {
   }) {
     return (
       <div className="tab-display">
-        <TabButton active={tab === "timer"} icon={TIMER_ICON} onClick={goToTimer} />
-        <TabButton active={tab === "category"} icon={CATEGORY_ICON} onClick={goToCategory} />
-        <TabButton active={tab === "racer"} icon={RACER_ICON} onClick={goToRacer} />
-        <TabButton active={tab === "result"} icon={RESULT_ICON} onClick={goToResult} />
+        <TabButton aria-label="timer tab" active={tab === "timer"} icon={TIMER_ICON} onClick={goToTimer} />
+        <TabButton aria-label="category tab" active={tab === "category"} icon={CATEGORY_ICON} onClick={goToCategory} />
+        <TabButton aria-label="racer tab" active={tab === "racer"} icon={RACER_ICON} onClick={goToRacer} />
+        <TabButton aria-label="result tab" active={tab === "result"} icon={RESULT_ICON} onClick={goToResult} />
       </div>
     );
   });

@@ -9,6 +9,7 @@ const defaultHandicap = 1;
 // updates data to display adjusted time for timeAdjusted header in results
 function transformData({ data, tab }) {
   if (!data) return null;
+  if (tab === 'category') { return data };
   const { fName, lName, timeRaw, ...other } = data;
 
   let transObject = { ...other };
@@ -72,15 +73,18 @@ function Display(props) {
   return (
     <div>
       <div
-        key={props.tab}
+        data-testid={props.isHeader ? `${props.tab}-header-row` : `${props.tab}-row`}
         className={`display-container ${props.tab}-display-grid`}
-        onClick={handlePopUp}
+        onClick={!props.isHeader ? handlePopUp : undefined}
       >
         {updatedHeaders.map((header) => (
-          <p id={header} key={header}>{
-            shouldDisplayData
-            ? (displayData[header] ?? "")
-            : <strong>{t(`${header}`)}</strong>
+          <p
+            key={header}
+            data-testid={props.isHeader ? `${props.tab}-header-value` : `${props.tab}-row-value`}
+          >
+            {props.isHeader
+              ? <strong>{t(header)}</strong>
+              : (displayData[header] ?? "")
             }
           </p>
         ))}
