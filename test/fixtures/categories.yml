@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  category: MyString
+  sex: MyString
+  min_age: 1
+  max_age: 1
+  racer: one
+
+two:
+  category: MyString
+  sex: MyString
+  min_age: 1
+  max_age: 1
+  racer: two
