@@ -10,16 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_14_210453) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_15_195141) do
   create_table "categories", force: :cascade do |t|
     t.string "category"
     t.string "sex"
     t.integer "min_age"
     t.integer "max_age"
-    t.integer "racer_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["racer_id"], name: "index_categories_on_racer_id"
   end
 
   create_table "divisions", force: :cascade do |t|
@@ -43,7 +41,12 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_14_210453) do
     t.float "time_raw"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "division_id", null: false
+    t.integer "category_id", null: false
+    t.index ["category_id"], name: "index_racers_on_category_id"
+    t.index ["division_id"], name: "index_racers_on_division_id"
   end
 
-  add_foreign_key "categories", "racers"
+  add_foreign_key "racers", "categories"
+  add_foreign_key "racers", "divisions"
 end
