@@ -5,7 +5,7 @@ import TabButton from "./shared/tab/TabButton";
 import TimeKeeper from "./timer/TimeKeeper";
 import Timer from "./timer/Timer";
 
-import { useState, useRef, useCallback, useMemo, memo } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
 import handicapsJSON from '../handicaps.json';
 import { checkIsPresent, setMinMaxAge } from "../utils/helpers";
 import TimerIcon from '@mui/icons-material/Timer';
@@ -37,28 +37,28 @@ const fieldsObject = {
 };
 
 function App() {
-  var records = [
-    {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: 0.996, timeRaw: null, city: "Lumiere", fName: "Gustave", lName: "Pierre", category: "M30-39", division: "10k"},
-    {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: 0.78, timeRaw: null, city: "Lumiere", fName: "Maelle", lName: "Pierre", category: "F10-19", division: "23k"},
-    {id: 3, place: null, bib: 3, age: 32, sex: "F", raceNo: 1, handicap: 0.97, timeRaw: null, city: "Lumiere", fName: "Sciel", lName: "Jeanne", category: "F30-39", division: "10k"},
-    {id: 4, place: null, bib: 4, age: 32, sex: "F", raceNo: 1, handicap: 0.97, timeRaw: null, city: "Lumiere", fName: "Lune", lName: "Acuse", category: "F30-39", division: "15k"},
-    {id: 5, place: null, bib: 5, age: 45, sex: "M", raceNo: 1, handicap: 0.84, timeRaw: null, city: "Lumiere", fName: "Verso", lName: "L'vange", category: "M40-49", division: "10k"},
-    {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: 0.795, timeRaw: null, city: "Lumiere", fName: "Monoco", lName: "Gestral", category: "M50-59", division: "5k"}
-  ];
+  // var records = [
+  //   {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: 0.996, timeRaw: null, city: "Lumiere", fName: "Gustave", lName: "Pierre", category: "M30-39", division: "10k"},
+  //   {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: 0.78, timeRaw: null, city: "Lumiere", fName: "Maelle", lName: "Pierre", category: "F10-19", division: "23k"},
+  //   {id: 3, place: null, bib: 3, age: 32, sex: "F", raceNo: 1, handicap: 0.97, timeRaw: null, city: "Lumiere", fName: "Sciel", lName: "Jeanne", category: "F30-39", division: "10k"},
+  //   {id: 4, place: null, bib: 4, age: 32, sex: "F", raceNo: 1, handicap: 0.97, timeRaw: null, city: "Lumiere", fName: "Lune", lName: "Acuse", category: "F30-39", division: "15k"},
+  //   {id: 5, place: null, bib: 5, age: 45, sex: "M", raceNo: 1, handicap: 0.84, timeRaw: null, city: "Lumiere", fName: "Verso", lName: "L'vange", category: "M40-49", division: "10k"},
+  //   {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: 0.795, timeRaw: null, city: "Lumiere", fName: "Monoco", lName: "Gestral", category: "M50-59", division: "5k"}
+  // ];
 
-  var categories = [
-    {id: 1, category: "F20-29", raceNo: 1, sex: 'F', minAge: 20, maxAge: 29 },
-    {id: 2, category: "M20-29", raceNo: 1, sex: 'M', minAge: 20, maxAge: 29 },
-    {id: 3, category: "F30-39", raceNo: 1, sex: 'F', minAge: 30, maxAge: 39 },
-    {id: 4, category: "M30-39", raceNo: 1, sex: 'M', minAge: 30, maxAge: 39 },
-    {id: 5, category: "F40-49", raceNo: 1, sex: 'F', minAge: 40, maxAge: 49 },
-    {id: 6, category: "M40-49", raceNo: 1, sex: 'M', minAge: 40, maxAge: 49 }
-  ];
+  // var categories = [
+  //   {id: 1, category: "F20-29", raceNo: 1, sex: 'F', minAge: 20, maxAge: 29 },
+  //   {id: 2, category: "M20-29", raceNo: 1, sex: 'M', minAge: 20, maxAge: 29 },
+  //   {id: 3, category: "F30-39", raceNo: 1, sex: 'F', minAge: 30, maxAge: 39 },
+  //   {id: 4, category: "M30-39", raceNo: 1, sex: 'M', minAge: 30, maxAge: 39 },
+  //   {id: 5, category: "F40-49", raceNo: 1, sex: 'F', minAge: 40, maxAge: 49 },
+  //   {id: 6, category: "M40-49", raceNo: 1, sex: 'M', minAge: 40, maxAge: 49 }
+  // ];
 
   // TODO: displayRecords starter to be replaced with await fetchAllRacers()
-  const [displayRecords, setDisplayRecords] = useState(records);
+  // const [displayRecords, setDisplayRecords] = useState(records);
   // TODO: displayRecords starter to be replaced with await fetchAllCategories()
-  const [displayCategories, setDisplayCategories] = useState(categories);
+  // const [displayCategories, setDisplayCategories] = useState(categories);
   // TODO: connect backend and generate IDs there
   const nextID = useRef(7);
   const nextCatID = useRef(7);
@@ -70,6 +70,10 @@ function App() {
   const [place, setPlace] = useState(1);
   const [buttonText, setButtonText] = useState("start");
   const [handicaps, setHandicaps] = useState(handicapsJSON);
+  const [displayRecords, setDisplayRecords] = useState([]);
+  const [displayCategories, setDisplayCategories] = useState([]);
+  const [displayDivisions, setDisplayDivisions] = useState([]);
+
 
   const headers = useMemo(() => headersObject[tab], [tab]);
   const fields = useMemo(() => fieldsObject[tab], [tab]);
@@ -79,45 +83,68 @@ function App() {
 
 
   // -------------- DB LOGIC --------------
-  // load handicaps from backend on first render
-  // useEffect(() => {
-  //   async function loadHandicaps() {
-  //     const handicapsJSON = await fetchHandicaps();
-  //     setHandicaps(handicapsJSON);
-  //   }
-  //   loadHandicaps();
-  // }, []);
+  // load data from backend on first render
+  useEffect(() => {
+    async function loadHandicaps() {
+      const handicapsJSON = await fetchHandicaps();
+      setHandicaps(handicapsJSON);
+    }
+    loadHandicaps();
+  }, []);
 
-  // async function fetchHandicaps() {
-  //   const response = await fetch('/handicaps');
-  //   return response.json();
-  // }
+  useEffect(() => {
+    console.log('here')
+    async function loadRacers() {
+      console.log('2')
+      const racersJSON = await fetchAllRacers();
+      setDisplayRecords(racersJSON);
+    }
+    loadRacers();
+  }, []);
 
-  // async function fetchAllRacers() {
-  //   // TODO: fetch racer records from backend
-  //   // return as list
-  //   return records;
-  // };
+  useEffect(() => {
+    async function loadCategories() {
+      const categoriesJSON = await fetchAllCategories();
+      setDisplayCategories(categoriesJSON);
+    }
+    loadCategories();
+  }, []);
 
-  // async function fetchLastDBRecord() {
-    // TODO: retrieve time and placement of last record in DB
-  // };
+  useEffect(() => {
+    async function loadDivisions() {
+      const divisionsJSON = await fetchAllDivisions();
+      setDisplayDivisions(divisionsJSON);
+    }
+    loadDivisions();
+  }, []);
 
-  async function updateDBRecord() {
+
+  async function fetchHandicaps() {
+    const response = await fetch('/handicaps');
+    return response.json();
+  }
+
+  async function fetchAllRacers() {
+    const response = await fetch('/api/racer');
+    return response.json();
+  };
+
+  async function updateDBRacer() {
     // TODO: update racer/record in DB
   };
 
-  function resetDBRecord() {
-    // TODO: set DB record time and place back to null
+  function resetDBRacer() {
+    // TODO: set DB racer time and place back to null
   };
 
   function deleteDBRacer() {
     // TODO: delete racer from DB
   }
 
-  // async function fetchAllCategories() {
-  //   // TODO: get all categories from DB
-  // };
+  async function fetchAllCategories() {
+    const response = await fetch('/api/category');
+    return response.json();
+  };
 
   async function addDBCategory() {
      // TODO: add category in DB
@@ -128,7 +155,24 @@ function App() {
   };
 
   function deleteDBCategory() {
-    // TODO: set DB category time and place back to null
+    // TODO: delete and remove from racers
+  };
+
+  async function fetchAllDivisions() {
+    const response = await fetch('/api/division');
+    return response.json();
+  };
+
+  async function addDBDivision() {
+     // TODO: add Division in DB
+  };
+
+  async function updateDBDivision() {
+    // TODO: update Division in DB and racers
+  };
+
+  function deleteDBDivision() {
+    // TODO: delete and remove from racers
   };
 
 
@@ -149,8 +193,8 @@ function App() {
   // resets the old record and updates all record displays
   const updateDisplayedRecords = useCallback(
     ({ oldRecord: oldR, newRecord: updated }) => {
-    resetDBRecord(oldR);
-    updateDBRecord(updated);
+    resetDBRacer(oldR);
+    updateDBRacer(updated);
     // TODO: recalculate placement if time is reduced or increased
     setDisplayRecords(prev =>
       prev.map(prevRecord =>
@@ -169,7 +213,7 @@ function App() {
   // deletes a racer record from the timer record display and resets the racer's time/place in the DB
   const deleteDisplayedRecord = useCallback(
     (recordToDelete) => {
-    resetDBRecord(recordToDelete);
+    resetDBRacer(recordToDelete);
     setTimerDisplayRecords((prevRecords) => {
       // filter out deleted record
       const filteredRecords = prevRecords.filter((record) =>
@@ -246,7 +290,7 @@ function App() {
       };
 
       updateDisplayedRecords({ oldRecord: oldR, newRecord: updatedRacer })
-      updateDBRecord(updatedRacer);
+      updateDBRacer(updatedRacer);
   }, [handicaps, updateDisplayedRecords]);
 
   // deletes a racer from the database

@@ -10,7 +10,11 @@ Rails.application.routes.draw do
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
   get "/handicaps", to: "frontend#handicaps"
-  # Defines the root path route ("/")
+  namespace :api do
+    resources :category
+    resources :division
+    resources :racer
+  end
   root "frontend#index"
   get "*path", to: "frontend#index", constraints: lambda { |req|
     html_request = req.format.html?
