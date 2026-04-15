@@ -1,8 +1,8 @@
 import { range } from '../../../../utils/helpers';
 
-function RaceNoField({ field, title, formData, setFormData }) {
-  let raceNoLimit = 8;
-  let raceSelections = range(1, raceNoLimit);
+function race_noField({ field, title, formData, setFormData }) {
+  let race_noLimit = 8;
+  let raceSelections = range(1, race_noLimit);
 
   return (
     <>
@@ -23,4 +23,4 @@ function RaceNoField({ field, title, formData, setFormData }) {
   );
 };
 
-export default RaceNoField;
+export default race_noField;

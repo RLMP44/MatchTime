@@ -7,7 +7,7 @@ function CategoryField({ field, title, categories, formData, setFormData }) {
       [field]: event.target.value,
       'sex': selectedCategory.sex,
       'handicap': selectedCategory.handicap,
-      'raceNo': selectedCategory.raceNo
+      'race_no': selectedCategory.race_no
     });
   };
 

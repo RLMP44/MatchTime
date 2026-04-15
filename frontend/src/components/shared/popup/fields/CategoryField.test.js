@@ -6,8 +6,8 @@ test("updates form data when a category is selected", async () => {
   const user = userEvent.setup();
 
   const categories = [
-    { category: "M40-49", sex: "M", handicap: 1.1, raceNo: 3 },
-    { category: "F30-39", sex: "F", handicap: 1.2, raceNo: 4 }
+    { category: "M40-49", sex: "M", handicap: 1.1, race_no: 3 },
+    { category: "F30-39", sex: "F", handicap: 1.2, race_no: 4 }
   ];
 
   const setFormData = jest.fn();
@@ -32,6 +32,6 @@ test("updates form data when a category is selected", async () => {
     category: "M40-49",
     sex: "M",
     handicap: 1.1,
-    raceNo: 3
+    race_no: 3
   });
 });

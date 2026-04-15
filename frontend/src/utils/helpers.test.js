@@ -3,7 +3,7 @@ import {
   pluralize,
   checkIsPresent,
   range,
-  setMinMaxAge,
+  setMinmax_age,
   prepTimeForDisplay,
   timeForDisplay,
   convertToMs
@@ -31,9 +31,9 @@ describe('helpers', () => {
     expect(range(1,6)).toStrictEqual([1,2,3,4,5,6]);
   });
 
-  test('setMinMaxAge to set min and max age from category name', () => {
-    expect(setMinMaxAge({category: 'M30-39', minAge: null, maxAge: null}))
-      .toStrictEqual({category: 'M30-39', minAge: 30, maxAge: 39});
+  test('setMinmax_age to set min and max age from category name', () => {
+    expect(setMinmax_age({category: 'M30-39', min_age: null, max_age: null}))
+      .toStrictEqual({category: 'M30-39', min_age: 30, max_age: 39});
   });
 
   test('prepTimeForDisplay returns object of padded hrs, mins, sec, and millis', () => {

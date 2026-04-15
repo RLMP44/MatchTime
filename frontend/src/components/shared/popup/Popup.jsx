@@ -23,22 +23,22 @@ function Popup(props) {
     var formattedData = { ...data }
     if (data.age) { formattedData.age = parseInt(data.age) }
     if (data.bib) { formattedData.bib = parseInt(data.bib) }
-    if (data.raceNo) { formattedData.raceNo = parseInt(data.raceNo) }
+    if (data.race_no) { formattedData.race_no = parseInt(data.race_no) }
     return formattedData;
   };
 
   // swaps recorded time and place to updated racer when bib is changed in timer display
   async function switchRacers(data) {
     const user = await props.fetchRecord(data.bib);
-    const timeInMs = typeof(props.data.timeRaw) === 'string'
-      ? convertToMs(props.data.timeRaw)
-      : props.data.timeRaw
+    const timeInMs = typeof(props.data.time_raw) === 'string'
+      ? convertToMs(props.data.time_raw)
+      : props.data.time_raw
     if (user) {
       return {
         ...data,
         ...user,
         place: props.data.place,
-        timeRaw: timeInMs
+        time_raw: timeInMs
       };
     } else {
       return {
@@ -46,13 +46,13 @@ function Popup(props) {
         bib: data.bib,
         age: null,
         sex: null,
-        raceNo: null,
+        race_no: null,
         handicap: null,
-        timeRaw: timeInMs,
+        time_raw: timeInMs,
         city: null,
         time: null,
-        fName: null,
-        lName: "Not Found",
+        first_name: null,
+        last_name: "Not Found",
         category: null,
         division: null
       }
@@ -63,10 +63,10 @@ function Popup(props) {
   // converts updated time into milliseconds
   async function updateTimerDisplayRecord(data) {
     const bibChanged = data.bib && data.bib !== props.data.bib;
-    const timeInMs = typeof(data.timeRaw) === "string"
-      ? convertToMs(data.timeRaw)
-      : data.timeRaw;
-    const timeChanged = timeInMs && timeInMs !== props.data.timeRaw;
+    const timeInMs = typeof(data.time_raw) === "string"
+      ? convertToMs(data.time_raw)
+      : data.time_raw;
+    const timeChanged = timeInMs && timeInMs !== props.data.time_raw;
     let updatedRecord = { ...props.data };
 
     if (bibChanged) {
@@ -74,7 +74,7 @@ function Popup(props) {
       updatedRecord = { ...updatedRecord, ...newUser };
     };
     if (timeChanged) {
-      updatedRecord.timeRaw = timeInMs;
+      updatedRecord.time_raw = timeInMs;
     };
     props.update({ oldRecord: props.data, newRecord: updatedRecord })
   };

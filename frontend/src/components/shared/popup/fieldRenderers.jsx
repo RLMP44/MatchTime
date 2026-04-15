@@ -26,7 +26,7 @@ function createFieldRenderers({ props, formData, setFormData }) {
           />
         ),
 
-    raceNo: ({ field, title }) =>
+    race_no: ({ field, title }) =>
       <RaceNoField
         field={field}
         title={title}
@@ -43,7 +43,7 @@ function createFieldRenderers({ props, formData, setFormData }) {
         editable={props.tab === 'category'}
       />,
 
-    timeRaw: ({ field, title }) =>
+    time_raw: ({ field, title }) =>
       <TimeRawField
         field={field}
         title={title}

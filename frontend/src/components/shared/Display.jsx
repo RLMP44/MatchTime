@@ -10,17 +10,17 @@ const defaultHandicap = 1;
 function transformData({ data, tab }) {
   if (!data) return null;
   if (tab === 'category') { return data };
-  const { fName, lName, timeRaw, ...other } = data;
+  const { first_name, last_name, time_raw, ...other } = data;
 
   let transObject = { ...other };
 
-  if (fName || lName) {
-    transObject.name = `${lName ?? ""}, ${fName ?? ""}`;
+  if (first_name || last_name) {
+    transObject.name = `${last_name ?? ""}, ${first_name ?? ""}`;
   }
 
-  if (timeRaw) {
-    let timeToDisplay = (tab === 'result') ? (timeRaw * (data?.handicap || defaultHandicap)) : timeRaw;
-    transObject.timeRaw = timeForDisplay(timeToDisplay);
+  if (time_raw) {
+    let timeToDisplay = (tab === 'result') ? (time_raw * (data?.handicap || defaultHandicap)) : time_raw;
+    transObject.time_raw = timeForDisplay(timeToDisplay);
     transObject.timeAdjusted = timeForDisplay(timeToDisplay);
   };
 
@@ -41,22 +41,22 @@ function Display(props) {
 
   // useState to set up headers BEFORE first render to avoid flash on screen
   // condenses first and last names to 'name' in header
-  // changes timeRaw to timeAdjusted header for result tab
+  // changes time_raw to timeAdjusted header for result tab
   const [updatedHeaders] = useState(() => {
     if (!props.headers) { return [] };
-    const hasNameField = props.headers.includes('fName') ||
-      props.headers.includes('lName');
-    const resultTabTime = props.tab === 'result' && props.headers.includes('timeRaw');
+    const hasNameField = props.headers.includes('first_name') ||
+      props.headers.includes('last_name');
+    const resultTabTime = props.tab === 'result' && props.headers.includes('time_raw');
     let newHeaders = [...props.headers];
 
     if (hasNameField) {
       newHeaders = newHeaders
-        .filter(header => header !== 'fName' && header !== 'lName')
+        .filter(header => header !== 'first_name' && header !== 'last_name')
         .concat('name');
     }
     if (resultTabTime) {
       newHeaders = newHeaders
-        .filter(header => header !== "timeRaw")
+        .filter(header => header !== "time_raw")
         .concat('timeAdjusted');
     }
     return newHeaders;

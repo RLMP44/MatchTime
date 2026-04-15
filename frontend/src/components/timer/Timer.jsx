@@ -19,8 +19,8 @@ function Timer(props) {
 
   const [bibNum, setBibNum] = useState(null);
   const [currentRecord, setCurrentRecord] = useState(null);
-  let fName = currentRecord?.fName ?? null;
-  let lName = currentRecord?.lName ?? null;
+  let first_name = currentRecord?.first_name ?? null;
+  let last_name = currentRecord?.last_name ?? null;
   const timerNums = range(1, 9);
   const {
     update,
@@ -42,7 +42,7 @@ function Timer(props) {
       const updatedRecord = {
         ...currentRecord,
         place: prevPlace ?? place,
-        timeRaw: prevTime ?? timeInMs,
+        time_raw: prevTime ?? timeInMs,
         bib: bib ?? currentRecord?.bib
       };
 
@@ -66,9 +66,9 @@ function Timer(props) {
           id: parsedBib + 1,
           place: place,
           bib: parsedBib,
-          timeRaw: timeInMs,
-          fName: "",
-          lName: "Not Found"
+          time_raw: timeInMs,
+          first_name: "",
+          last_name: "Not Found"
         });
       }
     }, [fetchRecord, place, timeInMs]
@@ -94,7 +94,7 @@ function Timer(props) {
       const recordNewRacer = isStartRecordButton && bibNum !== null
         && !checkIsPresent({ array: records, target: bibNum, type: "bib" });
       const noRacerSelected = isStartRecordButton && buttonText === "record"
-        && !lName || !bibNum;
+        && !last_name || !bibNum;
       const shouldStartTimer = isStartRecordButton
         && buttonText === "start";
 
@@ -144,7 +144,7 @@ function Timer(props) {
         const lastRecord = records.at(-1);
         if (lastRecord) {
           updateTimeAndPlace({
-            prevTime: lastRecord?.timeRaw,
+            prevTime: lastRecord?.time_raw,
             prevPlace: lastRecord?.place,
             bib: bibNum
           });
@@ -156,7 +156,7 @@ function Timer(props) {
     },
     [ // dependencies
       bibNum,
-      lName,
+      last_name,
       fetchAndSetRecord,
       reset,
       records,
@@ -174,7 +174,7 @@ function Timer(props) {
         <h4>Time: {displayTime.hour}:{displayTime.min}:{displayTime.sec}:{displayTime.milli}</h4>
         <h4>Place: {props.place}</h4>
         <h4>Bib #: {bibNum}</h4>
-        <h4>Name: {fName && lName ? `${fName} ${lName}` : bibNum ? "Not Found" : ""}</h4>
+        <h4>Name: {first_name && last_name ? `${first_name} ${last_name}` : bibNum ? "Not Found" : ""}</h4>
       </div>
       <div className="timer-buttons-container">
         {timerNums.map((num) =>

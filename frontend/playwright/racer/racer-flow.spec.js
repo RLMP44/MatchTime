@@ -28,8 +28,8 @@ test.describe('Racer tab flow', () => {
     await page.getByTestId(/popup-division/i).fill('15k');
     await page.getByTestId(/popup-city/i).fill('Rome');
     await page.getByTestId(/popup-age/i).fill('20');
-    await page.getByTestId(/popup-fName/i).fill('Alicia');
-    await page.getByTestId(/popup-lName/i).fill('Dessendre');
+    await page.getByTestId(/popup-first_name/i).fill('Alicia');
+    await page.getByTestId(/popup-last_name/i).fill('Dessendre');
     await page.getByRole('combobox', { name: /category/i }).selectOption('F20-29');
     await page.getByRole('button', { name: /^add$/i }).click();
 
