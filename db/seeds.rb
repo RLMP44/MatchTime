@@ -36,7 +36,6 @@ end
 
 # create racers
 10.times do
-  id = 1
   name_array = Faker::Name.name.split(' ')
   div = Division.all.sample
   cat = Category.all.sample
@@ -51,10 +50,8 @@ end
     division: div,
     category: cat,
     handicap: HANDICAPS[cat.sex][age.to_s],
-    bib: id,
     place: nil,
     time_raw: nil
   )
   puts racer
-  id += 1
 end

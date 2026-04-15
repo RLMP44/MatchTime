@@ -1,6 +1,6 @@
 class Api::RacerController < ApplicationController
   def index
-    render json: Racer.all
+    render json: Racer.order(:bib)
   end
 
   def show
