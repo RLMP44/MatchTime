@@ -14,7 +14,7 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd';
 
 const timerHeaders = ['place', 'bib', 'time_raw', 'last_name', 'first_name'];
-const categoryHeaders = ['category', 'race_no'];
+const categoryHeaders = ['category'];
 const racerHeaders = ['bib', 'first_name', 'last_name', 'category', 'division', 'handicap'];
 const resultHeaders = ['place', 'time_raw', 'bib', 'last_name', 'first_name', 'city', 'category', 'division', 'sex'];
 const headersObject = {
@@ -26,40 +26,19 @@ const headersObject = {
 
 const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
 const timerRecordsEditFields = ['bib', 'time_raw'];
-const categoryFields = ['category', 'race_no', 'sex', 'plusFive', 'plusTen'];
-const racerFields = ['bib', 'age', 'sex', 'last_name', 'first_name', 'city', 'handicap', 'race_no', 'category', 'division'];
+const categoryFields = ['category_id', 'sex', 'plusFive', 'plusTen'];
+const divisionFields = ['division_id', 'race_no', 'start_time'];
+const racerFields = ['age', 'sex', 'first_name', 'last_name', 'city', 'handicap', 'race_no', 'category_id', 'division_id'];
 const fieldsObject = {
   timer: timerRecordsEditFields,
   category: categoryFields,
+  division: divisionFields,
   racer: racerFields,
   import: importExportFields,
   export: importExportFields
 };
 
 function App() {
-  // var records = [
-  //   {id: 1, place: null, bib: 1, age: 32, sex: "M", race_no: 1, handicap: 0.996, time_raw: null, city: "Lumiere", first_name: "Gustave", last_name: "Pierre", category: "M30-39", division: "10k"},
-  //   {id: 2, place: null, bib: 2, age: 16, sex: "F", race_no: 1, handicap: 0.78, time_raw: null, city: "Lumiere", first_name: "Maelle", last_name: "Pierre", category: "F10-19", division: "23k"},
-  //   {id: 3, place: null, bib: 3, age: 32, sex: "F", race_no: 1, handicap: 0.97, time_raw: null, city: "Lumiere", first_name: "Sciel", last_name: "Jeanne", category: "F30-39", division: "10k"},
-  //   {id: 4, place: null, bib: 4, age: 32, sex: "F", race_no: 1, handicap: 0.97, time_raw: null, city: "Lumiere", first_name: "Lune", last_name: "Acuse", category: "F30-39", division: "15k"},
-  //   {id: 5, place: null, bib: 5, age: 45, sex: "M", race_no: 1, handicap: 0.84, time_raw: null, city: "Lumiere", first_name: "Verso", last_name: "L'vange", category: "M40-49", division: "10k"},
-  //   {id: 6, place: null, bib: 54, age: 59, sex: "M", race_no: 1, handicap: 0.795, time_raw: null, city: "Lumiere", first_name: "Monoco", last_name: "Gestral", category: "M50-59", division: "5k"}
-  // ];
-
-  // var categories = [
-  //   {id: 1, category: "F20-29", race_no: 1, sex: 'F', min_age: 20, max_age: 29 },
-  //   {id: 2, category: "M20-29", race_no: 1, sex: 'M', min_age: 20, max_age: 29 },
-  //   {id: 3, category: "F30-39", race_no: 1, sex: 'F', min_age: 30, max_age: 39 },
-  //   {id: 4, category: "M30-39", race_no: 1, sex: 'M', min_age: 30, max_age: 39 },
-  //   {id: 5, category: "F40-49", race_no: 1, sex: 'F', min_age: 40, max_age: 49 },
-  //   {id: 6, category: "M40-49", race_no: 1, sex: 'M', min_age: 40, max_age: 49 }
-  // ];
-
-  // TODO: displayRecords starter to be replaced with await fetchAllRacers()
-  // const [displayRecords, setDisplayRecords] = useState(records);
-  // TODO: displayRecords starter to be replaced with await fetchAllCategories()
-  // const [displayCategories, setDisplayCategories] = useState(categories);
-  // TODO: connect backend and generate IDs there
   // TODO: timerDisplayRecords to be a filtered version of displayRecords
   // filter for time/rawTime, and also order by ascension
   // this way timerDisplayRecords is updated with user data if prev not found
@@ -83,6 +62,7 @@ function App() {
   const memoCategories = useMemo(() => displayCategories, [displayCategories]);
   const memoRecords = useMemo(() => displayRecords, [displayRecords]);
   const memoTimerRecords = useMemo(() => timerDisplayRecords, [timerDisplayRecords]);
+  const memoDivisions = useMemo(() => displayDivisions, [displayDivisions]);
 
 
   // -------------- DB LOGIC --------------
@@ -128,6 +108,16 @@ function App() {
   async function fetchAllRacers() {
     const response = await fetch('/api/racer');
     return response.json();
+  };
+
+  async function addDBRacer(data) {
+    const response = await fetch('/api/racer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ racer: data })
+    });
+
+    return await response.json();
   };
 
   async function updateDBRacer() {
@@ -237,15 +227,18 @@ function App() {
   // and instantaneously updates displayed records in timer and racer tabs
   const addRacer = useCallback(
     (racerData) => {
-    const newRacer = {
-      ...racerData,
-      id: nextID.current,
-      place: null,
-      time_raw: null,
-      bib: parseInt(racerData.bib),
-      race_no: parseInt(racerData.race_no),
-      handicap: handicaps[racerData.sex][racerData.age]
-    };
+      const updated = { ...racerData }
+      displayCategories.find()
+      const newRacer = addDBRacer(racerData);
+    // const newRacer = {
+    //   ...racerData,
+    //   id: nextID.current,
+    //   place: null,
+    //   time_raw: null,
+    //   bib: parseInt(racerData.bib),
+    //   race_no: parseInt(racerData.race_no),
+    //   handicap: handicaps[racerData.sex][racerData.age]
+    // };
     setDisplayRecords(prev => [...prev, newRacer]);
     // update timer display with relevant info in case a placement is recorded
     // for an empty bib. update user info on timer display when info is added
@@ -262,8 +255,7 @@ function App() {
         return record;
       })
     );
-    // nextID.current += 1;
-  }, [handicaps]);
+  });
 
   // edits a racer's personal information
   // and instantaneously updates the records displayed in timer tab and racers tab
@@ -327,7 +319,6 @@ function App() {
         { ...category, id: nextCatID.current }
       ]);
     addDBCategory(category);
-    // nextCatID.current += 1;
   }, []);
 
   const editCategory = useCallback(
@@ -402,6 +393,8 @@ function App() {
                               buttonText={buttonText}
                               setButtonText={setButtonText}
                               records={memoTimerRecords}
+                              divisions={memoDivisions}
+                              categories={memoCategories}
                               fetchRecord={fetchRacerRecord}
                               delete={deleteDisplayedRecord}
                               update={updateDisplayedRecords}
@@ -436,6 +429,7 @@ function App() {
                                     fields={fields}
                                     fieldsObj={fieldsObject}
                                     records={memoRecords}
+                                    divisions={memoDivisions}
                                     categories={memoCategories}
                                     update={updateDisplayedRecords}
                                     add={addRacer}
@@ -446,6 +440,8 @@ function App() {
               {tab === "result" && <Tab
                                     tab={tab}
                                     headers={headers}
+                                    divisions={memoDivisions}
+                                    categories={memoCategories}
                                     fieldsObj={fieldsObject}
                                     records={memoTimerRecords}
                                   />

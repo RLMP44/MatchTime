@@ -24,6 +24,8 @@ function Popup(props) {
     if (data.age) { formattedData.age = parseInt(data.age) }
     if (data.bib) { formattedData.bib = parseInt(data.bib) }
     if (data.race_no) { formattedData.race_no = parseInt(data.race_no) }
+    if (data.division_id) { formattedData.division_id = parseInt(data.division_id) }
+    if (data.category_id) { formattedData.category_id = parseInt(data.category_id) }
     return formattedData;
   };
 

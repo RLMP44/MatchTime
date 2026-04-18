@@ -7,15 +7,23 @@ const defaultHandicap = 1;
 
 // updates data to display "last name, first name" if names present in headers
 // updates data to display adjusted time for timeAdjusted header in results
-function transformData({ data, tab }) {
+function transformData({ data, tab, cats, divs }) {
   if (!data) return null;
   if (tab === 'category') { return data };
-  const { first_name, last_name, time_raw, ...other } = data;
+  const { first_name, last_name, time_raw, category_id, division_id, ...other } = data;
 
   let transObject = { ...other };
 
   if (first_name || last_name) {
     transObject.name = `${last_name ?? ""}, ${first_name ?? ""}`;
+  }
+
+  if (category_id) {
+    transObject.category = cats.find(cat => cat.id === data.category_id).category
+  }
+
+  if (division_id) {
+    transObject.division = divs.find(div => div.id === data.division_id).division
   }
 
   if (time_raw) {
@@ -36,7 +44,7 @@ function Display(props) {
   const shouldDisplayData = !props.isHeader && props.data !== null;
   const editButtonTypes = ['cancel', 'update', 'delete'];
   const displayData = useMemo(() => transformData(
-    { data: props.data, tab: props.tab }), [props.data, props.tab]
+    { data: props.data, tab: props.tab, cats: props.categories, divs: props.divisions }), [props.data, props.tab]
   );
 
   // useState to set up headers BEFORE first render to avoid flash on screen
@@ -103,6 +111,7 @@ function Display(props) {
             buttons={buttonTypes}
             setButtonTypes={setButtonTypes}
             categories={props.categories}
+            divisions={props.divisions}
             setDisplayRecords={props.setDisplayRecords}
             fetchRecord={props.fetchRecord}
             update={props.update}

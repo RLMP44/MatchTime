@@ -3,11 +3,12 @@ import GeneralField from "./fields/GeneralField";
 import RaceNoField from "./fields/RaceNoField";
 import SexField from "./fields/SexField";
 import TimeRawField from './fields/TimeRawField';
+import DivisionField from "./fields/DivisionField";
 
 // use lookup object to simplify rendering and limit branching
 function createFieldRenderers({ props, formData, setFormData }) {
   const fieldRenderers = {
-    category: ({ field, title }) =>
+    category_id: ({ field, title }) =>
       props.tab !== 'category'
         ? (
           <CategoryField
@@ -49,7 +50,26 @@ function createFieldRenderers({ props, formData, setFormData }) {
         title={title}
         formData={formData}
         setFormData={setFormData}
-      />
+      />,
+
+    division_id: ({ field, title }) =>
+      props.tab !== 'category'
+        ? (
+          <DivisionField
+            field={field}
+            title={title}
+            divisions={props.divisions}
+            formData={formData}
+            setFormData={setFormData}
+          />
+        ) : (
+          <GeneralField
+            field={field}
+            title={title}
+            formData={formData}
+            setFormData={setFormData}
+          />
+        )
   };
 
   return fieldRenderers;

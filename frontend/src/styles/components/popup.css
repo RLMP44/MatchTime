@@ -71,7 +71,7 @@
 .popup-content .race_no {
   grid-area: 6 / 1 / 7 / 2;
 }
-.popup-content .category {
+.popup-content .category_id {
   grid-area: 6 / 2 / 7 / 3;
 }
 .popup-content .time {
@@ -103,7 +103,7 @@
   background-color: rgba(252, 32, 32, 0.901);
 }
 
-.category > select {
+.category_id > select, .division_id > select {
   min-width: 50px;
   width: 75px;
   padding: .25rem;
@@ -111,11 +111,11 @@
   background-color: var(--color-primary);
 }
 
-.category > select > option {
+.category_id > select > option {
   gap: .25rem;
 }
 
-.add-category .category, .edit-category .category {
+.add-category .category_id, .edit-category .category_id {
   grid-area: 1 / 1 / 2 / 2;
 }
 .add-category .race_no, .edit-category .race_no {
