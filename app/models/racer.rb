@@ -1,7 +1,7 @@
 class Racer < ApplicationRecord
   belongs_to :category
   belongs_to :division
-  validates :first_name, :last_name, :email, :sex, :category, :division, :age, presence: true
+  validates :first_name, :last_name, :sex, :category, :division, :age, presence: true # :email
   validates :age, numericality: { only_integer: true }
   validates :handicap, numericality: true, unless: -> { handicap.blank? }
   validates :bib, numericality: { only_integer: true }, unless: -> { bib.blank? }
@@ -13,9 +13,14 @@ class Racer < ApplicationRecord
   validates :email, uniqueness: { scope: [ :first_name, :last_name ],
                                   message: "Email already used by someone with this name" }
 
+  before_create :calculate_handicap
   after_create :assign_bib
 
   private
+
+  def calculate_handicap
+    self.handicap = HandicapService.factor(sex, age)
+  end
 
   def assign_bib
     update_column(:bib, id)
