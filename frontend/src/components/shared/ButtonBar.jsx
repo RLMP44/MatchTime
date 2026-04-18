@@ -46,6 +46,7 @@ function ButtonBar(props) {
           add={props.add}
           buttons={buttonTypes}
           categories={props.categories}
+          divisions={props.divisions}
           popUpFields={popUpFields}
         />
       </div>

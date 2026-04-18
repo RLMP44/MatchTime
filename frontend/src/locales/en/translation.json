@@ -10,9 +10,12 @@
   "first_name": "First Name",
   "last_name": "Last Name",
   "division": "Division",
+  "division_id": "Division",
   "category": "Category",
+  "category_id": "Category",
   "plusFive": "+5",
   "plusTen": "+10",
   "place": "Place",
-  "name": "Name"
+  "name": "Name",
+  "email": "Email"
 }

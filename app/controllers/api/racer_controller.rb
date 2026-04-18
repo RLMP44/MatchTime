@@ -13,7 +13,10 @@ class Api::RacerController < Api::ApplicationController
   end
 
   def create
-    racer = Racer.new(racer_params)
+    racer = Racer.new(racer_params.merge(
+      division_id: params[:racer][:division_id],
+      category_id: params[:racer][:category_id]
+    ))
 
     if racer.save
       render json: racer, status: :created
@@ -37,8 +40,6 @@ class Api::RacerController < Api::ApplicationController
       :sex,
       :age,
       :handicap,
-      :place,
-      :time_raw,
       :category_id,
       :division_id
     )

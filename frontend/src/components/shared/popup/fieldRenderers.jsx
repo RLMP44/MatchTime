@@ -33,6 +33,7 @@ function createFieldRenderers({ props, formData, setFormData }) {
         title={title}
         formData={formData}
         setFormData={setFormData}
+        editable={props.tab === 'division'}
       />,
 
     sex: ({ field, title }) =>

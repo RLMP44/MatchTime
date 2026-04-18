@@ -7,11 +7,9 @@ class Racer < ApplicationRecord
   validates :bib, numericality: { only_integer: true }, unless: -> { bib.blank? }
   validates :place, numericality: { only_integer: true }, unless: -> { place.blank? }
   validates :time_raw, numericality: true, unless: -> { time_raw.blank? }
-  validates :email, uniqueness: true
-  validates :first_name, uniqueness: { scope: [ :last_name, :email ],
-                                       message: "Full name already used with this email" }
-  validates :email, uniqueness: { scope: [ :first_name, :last_name ],
-                                  message: "Email already used by someone with this name" }
+  validates :email, uniqueness: true, allow_nil: true
+  validates :first_name, uniqueness: { scope: :last_name,
+                                       message: "Full name already used" }
 
   before_create :calculate_handicap
   after_create :assign_bib

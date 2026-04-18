@@ -40,7 +40,7 @@ end
   div = Division.all.sample
   cat = Category.all.sample
   age = rand(cat.min_age..cat.max_age)
-  racer = Racer.create!(
+  Racer.create!(
     first_name: name_array[0],
     last_name: name_array[1],
     city: Faker::Locations::Australia.location,
@@ -53,5 +53,4 @@ end
     place: nil,
     time_raw: nil
   )
-  puts racer
 end

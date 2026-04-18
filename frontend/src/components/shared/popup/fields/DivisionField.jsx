@@ -1,9 +1,10 @@
 function DivisionField({ field, title, divisions, formData, setFormData }) {
-  console.log('here')
   // updates racer info upon selecting division from dropdown
   function updateDivisionInfo({ field, divisions, event }) {
-    const selectedDivision = divisions.find(div => div.division === event.target.value);
-      setFormData({
+    const selectedDivision = divisions.find(div =>
+      div.id === parseInt(event.target.value)
+    );
+    setFormData({
       ...formData,
       [field]: event.target.value,
       'race_no': selectedDivision.race_no
@@ -22,7 +23,7 @@ function DivisionField({ field, title, divisions, formData, setFormData }) {
         <option value="" disabled>Select</option>
         {divisions.map((div) => {
           return (
-            <option key={div.division} value={div.division}>{div.division}</option>
+            <option key={div.division} value={div.id}>{div.division}</option>
           )})
         };
       </select>

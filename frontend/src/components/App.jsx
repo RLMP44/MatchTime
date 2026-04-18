@@ -28,7 +28,7 @@ const importExportFields = ['times', 'categories', 'racers', 'clear existing', '
 const timerRecordsEditFields = ['bib', 'time_raw'];
 const categoryFields = ['category_id', 'sex', 'plusFive', 'plusTen'];
 const divisionFields = ['division_id', 'race_no', 'start_time'];
-const racerFields = ['age', 'sex', 'first_name', 'last_name', 'city', 'handicap', 'race_no', 'category_id', 'division_id'];
+const racerFields = ['age', 'sex', 'first_name', 'last_name', 'city', 'handicap', 'email', 'race_no', 'category_id', 'division_id'];
 const fieldsObject = {
   timer: timerRecordsEditFields,
   category: categoryFields,
@@ -226,36 +226,28 @@ function App() {
   // adds a new racer to the database
   // and instantaneously updates displayed records in timer and racer tabs
   const addRacer = useCallback(
-    (racerData) => {
+    async (racerData) => {
       const updated = { ...racerData }
-      displayCategories.find()
-      const newRacer = addDBRacer(racerData);
-    // const newRacer = {
-    //   ...racerData,
-    //   id: nextID.current,
-    //   place: null,
-    //   time_raw: null,
-    //   bib: parseInt(racerData.bib),
-    //   race_no: parseInt(racerData.race_no),
-    //   handicap: handicaps[racerData.sex][racerData.age]
-    // };
-    setDisplayRecords(prev => [...prev, newRacer]);
-    // update timer display with relevant info in case a placement is recorded
-    // for an empty bib. update user info on timer display when info is added
-    setTimerDisplayRecords(prev =>
-      prev.map((record) => {
-        if (record.bib === newRacer.bib && record.last_name === "Not Found") {
-          return {
-            ...record,
-            ...newRacer,
-            place: record.place,
-            time_raw: record.time_raw
-          };
-        }
-        return record;
-      })
-    );
-  });
+      delete updated.race_no
+      const newRacer = await addDBRacer(updated)
+      setDisplayRecords(prev => [...prev, newRacer]);
+      // update timer display with relevant info in case a placement is recorded
+      // for an empty bib. update user info on timer display when info is added
+      setTimerDisplayRecords(prev =>
+        prev.map((record) => {
+          if (record.bib === newRacer.bib && record.last_name === "Not Found") {
+            return {
+              ...record,
+              ...newRacer,
+              place: record.place,
+              time_raw: record.time_raw
+            };
+          }
+          return record;
+        })
+      );
+    }
+  );
 
   // edits a racer's personal information
   // and instantaneously updates the records displayed in timer tab and racers tab
