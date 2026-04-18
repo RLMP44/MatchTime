@@ -14,7 +14,7 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd';
 
 const timerHeaders = ['place', 'bib', 'time_raw', 'last_name', 'first_name'];
-const categoryHeaders = ['category'];
+const categoryHeaders = ['category', 'min_age', 'max_age'];
 const racerHeaders = ['bib', 'first_name', 'last_name', 'category', 'division', 'handicap'];
 const resultHeaders = ['place', 'time_raw', 'bib', 'last_name', 'first_name', 'city', 'category', 'division', 'sex'];
 const headersObject = {
@@ -26,7 +26,7 @@ const headersObject = {
 
 const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
 const timerRecordsEditFields = ['bib', 'time_raw'];
-const categoryFields = ['category_id', 'sex', 'plusFive', 'plusTen'];
+const categoryFields = ['category_id', 'sex', 'min_age', 'max_age', 'plusFive', 'plusTen'];
 const divisionFields = ['division_id', 'race_no', 'start_time'];
 const racerFields = ['age', 'sex', 'first_name', 'last_name', 'city', 'handicap', 'email', 'race_no', 'category_id', 'division_id'];
 const fieldsObject = {

@@ -17,5 +17,7 @@
   "plusTen": "+10",
   "place": "Place",
   "name": "Name",
-  "email": "Email"
+  "email": "Email",
+  "min_age": "Min Age",
+  "max_age": "Max Age"
 }
