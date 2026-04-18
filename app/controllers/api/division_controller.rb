@@ -1,4 +1,4 @@
-class Api::DivisionController < ApplicationController
+class Api::DivisionController < Api::ApplicationController
   def index
     render json: Division.all
   end
