@@ -35,7 +35,7 @@ for category in categories do
 end
 
 # create racers
-10.times do
+30.times do
   name_array = Faker::Name.name.split(' ')
   div = Division.all.sample
   cat = Category.all.sample

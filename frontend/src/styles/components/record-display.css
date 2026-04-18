@@ -7,7 +7,8 @@
 
 .records-display-container {
   min-width: 45vw;
-  min-height: 75vh;
+  height: 75vh;
+  overflow-y: auto;
   background-color: var(--color-primary);
   border-radius: 4px;
   padding: .5rem .5rem;

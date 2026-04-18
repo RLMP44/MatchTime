@@ -26,8 +26,8 @@ const headersObject = {
 
 const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
 const timerRecordsEditFields = ['bib', 'time_raw'];
-const categoryFields = ['category_id', 'sex', 'min_age', 'max_age', 'plusFive', 'plusTen'];
-const divisionFields = ['division_id', 'race_no', 'start_time'];
+const categoryFields = ['category', 'sex', 'min_age', 'max_age', 'plusFive', 'plusTen'];
+const divisionFields = ['division', 'race_no', 'start_time'];
 const racerFields = ['age', 'sex', 'first_name', 'last_name', 'city', 'handicap', 'email', 'race_no', 'category_id', 'division_id'];
 const fieldsObject = {
   timer: timerRecordsEditFields,
@@ -137,8 +137,14 @@ function App() {
     return response.json();
   };
 
-  async function addDBCategory() {
-     // TODO: add category in DB
+  async function addDBCategory(data) {
+    const response = await fetch('/api/category', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category: data })
+    });
+
+    return await response.json();
   };
 
   async function updateDBCategory() {
@@ -305,12 +311,9 @@ function App() {
 
   // -------------- CATEGORY LOGIC --------------
   const addCategory = useCallback(
-    (category) => {
-    setDisplayCategories(prev =>
-      [...prev,
-        { ...category, id: nextCatID.current }
-      ]);
-    addDBCategory(category);
+    async (category) => {
+      const newCat = await addDBCategory(category);
+      setDisplayCategories(prev => [...prev, { ...newCat }]);
   }, []);
 
   const editCategory = useCallback(
