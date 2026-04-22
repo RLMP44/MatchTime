@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { titleize, pluralize, convertToMs } from "../../../utils/helpers";
+import { titleize, pluralize, convertToMs, diff } from "../../../utils/helpers";
 import { useTranslation } from "react-i18next";
 import createFieldRenderers from "./fieldRenderers";
 import GeneralField from "./fields/GeneralField";
@@ -18,14 +18,17 @@ function Popup(props) {
       `${titleize(crud)} ${titleize(target)}`;
   };
 
-  // adjusts formData to contain proper types
+  // converts numeric fields in formData
   function formatRecord(data) {
-    var formattedData = { ...data }
-    if (data.age) { formattedData.age = parseInt(data.age) }
-    if (data.bib) { formattedData.bib = parseInt(data.bib) }
-    if (data.race_no) { formattedData.race_no = parseInt(data.race_no) }
-    if (data.division_id) { formattedData.division_id = parseInt(data.division_id) }
-    if (data.category_id) { formattedData.category_id = parseInt(data.category_id) }
+    var formattedData = {}
+    for (const key in data) {
+      let value = data[key];
+      if (["age", "bib", "race_no", "division_id", "category_id"].includes(key)) {
+        value = parseInt(value);
+      };
+
+      formattedData[key] = value;
+    }
     return formattedData;
   };
 
@@ -89,7 +92,8 @@ function Popup(props) {
     if (button === "update-button" && props.tab === "timer") {
       updateTimerDisplayRecord(formattedForm);
     } else if (button === 'update-button') {
-      props.edit({ oldRecord: props.data, newRecord: formattedForm });
+      const changed = diff(props.data, formattedForm)
+      props.edit({ oldRecord: props.data, newRecord: changed });
     } else if (button === 'add-button') {
       props.add(formattedForm);
       setFormData({});

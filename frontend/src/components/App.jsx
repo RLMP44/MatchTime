@@ -7,7 +7,7 @@ import Timer from "./timer/Timer";
 
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
 import handicapsJSON from '../handicaps.json';
-import { checkIsPresent, setMinmax_age } from "../utils/helpers";
+import { checkIsPresent, setMinmax_age, mergeUpdatedRecord } from "../utils/helpers";
 import TimerIcon from '@mui/icons-material/Timer';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
@@ -50,12 +50,6 @@ function App() {
   const [displayRecords, setDisplayRecords] = useState([]);
   const [displayCategories, setDisplayCategories] = useState([]);
   const [displayDivisions, setDisplayDivisions] = useState([]);
-  const lastRecord = displayRecords.at(-1);
-  const lastCat = displayCategories.at(-1);
-  const lastDivision = displayDivisions.at(-1);
-  const nextID = useRef(lastRecord ? lastRecord.id + 1 : 0);
-  const nextCatID = useRef(lastCat ? lastCat.id + 1 : 0);
-  const nextDivID = useRef(lastDivision ? lastDivision.id + 1 : 0);
 
   const headers = useMemo(() => headersObject[tab], [tab]);
   const fields = useMemo(() => fieldsObject[tab], [tab]);
@@ -120,8 +114,14 @@ function App() {
     return await response.json();
   };
 
-  async function updateDBRacer() {
-    // TODO: update racer/record in DB
+  async function updateDBRacer({ id, newRecord }) {
+    const response = await fetch(`/api/racer/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ racer: newRecord })
+    });
+
+    return await response.json();
   };
 
   function resetDBRacer() {
@@ -191,13 +191,8 @@ function App() {
   const updateDisplayedRecords = useCallback(
     ({ oldRecord: oldR, newRecord: updated }) => {
     resetDBRacer(oldR);
-    updateDBRacer(updated);
     // TODO: recalculate placement if time is reduced or increased
-    setDisplayRecords(prev =>
-      prev.map(prevRecord =>
-        prevRecord.id === updated.id ? { ...updated } : prevRecord
-      )
-    );
+    setDisplayRecords(prev => mergeUpdatedRecord(prev, updated));
     setTimerDisplayRecords(prev => {
       const index = prev.findIndex(record => record?.id === oldR?.id);
       if (index === -1) { return [...prev, updated] };
@@ -258,31 +253,12 @@ function App() {
   // edits a racer's personal information
   // and instantaneously updates the records displayed in timer tab and racers tab
   const editRacer = useCallback(
-    ({ oldRecord: oldR, newRecord: newR }) => {
-      const ageChanged = oldR.age !== newR.age;
-      const sexChanged = oldR.sex !== newR.sex;
-      const handicapMissing = newR.handicap === undefined;
-
-      const shouldRecalculateHandicap =
-        handicapMissing ||
-        (ageChanged || sexChanged) && oldR.handicap === newR.handicap;
-
-      // object spreading to update only new values
-      var updatedRacer = {
-        ...oldR,
-        ...newR,
-        ...(shouldRecalculateHandicap && {
-          handicap: handicaps[newR.sex ?? oldR.sex][newR.age ?? oldR.age]
-        })
-      };
-
-      if (shouldRecalculateHandicap) {
-        updatedRacer.handicap = handicaps[updatedRacer.sex][updatedRacer.age];
-      };
-
-      updateDisplayedRecords({ oldRecord: oldR, newRecord: updatedRacer })
-      updateDBRacer(updatedRacer);
-  }, [handicaps, updateDisplayedRecords]);
+    async ({ oldRecord: oldR, newRecord: newR }) => {
+      const racer = await updateDBRacer({ id: oldR.id, newRecord: newR });
+      setDisplayRecords(prev => mergeUpdatedRecord(prev, racer));
+      setTimerDisplayRecords(prev => mergeUpdatedRecord(prev, racer));
+    }
+  );
 
   // deletes a racer from the database
   // and from timer display (if relevant) and racers' tab
@@ -322,10 +298,8 @@ function App() {
       ...oldData,
       ...newData
     };
-    setDisplayCategories(prev => prev.map(cat => {
-      return cat.id === updatedCategory.id ? updatedCategory : cat;
-    }));
     updateDBCategory(updatedCategory);
+    setDisplayCategories(prev => mergeUpdatedRecord(prev, updatedCategory));
   }, []);
 
   const deleteCategory = useCallback(

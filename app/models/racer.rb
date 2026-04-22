@@ -13,11 +13,16 @@ class Racer < ApplicationRecord
 
   before_create :calculate_handicap
   after_create :assign_bib
+  before_save :calculate_handicap, if: :needs_handicap_update?
 
   private
 
   def calculate_handicap
     self.handicap = HandicapService.factor(sex, age)
+  end
+
+  def needs_handicap_update?
+    will_save_change_to_age? || will_save_change_to_sex?
   end
 
   def assign_bib

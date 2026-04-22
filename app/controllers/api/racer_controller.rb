@@ -29,6 +29,16 @@ class Api::RacerController < Api::ApplicationController
     render json: Racer.find(params[:id])
   end
 
+  def update
+    racer = Racer.find(params[:id])
+
+    if racer.update(racer_params)
+      render json: racer, status: :ok
+    else
+      render json: racer.errors, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def racer_params
@@ -39,7 +49,6 @@ class Api::RacerController < Api::ApplicationController
       :email,
       :sex,
       :age,
-      :handicap,
       :category_id,
       :division_id
     )

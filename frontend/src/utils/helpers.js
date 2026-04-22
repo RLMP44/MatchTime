@@ -61,3 +61,27 @@ export function convertToMs(time) {
 
   return totalMs;
 };
+
+// used for setTimerDisplay, setDisplayRecords, etc
+export function mergeUpdatedRecord(prev, updated) {
+  return prev.map(record =>
+    record.id === updated.id ? { ...record, ...updated } : record
+  );
+}
+
+export function diff(oldObj, newObj) {
+  const changed = {};
+  for (const key in newObj) {
+    const oldVal = oldObj[key];
+    const newVal = newObj[key];
+
+    // Normalize numeric fields
+    const normalizedOld = typeof oldVal === "string" && !isNaN(oldVal) ? parseInt(oldVal) : oldVal;
+    const normalizedNew = typeof newVal === "string" && !isNaN(newVal) ? parseInt(newVal) : newVal;
+
+    if (normalizedOld !== normalizedNew) {
+      changed[key] = newVal;
+    }
+  }
+  return changed;
+}
