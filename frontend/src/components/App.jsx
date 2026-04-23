@@ -6,7 +6,6 @@ import TimeKeeper from "./timer/TimeKeeper";
 import Timer from "./timer/Timer";
 
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
-import handicapsJSON from '../handicaps.json';
 import { checkIsPresent, setMinmax_age, mergeUpdatedRecord, diff } from "../utils/helpers";
 import TimerIcon from '@mui/icons-material/Timer';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
@@ -46,7 +45,6 @@ function App() {
   const [tab, setTab] = useState("timer");
   const [place, setPlace] = useState(1);
   const [buttonText, setButtonText] = useState("start");
-  const [handicaps, setHandicaps] = useState(handicapsJSON);
   const [displayRecords, setDisplayRecords] = useState([]);
   const [displayCategories, setDisplayCategories] = useState([]);
   const [displayDivisions, setDisplayDivisions] = useState([]);
@@ -61,14 +59,6 @@ function App() {
 
   // -------------- DB LOGIC --------------
   // load data from backend on first render
-  useEffect(() => {
-    async function loadHandicaps() {
-      const handicapsJSON = await fetchHandicaps();
-      setHandicaps(handicapsJSON);
-    }
-    loadHandicaps();
-  }, []);
-
   useEffect(() => {
     async function loadRacers() {
       const racersJSON = await fetchAllRacers();
@@ -92,12 +82,6 @@ function App() {
     }
     loadDivisions();
   }, []);
-
-
-  async function fetchHandicaps() {
-    const response = await fetch('/handicaps');
-    return response.json();
-  }
 
   async function fetchAllRacers() {
     const response = await fetch('/api/racer');
