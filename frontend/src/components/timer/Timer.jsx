@@ -37,8 +37,8 @@ function Timer(props) {
   // uses the currentRecord in the timer tab as a base to update time, place,
   // and bib with the next record, or to clear info for the next display
   // useCallback to rerender only when dependencies update
-  const updateTimeAndPlace = useCallback(
-    ({ prevTime, prevPlace, bib }) => {
+  const handleRecordRacer = useCallback(
+    async ({ prevTime, prevPlace, bib }) => {
       const updatedRecord = {
         ...currentRecord,
         place: prevPlace ?? place,
@@ -46,8 +46,8 @@ function Timer(props) {
         bib: bib ?? currentRecord?.bib
       };
 
-      setCurrentRecord(updatedRecord);
-      update({ oldRecord: currentRecord, newRecord: updatedRecord });
+      const updated = await update({ oldRecord: currentRecord, newRecord: updatedRecord });
+      setCurrentRecord(updated);
     },
     [currentRecord, update, place, timeInMs]
   );
@@ -118,7 +118,7 @@ function Timer(props) {
       };
 
       if (recordNewRacer) {
-        updateTimeAndPlace({
+        handleRecordRacer({
           prevTime: null,
           prevPlace: null,
           bib: null
@@ -143,7 +143,7 @@ function Timer(props) {
       if (isSameTimeButton) {
         const lastRecord = records.at(-1);
         if (lastRecord) {
-          updateTimeAndPlace({
+          handleRecordRacer({
             prevTime: lastRecord?.time_raw,
             prevPlace: lastRecord?.place,
             bib: bibNum
@@ -160,7 +160,7 @@ function Timer(props) {
       fetchAndSetRecord,
       reset,
       records,
-      updateTimeAndPlace,
+      handleRecordRacer,
       setPlace,
       buttonText,
       setButtonText,

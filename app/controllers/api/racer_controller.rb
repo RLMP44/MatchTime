@@ -39,6 +39,12 @@ class Api::RacerController < Api::ApplicationController
     end
   end
 
+  def reset
+    racer = Racer.find(params[:id])
+    racer.update({ place: nil, time_raw: nil })
+    render json: racer
+  end
+
   private
 
   def racer_params
@@ -49,6 +55,8 @@ class Api::RacerController < Api::ApplicationController
       :email,
       :sex,
       :age,
+      :place,
+      :time_raw,
       :category_id,
       :division_id
     )

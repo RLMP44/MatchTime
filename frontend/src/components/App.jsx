@@ -7,7 +7,7 @@ import Timer from "./timer/Timer";
 
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
 import handicapsJSON from '../handicaps.json';
-import { checkIsPresent, setMinmax_age, mergeUpdatedRecord } from "../utils/helpers";
+import { checkIsPresent, setMinmax_age, mergeUpdatedRecord, diff } from "../utils/helpers";
 import TimerIcon from '@mui/icons-material/Timer';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
@@ -124,8 +124,10 @@ function App() {
     return await response.json();
   };
 
-  function resetDBRacer() {
-    // TODO: set DB racer time and place back to null
+  async function resetDBRacer(id) {
+    const response = await fetch(`/api/racer/${id}/reset`, { method: 'PATCH' });
+
+    return await response.json();
   };
 
   function deleteDBRacer() {
@@ -189,10 +191,12 @@ function App() {
   // with new time and/or placement on timer record display,
   // resets the old record and updates all record displays
   const updateDisplayedRecords = useCallback(
-    ({ oldRecord: oldR, newRecord: updated }) => {
-    resetDBRacer(oldR);
+    async ({ oldRecord: oldR, newRecord: updated }) => {
+    // if (oldR.id) {resetDBRacer(oldR.id)};
+    const changed = diff(oldR, updated);
+    const racer = await updateDBRacer({ id: oldR.id, newRecord: changed });
     // TODO: recalculate placement if time is reduced or increased
-    setDisplayRecords(prev => mergeUpdatedRecord(prev, updated));
+    setDisplayRecords(prev => mergeUpdatedRecord(prev, racer));
     setTimerDisplayRecords(prev => {
       const index = prev.findIndex(record => record?.id === oldR?.id);
       if (index === -1) { return [...prev, updated] };

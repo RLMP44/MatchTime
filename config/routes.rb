@@ -13,7 +13,11 @@ Rails.application.routes.draw do
   namespace :api do
     resources :category
     resources :division
-    resources :racer
+    resources :racer do
+      member do
+        patch :reset
+      end
+    end
   end
   root "frontend#index"
   get "*path", to: "frontend#index", constraints: lambda { |req|
