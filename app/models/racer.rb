@@ -15,6 +15,10 @@ class Racer < ApplicationRecord
   after_create :assign_bib, unless: :placeholder?
   before_save :calculate_handicap, if: :needs_handicap_update?, unless: :placeholder?
 
+  def placeholder?
+    id.present? && id < 0
+  end
+
   private
 
   def self.create_placeholder!(bib:, place:, time_raw:)
@@ -46,10 +50,6 @@ class Racer < ApplicationRecord
 
   def needs_handicap_update?
     will_save_change_to_age? || will_save_change_to_sex?
-  end
-
-  def placeholder?
-    id.present? && id < 0
   end
 
   def assign_bib

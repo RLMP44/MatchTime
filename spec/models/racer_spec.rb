@@ -53,5 +53,24 @@ RSpec.describe Racer, type: :model do
       racer = create(:racer)
       expect(racer.bib).to eq(racer.id)
     end
+
+    it "does not override bib for placeholder racers" do
+      racer = Racer.create_placeholder!(bib: 500, place: 1, time_raw: 1000)
+      expect(racer.bib).to eq(500)
+    end
+
+    it "does not calculate handicap for placeholder racers" do
+      racer = Racer.create_placeholder!(bib: 500, place: 1, time_raw: 1000)
+      expect(racer.handicap).to be_nil
+    end
+  end
+
+  describe "placeholder racers" do
+    it "allows creating a placeholder racer without normal validations" do
+      racer = Racer.create_placeholder!(bib: 500, place: 1, time_raw: 123)
+      expect(racer).to be_persisted
+      expect(racer.placeholder?).to eq(true)
+      expect(racer.id).to be < 0
+    end
   end
 end
