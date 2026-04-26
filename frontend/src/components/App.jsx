@@ -6,7 +6,7 @@ import TimeKeeper from "./timer/TimeKeeper";
 import Timer from "./timer/Timer";
 
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
-import { checkIsPresent, setMinmax_age, mergeUpdatedRecord, diff } from "../utils/helpers";
+import { checkIsPresent, setMinmax_age, mergeUpdatedRecord, diff, convertToMs } from "../utils/helpers";
 import TimerIcon from '@mui/icons-material/Timer';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
@@ -171,24 +171,105 @@ function App() {
 
 
   // -------------- TIMER RECORD DISPLAY LOGIC --------------
+  const updateAllRecords = async ({ oldRecord, newRecord }) => {
+    updateDisplayedRecords({ oldRecord, newRecord });
+    await updateDBRacer({
+        id: oldRecord.id,
+        newRecord: diff(oldRecord, newRecord)
+      });
+  };
+
   // takes 2 records => updates a single, previously displayed record
   // with new time and/or placement on timer record display,
   // resets the old record and updates all record displays
-  const updateDisplayedRecords = useCallback(
-    async ({ oldRecord: oldR, newRecord: updated }) => {
-    // if (oldR.id) {resetDBRacer(oldR.id)};
-    const changed = diff(oldR, updated);
-    const racer = await updateDBRacer({ id: oldR.id, newRecord: changed });
-    // TODO: recalculate placement if time is reduced or increased
-    setDisplayRecords(prev => mergeUpdatedRecord(prev, racer));
+  const updateDisplayedRecords = async ({ oldRecord, newRecord }) => {
+    setDisplayRecords(prev => mergeUpdatedRecord(prev, newRecord));
+
     setTimerDisplayRecords(prev => {
-      const index = prev.findIndex(record => record?.id === oldR?.id);
-      if (index === -1) { return [...prev, updated] };
-      const updatedRecords = [...prev];
-      updatedRecords[index] = { ...updatedRecords[index], ...updated};
-      return updatedRecords;
+      const index = prev.findIndex(record => record?.id === oldRecord?.id);
+      if (index === -1) return [...prev, newRecord];
+      const updated = [...prev];
+      updated[index] = newRecord;
+      return updated;
     });
-  }, []);
+  };
+
+  const resetRacerRecord = async ({ racerToReset }) => {
+    const updatedRacer = await resetDBRacer(racerToReset.id);
+    setDisplayRecords(prev => mergeUpdatedRecord(prev, updatedRacer));
+    setTimerDisplayRecords(prev =>
+      prev.filter(record => record.id !== racerToReset.id)
+    );
+    return updatedRacer;
+  };
+
+  const swapRacers = async ({ prevData, newData, timeChanged, timeInMs }) => {
+    const newRacer = await transferDataToNewRacer({
+      racerToReset: prevData,
+      racerToUpdate: newData,
+      timeChanged,
+      timeInMs
+    });
+    await updateDisplayedRecords({
+      oldRecord: prevData,
+      newRecord: newRacer
+    });
+    await resetRacerRecord({ racerToReset: prevData });
+  };
+
+  // updates single record in timer display (time or racer)
+  // converts updated time into milliseconds
+  // swaps and resets racer record if bib changed
+  async function formatAndUpdateTimerDisplayRecord({ prevData, newData }) {
+    const bibChanged = newData.bib && newData.bib !== prevData.bib;
+    const timeInMs = typeof newData.time_raw === "string"
+      ? convertToMs(newData.time_raw)
+      : newData.time_raw;
+    const timeChanged = timeInMs && timeInMs !== prevData.time_raw;
+
+    if (bibChanged) {
+      swapRacers({ prevData, newData, timeChanged, timeInMs });
+      return;
+    };
+
+    if (timeChanged) {
+      const racer = await updateDBRacer({
+        id: prevData.id,
+        newRecord: { place: prevData.place, time_raw: timeInMs }
+      });
+      await updateDisplayedRecords({
+        oldRecord: prevData,
+        newRecord: racer
+      });
+    };
+  };
+
+  // when swapping racers in timer display,
+  // fetch and update new racer with prev racer's time and place
+  // if no new racer is found, add placeholder with time, place, bib, and null for rest
+  async function transferDataToNewRacer({
+    racerToReset, racerToUpdate, timeChanged, timeInMs
+  }) {
+    const user = await fetchRacerRecord(racerToUpdate.bib);
+    if (user) {
+      const updatedRacer = await updateDBRacer({
+        id: user.id,
+        newRecord: {
+          place: racerToReset.place,
+          time_raw: timeChanged ? timeInMs : racerToReset.time_raw
+        }
+      });
+      return updatedRacer;
+    };
+
+    const placeholderRacer = await addDBRacer({
+      placeholder: true,
+      place: racerToReset.place,
+      bib: racerToUpdate.bib,
+      time_raw: timeInMs
+    });
+    return placeholderRacer;
+  }
 
   // deletes a racer record from the timer record display and resets the racer's time/place in the DB
   const deleteDisplayedRecord = useCallback(
@@ -352,9 +433,8 @@ function App() {
                               records={memoTimerRecords}
                               divisions={memoDivisions}
                               categories={memoCategories}
-                              fetchRecord={fetchRacerRecord}
                               delete={deleteDisplayedRecord}
-                              update={updateDisplayedRecords}
+                              update={formatAndUpdateTimerDisplayRecord}
                             />
                             <Timer
                               tab={tab}
@@ -365,7 +445,7 @@ function App() {
                               setButtonText={setButtonText}
                               records={memoTimerRecords}
                               fetchRecord={fetchRacerRecord}
-                              update={updateDisplayedRecords}
+                              update={updateAllRecords}
                             />
                 </div>
               )}

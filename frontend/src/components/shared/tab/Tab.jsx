@@ -23,7 +23,6 @@ function Tab(props) {
             categories={props.categories}
             divisions={props.divisions}
             setDisplayRecords={props.setDisplayRecords}
-            fetchRecord={props.fetchRecord}
             update={props.update}
             edit={props.edit}
             delete={props.delete}

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_15_195141) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_25_013832) do
   create_table "categories", force: :cascade do |t|
     t.string "category"
     t.string "sex"
@@ -41,8 +41,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_15_195141) do
     t.float "time_raw"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "division_id", null: false
-    t.integer "category_id", null: false
+    t.integer "division_id"
+    t.integer "category_id"
     t.index ["category_id"], name: "index_racers_on_category_id"
     t.index ["division_id"], name: "index_racers_on_division_id"
   end

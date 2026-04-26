@@ -32,65 +32,13 @@ function Popup(props) {
     return formattedData;
   };
 
-  // swaps recorded time and place to updated racer when bib is changed in timer display
-  async function switchRacers(data) {
-    const user = await props.fetchRecord(data.bib);
-    const timeInMs = typeof(props.data.time_raw) === 'string'
-      ? convertToMs(props.data.time_raw)
-      : props.data.time_raw
-    if (user) {
-      return {
-        ...data,
-        ...user,
-        place: props.data.place,
-        time_raw: timeInMs
-      };
-    } else {
-      return {
-        place: props.data.place,
-        bib: data.bib,
-        age: null,
-        sex: null,
-        race_no: null,
-        handicap: null,
-        time_raw: timeInMs,
-        city: null,
-        time: null,
-        first_name: null,
-        last_name: "Not Found",
-        category: null,
-        division: null
-      }
-    }
-  };
-
-  // updates single record in timer display (time or racer)
-  // converts updated time into milliseconds
-  async function updateTimerDisplayRecord(data) {
-    const bibChanged = data.bib && data.bib !== props.data.bib;
-    const timeInMs = typeof(data.time_raw) === "string"
-      ? convertToMs(data.time_raw)
-      : data.time_raw;
-    const timeChanged = timeInMs && timeInMs !== props.data.time_raw;
-    let updatedRecord = { ...props.data };
-
-    if (bibChanged) {
-      const newUser = await switchRacers(data);
-      updatedRecord = { ...updatedRecord, ...newUser };
-    };
-    if (timeChanged) {
-      updatedRecord.time_raw = timeInMs;
-    };
-    props.update({ oldRecord: props.data, newRecord: updatedRecord })
-  };
-
 
   // ----------------- EVENT HANDLING LOGIC -----------------
   async function handleSubmit(event) {
     const button = event.target.id;
     let formattedForm = formatRecord(formData);
     if (button === "update-button" && props.tab === "timer") {
-      updateTimerDisplayRecord(formattedForm);
+      props.update({ prevData: props.data, newData: formattedForm });
     } else if (button === 'update-button') {
       const changed = diff(props.data, formattedForm)
       props.edit({ oldRecord: props.data, newRecord: changed });

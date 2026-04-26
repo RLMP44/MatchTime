@@ -13,6 +13,15 @@ class Api::RacerController < Api::ApplicationController
   end
 
   def create
+    if params[:racer][:placeholder]
+      racer = Racer.create_placeholder!(
+        bib: params[:racer][:bib],
+        place: params[:racer][:place],
+        time_raw: params[:racer][:time_raw]
+      )
+      return render json: racer, status: :created
+    end
+
     racer = Racer.new(racer_params.merge(
       division_id: params[:racer][:division_id],
       category_id: params[:racer][:category_id]
@@ -58,7 +67,9 @@ class Api::RacerController < Api::ApplicationController
       :place,
       :time_raw,
       :category_id,
-      :division_id
+      :division_id,
+      :bib,
+      :handicap
     )
   end
 end
