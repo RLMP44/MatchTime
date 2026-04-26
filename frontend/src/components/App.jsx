@@ -271,23 +271,28 @@ function App() {
     return placeholderRacer;
   }
 
-  // deletes a racer record from the timer record display and resets the racer's time/place in the DB
-  const deleteDisplayedRecord = useCallback(
-    (recordToDelete) => {
-    resetDBRacer(recordToDelete);
+  // deletes a racer record from the timer record display
+  // resets the racer's time/place in the DB
+  // updates place of all subsequent records
+  const deleteDisplayedRecord = useCallback(async (recordToDelete) => {
+    await resetDBRacer(recordToDelete.id);
+    let updatedRecords;
     setTimerDisplayRecords((prevRecords) => {
-      // filter out deleted record
       const filteredRecords = prevRecords.filter((record) =>
         record.id !== recordToDelete.id
       );
-      // update placements of all subsequent records
-      return filteredRecords.map((record) =>
+      updatedRecords = filteredRecords.map((record) =>
         record.place > recordToDelete.place
         ? { ...record, place: record.place - 1 }
         : record
       );
+      return updatedRecords;
     });
-    // TODO: need to update places in DB
+
+    // for loop to allows async calls to DB, writes one change at a time
+    for (const record of updatedRecords) {
+      await updateDBRacer({ id: record.id, newRecord: { place: record.place }});
+    };
     setPlace(prev => prev - 1);
   }, []);
 
