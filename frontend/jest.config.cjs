@@ -9,5 +9,5 @@ module.exports = {
     "^react$": "<rootDir>/node_modules/react",
     "^react-dom$": "<rootDir>/node_modules/react-dom"
   },
-  testPathIgnorePatterns: ['/playwright/'],
+  testPathIgnorePatterns: ['/e2e/'],
 };

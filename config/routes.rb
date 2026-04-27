@@ -25,4 +25,9 @@ Rails.application.routes.draw do
     not_ajax = !req.xhr?
     html_request && not_ajax
   }
+  if Rails.env.test?
+    namespace :test_support do
+      resources :racers, only: [ :create, :destroy ]
+    end
+  end
 end

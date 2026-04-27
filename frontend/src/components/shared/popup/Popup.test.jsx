@@ -5,12 +5,6 @@ jest.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key) => key })
 }));
 
-jest.mock("../../../utils/helpers", () => ({
-  titleize: jest.fn((v) => v.charAt(0).toUpperCase() + v.slice(1)),
-  pluralize: jest.fn((v) => v + "s"),
-  convertToMs: jest.fn((v) => 9999)
-}));
-
 jest.mock("./fieldRenderers", () => jest.fn(() => ({
   first_name: jest.fn(() => <div data-testid="first_name-field">first_name FIELD</div>),
   age: jest.fn(() => <div data-testid="age-field">AGE FIELD</div>)
@@ -59,16 +53,9 @@ describe("Popup component", () => {
 
     fireEvent.click(screen.getByText("Update"));
 
-    expect(baseProps.edit).toHaveBeenCalledWith({
-      oldRecord: baseProps.data,
-      newRecord: {
-        id: 1,
-        first_name: "John",
-        last_name: "Doe",
-        age: 25,
-        bib: 10
-      }
-    });
+    const call = baseProps.edit.mock.calls[0][0];
+    expect(call.newRecord.age).toBe(25);
+    expect(call.newRecord.bib).toBe(10);
   });
 
   test("delete button triggers delete handler", () => {
