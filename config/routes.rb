@@ -9,7 +9,6 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
-  get "/handicaps", to: "frontend#handicaps"
   namespace :api do
     resources :category
     resources :division
@@ -19,15 +18,27 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  if Rails.env.test? || Rails.env.development?
+    namespace :test_support, defaults: { format: :json } do
+      resources :racer, only: [ :create, :update, :destroy ] do
+        delete :destroy_all, on: :collection
+      end
+
+      resources :category, only: [ :index, :create, :update, :destroy ] do
+        delete :destroy_all, on: :collection
+      end
+
+      resources :division, only: [ :create, :update, :destroy ] do
+        delete :destroy_all, on: :collection
+      end
+    end
+  end
+
   root "frontend#index"
   get "*path", to: "frontend#index", constraints: lambda { |req|
     html_request = req.format.html?
     not_ajax = !req.xhr?
     html_request && not_ajax
   }
-  if Rails.env.test?
-    namespace :test_support do
-      resources :racers, only: [ :create, :destroy ]
-    end
-  end
 end

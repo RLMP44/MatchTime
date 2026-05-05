@@ -81,7 +81,8 @@ function Display(props) {
   return (
     <div>
       <div
-        data-testid={props.isHeader ? `${props.tab}-header-row` : `${props.tab}-row`}
+        data-testid={`${props.tab}-row-${displayData?.id}`}
+        key={displayData?.id}
         className={`display-container ${props.tab}-display-grid`}
         onClick={!props.isHeader ? handlePopUp : undefined}
       >

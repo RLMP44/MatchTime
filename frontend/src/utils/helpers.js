@@ -19,16 +19,6 @@ export function range(start, end) {
   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 };
 
-export function setMinmax_age(category) {
-  const integers = /\d+/;
-  const splitCat = category.category.split('-');
-  const min_age = parseInt(splitCat[0].match(integers));
-  const max_age = parseInt(splitCat[1]);
-  category.min_age = min_age;
-  category.max_age = max_age;
-  return category;
-};
-
 export function prepTimeForDisplay(milliseconds) {
   const hours = Math.floor(milliseconds / 3_600_000);
   const mins = Math.floor((milliseconds % 3_600_000) / 60_000);

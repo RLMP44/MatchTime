@@ -11,6 +11,9 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.2].define(version: 2026_04_25_013832) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "categories", force: :cascade do |t|
     t.string "category"
     t.string "sex"
@@ -23,7 +26,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_25_013832) do
   create_table "divisions", force: :cascade do |t|
     t.string "division"
     t.integer "race_no"
-    t.datetime "start_time"
+    t.datetime "start_time", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -41,8 +44,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_25_013832) do
     t.float "time_raw"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "division_id"
-    t.integer "category_id"
+    t.bigint "division_id"
+    t.bigint "category_id"
     t.index ["category_id"], name: "index_racers_on_category_id"
     t.index ["division_id"], name: "index_racers_on_division_id"
   end

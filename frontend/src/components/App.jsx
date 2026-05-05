@@ -6,11 +6,14 @@ import TimeKeeper from "./timer/TimeKeeper";
 import Timer from "./timer/Timer";
 
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
-import { checkIsPresent, setMinmax_age, mergeUpdatedRecord, diff, convertToMs } from "../utils/helpers";
+import { checkIsPresent, mergeUpdatedRecord, diff, convertToMs } from "../utils/helpers";
 import TimerIcon from '@mui/icons-material/Timer';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd';
+
+const API_BASE =
+  window.location.search.includes("e2e") ? "/test_support" : "/api";
 
 const timerHeaders = ['place', 'bib', 'time_raw', 'last_name', 'first_name'];
 const categoryHeaders = ['category', 'min_age', 'max_age'];
@@ -25,7 +28,7 @@ const headersObject = {
 
 const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
 const timerRecordsEditFields = ['bib', 'time_raw'];
-const categoryFields = ['category', 'sex', 'min_age', 'max_age', 'plusFive', 'plusTen'];
+const categoryFields = ['category', 'plusFive', 'plusTen'];
 const divisionFields = ['division', 'race_no', 'start_time'];
 const racerFields = ['age', 'sex', 'first_name', 'last_name', 'city', 'handicap', 'email', 'race_no', 'category_id', 'division_id'];
 const fieldsObject = {
@@ -84,12 +87,12 @@ function App() {
   }, []);
 
   async function fetchAllRacers() {
-    const response = await fetch('/api/racer');
+    const response = await fetch(`${API_BASE}/racer`);
     return response.json();
   };
 
   async function addDBRacer(data) {
-    const response = await fetch('/api/racer', {
+    const response = await fetch(`${API_BASE}/racer`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ racer: data })
@@ -99,7 +102,7 @@ function App() {
   };
 
   async function updateDBRacer({ id, newRecord }) {
-    const response = await fetch(`/api/racer/${id}`, {
+    const response = await fetch(`${API_BASE}/racer/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ racer: newRecord })
@@ -109,7 +112,7 @@ function App() {
   };
 
   async function resetDBRacer(id) {
-    const response = await fetch(`/api/racer/${id}/reset`, { method: 'PATCH' });
+    const response = await fetch(`${API_BASE}/racer/${id}/reset`, { method: 'PATCH' });
 
     return await response.json();
   };
@@ -119,12 +122,12 @@ function App() {
   }
 
   async function fetchAllCategories() {
-    const response = await fetch('/api/category');
+    const response = await fetch(`${API_BASE}/category`);
     return response.json();
   };
 
   async function addDBCategory(data) {
-    const response = await fetch('/api/category', {
+    const response = await fetch(`${API_BASE}/category`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ category: data })
@@ -142,7 +145,7 @@ function App() {
   };
 
   async function fetchAllDivisions() {
-    const response = await fetch('/api/division');
+    const response = await fetch(`${API_BASE}/division`);
     return response.json();
   };
 
@@ -362,8 +365,10 @@ function App() {
   // -------------- CATEGORY LOGIC --------------
   const addCategory = useCallback(
     async (category) => {
+      console.log(category)
       const newCat = await addDBCategory(category);
-      setDisplayCategories(prev => [...prev, { ...newCat }]);
+      console.log(newCat)
+      setDisplayCategories(prev => [...prev, newCat ]);
   }, []);
 
   const editCategory = useCallback(

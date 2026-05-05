@@ -170,8 +170,8 @@ function Timer(props) {
 
   return (
     <div className="timer-display">
-      <div className="timer-info-display">
-        <h4>Time: {displayTime.hour}:{displayTime.min}:{displayTime.sec}:{displayTime.milli}</h4>
+      <div data-testid="timer-info-display" className="timer-info-display">
+        <h4 data-testid="display-timer">Time: {displayTime.hour}:{displayTime.min}:{displayTime.sec}:{displayTime.milli}</h4>
         <h4>Place: {props.place}</h4>
         <h4>Bib #: {bibNum}</h4>
         <h4>Name: {first_name && last_name ? `${first_name} ${last_name}` : bibNum ? "Not Found" : ""}</h4>

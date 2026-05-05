@@ -3,7 +3,6 @@ import {
   pluralize,
   checkIsPresent,
   range,
-  setMinmax_age,
   prepTimeForDisplay,
   timeForDisplay,
   convertToMs
@@ -29,11 +28,6 @@ describe('helpers', () => {
 
   test('range to return an array of numbers counting up from start to end', () => {
     expect(range(1,6)).toStrictEqual([1,2,3,4,5,6]);
-  });
-
-  test('setMinmax_age to set min and max age from category name', () => {
-    expect(setMinmax_age({category: 'M30-39', min_age: null, max_age: null}))
-      .toStrictEqual({category: 'M30-39', min_age: 30, max_age: 39});
   });
 
   test('prepTimeForDisplay returns object of padded hrs, mins, sec, and millis', () => {

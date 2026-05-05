@@ -4,6 +4,8 @@ require 'faker'
 handicaps_path = Rails.root.join('config', 'handicaps.json')
 HANDICAPS = JSON.parse(File.read(handicaps_path))
 
+return if Rails.env.test?
+
 # create divisions
 races = [ [ 1, '5k' ], [ 2, '10k' ], [ 3, '15k' ], [ 4, '21k' ], [ 5, '42k' ] ]
 races.each do |race|
@@ -12,26 +14,15 @@ end
 
 # create categories
 categories = [
-  { 'category' => 'F10-19', 'sex' => 'F', 'min_age' => 10, 'max_age' => 19 },
-  { 'category' => 'M10-19', 'sex' => 'M', 'min_age' => 10, 'max_age' => 19 },
-  { 'category' => 'F20-29', 'sex' => 'F', 'min_age' => 20, 'max_age' => 29 },
-  { 'category' => 'M20-29', 'sex' => 'M', 'min_age' => 20, 'max_age' => 29 },
-  { 'category' => 'F30-39', 'sex' => 'F', 'min_age' => 30, 'max_age' => 39 },
-  { 'category' => 'M30-39', 'sex' => 'M', 'min_age' => 30, 'max_age' => 39 },
-  { 'category' => 'F40-49', 'sex' => 'F', 'min_age' => 40, 'max_age' => 49 },
-  { 'category' => 'M40-49', 'sex' => 'M', 'min_age' => 40, 'max_age' => 49 },
-  { 'category' => 'F50-59', 'sex' => 'F', 'min_age' => 50, 'max_age' => 59 },
-  { 'category' => 'M50-59', 'sex' => 'M', 'min_age' => 50, 'max_age' => 59 },
-  { 'category' => 'F60-69', 'sex' => 'F', 'min_age' => 60, 'max_age' => 69 },
-  { 'category' => 'M60-69', 'sex' => 'M', 'min_age' => 60, 'max_age' => 69 }
+  { 'category' => 'F10-19' }, { 'category' => 'M10-19' },
+  { 'category' => 'F20-29' }, { 'category' => 'M20-29' },
+  { 'category' => 'F30-39' }, { 'category' => 'M30-39' },
+  { 'category' => 'F40-49' }, { 'category' => 'M40-49' },
+  { 'category' => 'F50-59' }, { 'category' => 'M50-59' },
+  { 'category' => 'F60-69' }, { 'category' => 'M60-69' }
 ]
 for category in categories do
-  Category.create!(
-    category: category['category'],
-    sex: category['sex'],
-    min_age: category['min_age'],
-    max_age: category['max_age'],
-  )
+  Category.create!(category: category['category'])
 end
 
 # create racers
