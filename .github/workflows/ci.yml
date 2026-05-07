@@ -69,11 +69,17 @@ jobs:
       - name: Prepare DB
         env:
           RAILS_ENV: test
+          POSTGRESQL_USER: ${{ secrets.POSTGRESQL_USER }}
+          POSTGRESQL_PASSWORD: ${{ secrets.POSTGRESQL_PASSWORD }}
+          POSTGRESQL_HOST: ${{ secrets.POSTGRESQL_HOST }}
         run: bin/rails db:test:prepare
 
       - name: Run RSpec
         env:
           RAILS_ENV: test
+          POSTGRESQL_USER: ${{ secrets.POSTGRESQL_USER }}
+          POSTGRESQL_PASSWORD: ${{ secrets.POSTGRESQL_PASSWORD }}
+          POSTGRESQL_HOST: ${{ secrets.POSTGRESQL_HOST }}
         run: bundle exec rspec
 
   jest:
