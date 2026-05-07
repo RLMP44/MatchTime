@@ -69,7 +69,7 @@ function Popup(props) {
   // TODO: disallow chars in int fields, etc
 
   return (
-    <div className="dialog">
+    <div className="dialog" data-testid="popup">
       <h4 className="title">{setTitle(props.crud || '', props.tab || '')}</h4>
       <div className="border"></div>
 

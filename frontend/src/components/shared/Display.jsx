@@ -101,7 +101,7 @@ function Display(props) {
       {/* ------------- POPUP ------------- */}
       <div>
         {isDisplayed && <Popup
-            key={`${props.data?.id}-${props.categories.length}-${props.divisions.length}`}
+            key={`${props.data?.id}-${props?.categories.length}-${props?.divisions.length}`}
             setIsDisplayed={setIsDisplayed}
             data={props.data}
             tab={props.tab}

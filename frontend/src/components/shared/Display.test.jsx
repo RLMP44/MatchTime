@@ -23,6 +23,7 @@ describe("Display component", () => {
     headers: ["first_name", "last_name", "time_raw"],
     fields: [],
     categories: [],
+    divisions: [],
     setDisplayRecords: jest.fn(),
     fetchRecord: jest.fn(),
     update: jest.fn(),
