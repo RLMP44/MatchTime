@@ -1,3 +1,5 @@
+.PHONY: test
+
 test:
 		bundle exec rspec
 		cd frontend && npm test -- --ci --runInBand
