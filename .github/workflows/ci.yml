@@ -38,6 +38,10 @@ jobs:
             sleep 1
           done
 
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
       - name: Run Brakeman
         env:
           RAILS_ENV: development
@@ -146,7 +150,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm install
+        run: npm ci
 
       - name: Run Jest
         working-directory: frontend
