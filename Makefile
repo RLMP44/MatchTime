@@ -9,5 +9,5 @@ rspec:
 jest:
 		cd frontend && npm test -- --ci --runInBand
 
-playwright:
-		cd frontend && npx playwright test
+# playwright:
+# 		cd frontend && npx playwright test

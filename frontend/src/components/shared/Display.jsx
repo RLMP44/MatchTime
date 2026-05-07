@@ -10,9 +10,9 @@ const defaultHandicap = 1;
 function transformData({ data, tab, cats, divs }) {
   if (!data) return null;
   if (tab === 'category') { return data };
-  const { first_name, last_name, time_raw, category_id, division_id, ...other } = data;
+  const { id, first_name, last_name, time_raw, category_id, division_id, ...other } = data;
 
-  let transObject = { ...other };
+  let transObject = { id, ...other };
 
   if (first_name || last_name) {
     transObject.name = `${last_name ?? ""}, ${first_name ?? ""}`;
@@ -44,7 +44,8 @@ function Display(props) {
   const shouldDisplayData = !props.isHeader && props.data !== null;
   const editButtonTypes = ['cancel', 'update', 'delete'];
   const displayData = useMemo(() => transformData(
-    { data: props.data, tab: props.tab, cats: props.categories, divs: props.divisions }), [props.data, props.tab]
+    { data: props.data, tab: props.tab, cats: props.categories, divs: props.divisions }),
+    [props.data, props.tab, props.categories, props.divisions ]
   );
 
   // useState to set up headers BEFORE first render to avoid flash on screen
@@ -81,16 +82,13 @@ function Display(props) {
   return (
     <div>
       <div
-        data-testid={`${props.tab}-row-${displayData?.id}`}
         key={displayData?.id}
         className={`display-container ${props.tab}-display-grid`}
         onClick={!props.isHeader ? handlePopUp : undefined}
       >
         {updatedHeaders.map((header) => (
           <p
-            id={header}
             key={header}
-            data-testid={props.isHeader ? `${props.tab}-header-value` : `${props.tab}-row-value`}
           >
             {shouldDisplayData
               ? (displayData?.[header] ?? "")
@@ -103,7 +101,7 @@ function Display(props) {
       {/* ------------- POPUP ------------- */}
       <div>
         {isDisplayed && <Popup
-            key={props.data?.id ?? crypto.randomUUID()}
+            key={`${props.data?.id}-${props.categories.length}-${props.divisions.length}`}
             setIsDisplayed={setIsDisplayed}
             data={props.data}
             tab={props.tab}

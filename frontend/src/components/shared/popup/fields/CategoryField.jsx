@@ -25,7 +25,7 @@ function CategoryField({ field, title, categories, formData, setFormData }) {
           return (
             <option key={cat.category} value={cat.id}>{cat.category}</option>
           )})
-        };
+        }
       </select>
     </>
   );
