@@ -19,22 +19,6 @@ Rails.application.routes.draw do
     end
   end
 
-  if Rails.env.test? || Rails.env.development?
-    namespace :test_support, defaults: { format: :json } do
-      resources :racer, only: [ :create, :update, :destroy ] do
-        delete :destroy_all, on: :collection
-      end
-
-      resources :category, only: [ :index, :create, :update, :destroy ] do
-        delete :destroy_all, on: :collection
-      end
-
-      resources :division, only: [ :create, :update, :destroy ] do
-        delete :destroy_all, on: :collection
-      end
-    end
-  end
-
   root "frontend#index"
   get "*path", to: "frontend#index", constraints: lambda { |req|
     html_request = req.format.html?
