@@ -4,6 +4,7 @@ class HandicapService
   ).freeze
 
   def self.factor(sex, age)
+    return if sex.blank? || age.blank?
     DATA[sex][age.to_s]
   end
 

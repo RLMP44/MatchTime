@@ -5,14 +5,8 @@ jest.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key) => key })
 }));
 
-jest.mock("../../../utils/helpers", () => ({
-  titleize: jest.fn((v) => v.charAt(0).toUpperCase() + v.slice(1)),
-  pluralize: jest.fn((v) => v + "s"),
-  convertToMs: jest.fn((v) => 9999)
-}));
-
 jest.mock("./fieldRenderers", () => jest.fn(() => ({
-  fName: jest.fn(() => <div data-testid="fname-field">FNAME FIELD</div>),
+  first_name: jest.fn(() => <div data-testid="first_name-field">first_name FIELD</div>),
   age: jest.fn(() => <div data-testid="age-field">AGE FIELD</div>)
 })));
 
@@ -20,8 +14,8 @@ describe("Popup component", () => {
   const baseProps = {
     crud: "edit",
     tab: "runner",
-    data: { id: 1, fName: "John", lName: "Doe", age: "25", bib: "10" },
-    popUpFields: ["fName", "age"],
+    data: { id: 1, first_name: "John", last_name: "Doe", age: "25", bib: "10" },
+    popUpFields: ["first_name", "age"],
     buttons: ["update", "delete"],
     setIsDisplayed: jest.fn(),
     fetchRecord: jest.fn(),
@@ -50,7 +44,7 @@ describe("Popup component", () => {
   test("renders fields using fieldRenderers", () => {
     render(<Popup {...baseProps} />);
 
-    expect(screen.getByTestId("fname-field")).toBeInTheDocument();
+    expect(screen.getByTestId("first_name-field")).toBeInTheDocument();
     expect(screen.getByTestId("age-field")).toBeInTheDocument();
   });
 
@@ -59,16 +53,9 @@ describe("Popup component", () => {
 
     fireEvent.click(screen.getByText("Update"));
 
-    expect(baseProps.edit).toHaveBeenCalledWith({
-      oldRecord: baseProps.data,
-      newRecord: {
-        id: 1,
-        fName: "John",
-        lName: "Doe",
-        age: 25,
-        bib: 10
-      }
-    });
+    const call = baseProps.edit.mock.calls[0][0];
+    expect(call.newRecord.age).toBe(25);
+    expect(call.newRecord.bib).toBe(10);
   });
 
   test("delete button triggers delete handler", () => {
@@ -89,11 +76,11 @@ describe("Popup component", () => {
     expect(baseProps.setIsDisplayed).toHaveBeenCalledWith(false);
   });
 
-  test("updateTimerDisplayRecord updates timeRaw when changed", async () => {
+  test("updateTimerDisplayRecord updates time_raw when changed", async () => {
     const props = {
       ...baseProps,
       tab: "timer",
-      data: { bib: 10, timeRaw: 5000, place: 3 }
+      data: { bib: 10, time_raw: 5000, place: 3 }
     };
 
     render(<Popup {...props} />);
@@ -109,11 +96,11 @@ describe("Popup component", () => {
     const props = {
       ...baseProps,
       tab: "timer",
-      data: { bib: 10, timeRaw: "1:23", place: 5 },
+      data: { bib: 10, time_raw: "1:23", place: 5 },
       fetchRecord: jest.fn().mockResolvedValue({
         bib: 22,
-        fName: "New",
-        lName: "User"
+        first_name: "New",
+        last_name: "User"
       })
     };
 

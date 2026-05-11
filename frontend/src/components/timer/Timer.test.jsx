@@ -50,10 +50,10 @@ describe("Timer Component", () => {
     props.fetchRecord.mockResolvedValue({
       id: 10,
       bib: 12,
-      fName: "John",
-      lName: "Doe",
+      first_name: "John",
+      last_name: "Doe",
       place: 1,
-      timeRaw: 90500
+      time_raw: 90500
     });
 
     await user.click(screen.getByText("1"));
@@ -93,10 +93,10 @@ describe("Timer Component", () => {
     props.fetchRecord.mockResolvedValue({
       id: 1,
       bib: 7,
-      fName: "Amy",
-      lName: "Smith",
+      first_name: "Amy",
+      last_name: "Smith",
       place: 1,
-      timeRaw: 90500
+      time_raw: 90500
     });
 
     await user.click(screen.getByText("7"));
@@ -113,10 +113,10 @@ describe("Timer Component", () => {
     props.fetchRecord.mockResolvedValue({
       id: 1,
       bib: 3,
-      fName: "Sam",
-      lName: "Lee",
+      first_name: "Sam",
+      last_name: "Lee",
       place: 1,
-      timeRaw: 90500
+      time_raw: 90500
     });
 
     await user.click(screen.getByText("3"));
@@ -129,7 +129,7 @@ describe("Timer Component", () => {
   });
 
   test("Same Time uses last record's time/place", async () => {
-    const lastRecord = { place: 5, timeRaw: 5000 };
+    const lastRecord = { place: 5, time_raw: 5000 };
 
     const { user, props } = setup({
       buttonText: "record",
@@ -139,10 +139,10 @@ describe("Timer Component", () => {
     props.fetchRecord.mockResolvedValue({
       id: 2,
       bib: 9,
-      fName: "Zoe",
-      lName: "Kim",
+      first_name: "Zoe",
+      last_name: "Kim",
       place: 1,
-      timeRaw: 90500
+      time_raw: 90500
     });
 
     await user.click(screen.getByText("9"));
@@ -151,7 +151,7 @@ describe("Timer Component", () => {
     expect(props.update).toHaveBeenCalledWith({
       oldRecord: expect.any(Object),
       newRecord: expect.objectContaining({
-        timeRaw: 5000,
+        time_raw: 5000,
         place: 5,
         bib: 9
       })
@@ -169,10 +169,10 @@ describe("Timer Component", () => {
     props.fetchRecord.mockResolvedValue({
       id: 1,
       bib: 4,
-      fName: "Test",
-      lName: "User",
+      first_name: "Test",
+      last_name: "User",
       place: 1,
-      timeRaw: 90500
+      time_raw: 90500
     });
 
     await user.click(screen.getByText("4"));

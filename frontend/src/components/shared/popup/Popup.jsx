@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { titleize, pluralize, convertToMs } from "../../../utils/helpers";
+import { titleize, pluralize, convertToMs, diff } from "../../../utils/helpers";
 import { useTranslation } from "react-i18next";
 import createFieldRenderers from "./fieldRenderers";
 import GeneralField from "./fields/GeneralField";
@@ -18,65 +18,18 @@ function Popup(props) {
       `${titleize(crud)} ${titleize(target)}`;
   };
 
-  // adjusts formData to contain proper types
+  // converts numeric fields in formData
   function formatRecord(data) {
-    var formattedData = { ...data }
-    if (data.age) { formattedData.age = parseInt(data.age) }
-    if (data.bib) { formattedData.bib = parseInt(data.bib) }
-    if (data.raceNo) { formattedData.raceNo = parseInt(data.raceNo) }
-    return formattedData;
-  };
-
-  // swaps recorded time and place to updated racer when bib is changed in timer display
-  async function switchRacers(data) {
-    const user = await props.fetchRecord(data.bib);
-    const timeInMs = typeof(props.data.timeRaw) === 'string'
-      ? convertToMs(props.data.timeRaw)
-      : props.data.timeRaw
-    if (user) {
-      return {
-        ...data,
-        ...user,
-        place: props.data.place,
-        timeRaw: timeInMs
+    var formattedData = {}
+    for (const key in data) {
+      let value = data[key];
+      if (["age", "bib", "race_no", "division_id", "category_id"].includes(key)) {
+        value = parseInt(value);
       };
-    } else {
-      return {
-        place: props.data.place,
-        bib: data.bib,
-        age: null,
-        sex: null,
-        raceNo: null,
-        handicap: null,
-        timeRaw: timeInMs,
-        city: null,
-        time: null,
-        fName: null,
-        lName: "Not Found",
-        category: null,
-        division: null
-      }
+
+      formattedData[key] = value;
     }
-  };
-
-  // updates single record in timer display (time or racer)
-  // converts updated time into milliseconds
-  async function updateTimerDisplayRecord(data) {
-    const bibChanged = data.bib && data.bib !== props.data.bib;
-    const timeInMs = typeof(data.timeRaw) === "string"
-      ? convertToMs(data.timeRaw)
-      : data.timeRaw;
-    const timeChanged = timeInMs && timeInMs !== props.data.timeRaw;
-    let updatedRecord = { ...props.data };
-
-    if (bibChanged) {
-      const newUser = await switchRacers(data);
-      updatedRecord = { ...updatedRecord, ...newUser };
-    };
-    if (timeChanged) {
-      updatedRecord.timeRaw = timeInMs;
-    };
-    props.update({ oldRecord: props.data, newRecord: updatedRecord })
+    return formattedData;
   };
 
 
@@ -85,9 +38,10 @@ function Popup(props) {
     const button = event.target.id;
     let formattedForm = formatRecord(formData);
     if (button === "update-button" && props.tab === "timer") {
-      updateTimerDisplayRecord(formattedForm);
+      props.update({ prevData: props.data, newData: formattedForm });
     } else if (button === 'update-button') {
-      props.edit({ oldRecord: props.data, newRecord: formattedForm });
+      const changed = diff(props.data, formattedForm)
+      props.edit({ oldRecord: props.data, newRecord: changed });
     } else if (button === 'add-button') {
       props.add(formattedForm);
       setFormData({});
@@ -115,7 +69,7 @@ function Popup(props) {
   // TODO: disallow chars in int fields, etc
 
   return (
-    <div className="dialog">
+    <div className="dialog" data-testid="popup">
       <h4 className="title">{setTitle(props.crud || '', props.tab || '')}</h4>
       <div className="border"></div>
 

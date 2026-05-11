@@ -20,9 +20,10 @@ jest.mock("../../utils/helpers", () => ({
 describe("Display component", () => {
   const baseProps = {
     tab: "runner",
-    headers: ["fName", "lName", "timeRaw"],
+    headers: ["first_name", "last_name", "time_raw"],
     fields: [],
     categories: [],
+    divisions: [],
     setDisplayRecords: jest.fn(),
     fetchRecord: jest.fn(),
     update: jest.fn(),
@@ -32,13 +33,13 @@ describe("Display component", () => {
 
   const sampleData = {
     id: 1,
-    fName: "John",
-    lName: "Doe",
-    timeRaw: 100,
+    first_name: "John",
+    last_name: "Doe",
+    time_raw: 100,
     handicap: 2
   };
 
-  test("combines fName + lName into name and formats time", () => {
+  test("combines first_name + last_name into name and formats time", () => {
     render(<Display {...baseProps} data={sampleData} />);
 
     expect(screen.getByText("Doe, John")).toBeInTheDocument();
@@ -50,13 +51,13 @@ describe("Display component", () => {
     const props = {
       ...baseProps,
       tab: "result",
-      headers: ["fName", "lName", "timeRaw"],
+      headers: ["first_name", "last_name", "time_raw"],
       data: sampleData
     };
 
     render(<Display {...props} />);
 
-    // timeRaw * handicap = 100 * 2 = 200
+    // time_raw * handicap = 100 * 2 = 200
     expect(timeForDisplay).toHaveBeenCalledWith(200);
     expect(screen.getByText("formatted(200)")).toBeInTheDocument();
   });
@@ -65,7 +66,7 @@ describe("Display component", () => {
     const props = {
       ...baseProps,
       tab: "result",
-      headers: ["fName", "lName", "timeRaw"],
+      headers: ["first_name", "last_name", "time_raw"],
       data: null
     };
 
@@ -74,14 +75,14 @@ describe("Display component", () => {
     expect(screen.getByText("timeAdjusted")).toBeInTheDocument();
   });
 
-  test("replaces fName + lName headers with name", () => {
+  test("replaces first_name + last_name headers with name", () => {
     render(<Display {...baseProps} data={sampleData} />);
 
     // use getByText when element is present, otherwise it throws an error
     expect(screen.getByText("Doe, John")).toBeInTheDocument();
     // use queryByText to check for absence of element
-    expect(screen.queryByText("fName")).not.toBeInTheDocument();
-    expect(screen.queryByText("lName")).not.toBeInTheDocument();
+    expect(screen.queryByText("first_name")).not.toBeInTheDocument();
+    expect(screen.queryByText("last_name")).not.toBeInTheDocument();
   });
 
   test("opens popup when clicked (non-result tab)", () => {
@@ -106,6 +107,6 @@ describe("Display component", () => {
     render(<Display {...baseProps} isHeader={true} />);
 
     expect(screen.getByText("name")).toBeInTheDocument();
-    expect(screen.getByText("timeRaw")).toBeInTheDocument();
+    expect(screen.getByText("time_raw")).toBeInTheDocument();
   });
 });

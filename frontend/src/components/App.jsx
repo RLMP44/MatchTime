@@ -5,18 +5,20 @@ import TabButton from "./shared/tab/TabButton";
 import TimeKeeper from "./timer/TimeKeeper";
 import Timer from "./timer/Timer";
 
-import { useState, useRef, useCallback, useMemo, memo } from "react";
-import handicapsJSON from '../handicaps.json';
-import { checkIsPresent, setMinMaxAge } from "../utils/helpers";
+import { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
+import { checkIsPresent, mergeUpdatedRecord, diff, convertToMs } from "../utils/helpers";
 import TimerIcon from '@mui/icons-material/Timer';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd';
 
-const timerHeaders = ['place', 'bib', 'timeRaw', 'lName', 'fName'];
-const categoryHeaders = ['category', 'raceNo'];
-const racerHeaders = ['bib', 'fName', 'lName', 'category', 'division', 'handicap'];
-const resultHeaders = ['place', 'timeRaw', 'bib', 'lName', 'fName', 'city', 'category', 'division', 'sex'];
+const API_BASE =
+  window.location.search.includes("e2e") ? "/test_support" : "/api";
+
+const timerHeaders = ['place', 'bib', 'time_raw', 'last_name', 'first_name'];
+const categoryHeaders = ['category', 'min_age', 'max_age'];
+const racerHeaders = ['bib', 'first_name', 'last_name', 'category', 'division', 'handicap'];
+const resultHeaders = ['place', 'time_raw', 'bib', 'last_name', 'first_name', 'city', 'category', 'division', 'sex'];
 const headersObject = {
   timer: timerHeaders,
   category: categoryHeaders,
@@ -25,43 +27,20 @@ const headersObject = {
 };
 
 const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
-const timerRecordsEditFields = ['bib', 'timeRaw'];
-const categoryFields = ['category', 'raceNo', 'sex', 'plusFive', 'plusTen'];
-const racerFields = ['bib', 'age', 'sex', 'lName', 'fName', 'city', 'handicap', 'raceNo', 'category', 'division'];
+const timerRecordsEditFields = ['bib', 'time_raw'];
+const categoryFields = ['category', 'plusFive', 'plusTen'];
+const divisionFields = ['division', 'race_no', 'start_time'];
+const racerFields = ['age', 'sex', 'first_name', 'last_name', 'city', 'handicap', 'email', 'race_no', 'category_id', 'division_id'];
 const fieldsObject = {
   timer: timerRecordsEditFields,
   category: categoryFields,
+  division: divisionFields,
   racer: racerFields,
   import: importExportFields,
   export: importExportFields
 };
 
 function App() {
-  var records = [
-    {id: 1, place: null, bib: 1, age: 32, sex: "M", raceNo: 1, handicap: 0.996, timeRaw: null, city: "Lumiere", fName: "Gustave", lName: "Pierre", category: "M30-39", division: "10k"},
-    {id: 2, place: null, bib: 2, age: 16, sex: "F", raceNo: 1, handicap: 0.78, timeRaw: null, city: "Lumiere", fName: "Maelle", lName: "Pierre", category: "F10-19", division: "23k"},
-    {id: 3, place: null, bib: 3, age: 32, sex: "F", raceNo: 1, handicap: 0.97, timeRaw: null, city: "Lumiere", fName: "Sciel", lName: "Jeanne", category: "F30-39", division: "10k"},
-    {id: 4, place: null, bib: 4, age: 32, sex: "F", raceNo: 1, handicap: 0.97, timeRaw: null, city: "Lumiere", fName: "Lune", lName: "Acuse", category: "F30-39", division: "15k"},
-    {id: 5, place: null, bib: 5, age: 45, sex: "M", raceNo: 1, handicap: 0.84, timeRaw: null, city: "Lumiere", fName: "Verso", lName: "L'vange", category: "M40-49", division: "10k"},
-    {id: 6, place: null, bib: 54, age: 59, sex: "M", raceNo: 1, handicap: 0.795, timeRaw: null, city: "Lumiere", fName: "Monoco", lName: "Gestral", category: "M50-59", division: "5k"}
-  ];
-
-  var categories = [
-    {id: 1, category: "F20-29", raceNo: 1, sex: 'F', minAge: 20, maxAge: 29 },
-    {id: 2, category: "M20-29", raceNo: 1, sex: 'M', minAge: 20, maxAge: 29 },
-    {id: 3, category: "F30-39", raceNo: 1, sex: 'F', minAge: 30, maxAge: 39 },
-    {id: 4, category: "M30-39", raceNo: 1, sex: 'M', minAge: 30, maxAge: 39 },
-    {id: 5, category: "F40-49", raceNo: 1, sex: 'F', minAge: 40, maxAge: 49 },
-    {id: 6, category: "M40-49", raceNo: 1, sex: 'M', minAge: 40, maxAge: 49 }
-  ];
-
-  // TODO: displayRecords starter to be replaced with await fetchAllRacers()
-  const [displayRecords, setDisplayRecords] = useState(records);
-  // TODO: displayRecords starter to be replaced with await fetchAllCategories()
-  const [displayCategories, setDisplayCategories] = useState(categories);
-  // TODO: connect backend and generate IDs there
-  const nextID = useRef(7);
-  const nextCatID = useRef(7);
   // TODO: timerDisplayRecords to be a filtered version of displayRecords
   // filter for time/rawTime, and also order by ascension
   // this way timerDisplayRecords is updated with user data if prev not found
@@ -69,58 +48,92 @@ function App() {
   const [tab, setTab] = useState("timer");
   const [place, setPlace] = useState(1);
   const [buttonText, setButtonText] = useState("start");
-  const [handicaps, setHandicaps] = useState(handicapsJSON);
+  const [displayRecords, setDisplayRecords] = useState([]);
+  const [displayCategories, setDisplayCategories] = useState([]);
+  const [displayDivisions, setDisplayDivisions] = useState([]);
 
   const headers = useMemo(() => headersObject[tab], [tab]);
   const fields = useMemo(() => fieldsObject[tab], [tab]);
   const memoCategories = useMemo(() => displayCategories, [displayCategories]);
   const memoRecords = useMemo(() => displayRecords, [displayRecords]);
   const memoTimerRecords = useMemo(() => timerDisplayRecords, [timerDisplayRecords]);
+  const memoDivisions = useMemo(() => displayDivisions, [displayDivisions]);
 
 
   // -------------- DB LOGIC --------------
-  // load handicaps from backend on first render
-  // useEffect(() => {
-  //   async function loadHandicaps() {
-  //     const handicapsJSON = await fetchHandicaps();
-  //     setHandicaps(handicapsJSON);
-  //   }
-  //   loadHandicaps();
-  // }, []);
+  // load data from backend on first render
+  useEffect(() => {
+    async function loadRacers() {
+      const racersJSON = await fetchAllRacers();
+      setDisplayRecords(racersJSON);
+    }
+    loadRacers();
+  }, []);
 
-  // async function fetchHandicaps() {
-  //   const response = await fetch('/handicaps');
-  //   return response.json();
-  // }
+  useEffect(() => {
+    async function loadCategories() {
+      const categoriesJSON = await fetchAllCategories();
+      setDisplayCategories(categoriesJSON);
+    }
+    loadCategories();
+  }, []);
 
-  // async function fetchAllRacers() {
-  //   // TODO: fetch racer records from backend
-  //   // return as list
-  //   return records;
-  // };
+  useEffect(() => {
+    async function loadDivisions() {
+      const divisionsJSON = await fetchAllDivisions();
+      setDisplayDivisions(divisionsJSON);
+    }
+    loadDivisions();
+  }, []);
 
-  // async function fetchLastDBRecord() {
-    // TODO: retrieve time and placement of last record in DB
-  // };
-
-  async function updateDBRecord() {
-    // TODO: update racer/record in DB
+  async function fetchAllRacers() {
+    const response = await fetch(`${API_BASE}/racer`);
+    return response.json();
   };
 
-  function resetDBRecord() {
-    // TODO: set DB record time and place back to null
+  async function addDBRacer(data) {
+    const response = await fetch(`${API_BASE}/racer`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ racer: data })
+    });
+
+    return await response.json();
+  };
+
+  async function updateDBRacer({ id, newRecord }) {
+    const response = await fetch(`${API_BASE}/racer/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ racer: newRecord })
+    });
+
+    return await response.json();
+  };
+
+  async function resetDBRacer(id) {
+    const response = await fetch(`${API_BASE}/racer/${id}/reset`, { method: 'PATCH' });
+
+    return await response.json();
   };
 
   function deleteDBRacer() {
     // TODO: delete racer from DB
   }
 
-  // async function fetchAllCategories() {
-  //   // TODO: get all categories from DB
-  // };
+  async function fetchAllCategories() {
+    const response = await fetch(`${API_BASE}/category`);
+    return response.json();
+  };
 
-  async function addDBCategory() {
-     // TODO: add category in DB
+  async function addDBCategory(data) {
+    const response = await fetch(`${API_BASE}/category`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category: data })
+    });
+
+    return await response.json();
   };
 
   async function updateDBCategory() {
@@ -128,7 +141,24 @@ function App() {
   };
 
   function deleteDBCategory() {
-    // TODO: set DB category time and place back to null
+    // TODO: delete and remove from racers
+  };
+
+  async function fetchAllDivisions() {
+    const response = await fetch(`${API_BASE}/division`);
+    return response.json();
+  };
+
+  async function addDBDivision() {
+     // TODO: add Division in DB
+  };
+
+  async function updateDBDivision() {
+    // TODO: update Division in DB and racers
+  };
+
+  function deleteDBDivision() {
+    // TODO: delete and remove from racers
   };
 
 
@@ -144,45 +174,128 @@ function App() {
 
 
   // -------------- TIMER RECORD DISPLAY LOGIC --------------
+  const updateAllRecords = async ({ oldRecord, newRecord }) => {
+    updateDisplayedRecords({ oldRecord, newRecord });
+    await updateDBRacer({
+        id: oldRecord.id,
+        newRecord: diff(oldRecord, newRecord)
+      });
+  };
+
   // takes 2 records => updates a single, previously displayed record
   // with new time and/or placement on timer record display,
   // resets the old record and updates all record displays
-  const updateDisplayedRecords = useCallback(
-    ({ oldRecord: oldR, newRecord: updated }) => {
-    resetDBRecord(oldR);
-    updateDBRecord(updated);
-    // TODO: recalculate placement if time is reduced or increased
-    setDisplayRecords(prev =>
-      prev.map(prevRecord =>
-        prevRecord.id === updated.id ? { ...updated } : prevRecord
-      )
-    );
-    setTimerDisplayRecords(prev => {
-      const index = prev.findIndex(record => record?.id === oldR?.id);
-      if (index === -1) { return [...prev, updated] };
-      const updatedRecords = [...prev];
-      updatedRecords[index] = { ...updatedRecords[index], ...updated};
-      return updatedRecords;
-    });
-  }, []);
+  const updateDisplayedRecords = async ({ oldRecord, newRecord }) => {
+    setDisplayRecords(prev => mergeUpdatedRecord(prev, newRecord));
 
-  // deletes a racer record from the timer record display and resets the racer's time/place in the DB
-  const deleteDisplayedRecord = useCallback(
-    (recordToDelete) => {
-    resetDBRecord(recordToDelete);
+    setTimerDisplayRecords(prev => {
+      const index = prev.findIndex(record => record?.id === oldRecord?.id);
+      if (index === -1) return [...prev, newRecord];
+      const updated = [...prev];
+      updated[index] = newRecord;
+      return updated;
+    });
+  };
+
+  const resetRacerRecord = async ({ racerToReset }) => {
+    const updatedRacer = await resetDBRacer(racerToReset.id);
+    setDisplayRecords(prev => mergeUpdatedRecord(prev, updatedRacer));
+    setTimerDisplayRecords(prev =>
+      prev.filter(record => record.id !== racerToReset.id)
+    );
+    return updatedRacer;
+  };
+
+  const swapRacers = async ({ prevData, newData, timeChanged, timeInMs }) => {
+    const newRacer = await transferDataToNewRacer({
+      racerToReset: prevData,
+      racerToUpdate: newData,
+      timeChanged,
+      timeInMs
+    });
+    await updateDisplayedRecords({
+      oldRecord: prevData,
+      newRecord: newRacer
+    });
+    await resetRacerRecord({ racerToReset: prevData });
+  };
+
+  // updates single record in timer display (time or racer)
+  // converts updated time into milliseconds
+  // swaps and resets racer record if bib changed
+  async function formatAndUpdateTimerDisplayRecord({ prevData, newData }) {
+    const bibChanged = newData.bib && newData.bib !== prevData.bib;
+    const timeInMs = typeof newData.time_raw === "string"
+      ? convertToMs(newData.time_raw)
+      : newData.time_raw;
+    const timeChanged = timeInMs && timeInMs !== prevData.time_raw;
+
+    if (bibChanged) {
+      swapRacers({ prevData, newData, timeChanged, timeInMs });
+      return;
+    };
+
+    if (timeChanged) {
+      const racer = await updateDBRacer({
+        id: prevData.id,
+        newRecord: { place: prevData.place, time_raw: timeInMs }
+      });
+      await updateDisplayedRecords({
+        oldRecord: prevData,
+        newRecord: racer
+      });
+    };
+  };
+
+  // when swapping racers in timer display,
+  // fetch and update new racer with prev racer's time and place
+  // if no new racer is found, add placeholder with time, place, bib, and null for rest
+  async function transferDataToNewRacer({
+    racerToReset, racerToUpdate, timeChanged, timeInMs
+  }) {
+    const user = await fetchRacerRecord(racerToUpdate.bib);
+    if (user) {
+      const updatedRacer = await updateDBRacer({
+        id: user.id,
+        newRecord: {
+          place: racerToReset.place,
+          time_raw: timeChanged ? timeInMs : racerToReset.time_raw
+        }
+      });
+      return updatedRacer;
+    };
+
+    const placeholderRacer = await addDBRacer({
+      placeholder: true,
+      place: racerToReset.place,
+      bib: racerToUpdate.bib,
+      time_raw: timeInMs
+    });
+    return placeholderRacer;
+  }
+
+  // deletes a racer record from the timer record display
+  // resets the racer's time/place in the DB
+  // updates place of all subsequent records
+  const deleteDisplayedRecord = useCallback(async (recordToDelete) => {
+    await resetDBRacer(recordToDelete.id);
+    let updatedRecords;
     setTimerDisplayRecords((prevRecords) => {
-      // filter out deleted record
       const filteredRecords = prevRecords.filter((record) =>
         record.id !== recordToDelete.id
       );
-      // update placements of all subsequent records
-      return filteredRecords.map((record) =>
+      updatedRecords = filteredRecords.map((record) =>
         record.place > recordToDelete.place
         ? { ...record, place: record.place - 1 }
         : record
       );
+      return updatedRecords;
     });
-    // TODO: need to update places in DB
+
+    // for loop to allows async calls to DB, writes one change at a time
+    for (const record of updatedRecords) {
+      await updateDBRacer({ id: record.id, newRecord: { place: record.place }});
+    };
     setPlace(prev => prev - 1);
   }, []);
 
@@ -191,63 +304,38 @@ function App() {
   // adds a new racer to the database
   // and instantaneously updates displayed records in timer and racer tabs
   const addRacer = useCallback(
-    (racerData) => {
-    const newRacer = {
-      ...racerData,
-      id: nextID.current,
-      place: null,
-      timeRaw: null,
-      bib: parseInt(racerData.bib),
-      raceNo: parseInt(racerData.raceNo),
-      handicap: handicaps[racerData.sex][racerData.age]
-    };
-    setDisplayRecords(prev => [...prev, newRacer]);
-    // update timer display with relevant info in case a placement is recorded
-    // for an empty bib. update user info on timer display when info is added
-    setTimerDisplayRecords(prev =>
-      prev.map((record) => {
-        if (record.bib === newRacer.bib && record.lName === "Not Found") {
-          return {
-            ...record,
-            ...newRacer,
-            place: record.place,
-            timeRaw: record.timeRaw
-          };
-        }
-        return record;
-      })
-    );
-    nextID.current += 1;
-  }, [handicaps]);
+    async (racerData) => {
+      const updated = { ...racerData }
+      delete updated.race_no
+      const newRacer = await addDBRacer(updated)
+      setDisplayRecords(prev => [...prev, newRacer]);
+      // update timer display with relevant info in case a placement is recorded
+      // for an empty bib. update user info on timer display when info is added
+      setTimerDisplayRecords(prev =>
+        prev.map((record) => {
+          if (record.bib === newRacer.bib && record.last_name === "Not Found") {
+            return {
+              ...record,
+              ...newRacer,
+              place: record.place,
+              time_raw: record.time_raw
+            };
+          }
+          return record;
+        })
+      );
+    }
+  );
 
   // edits a racer's personal information
   // and instantaneously updates the records displayed in timer tab and racers tab
   const editRacer = useCallback(
-    ({ oldRecord: oldR, newRecord: newR }) => {
-      const ageChanged = oldR.age !== newR.age;
-      const sexChanged = oldR.sex !== newR.sex;
-      const handicapMissing = newR.handicap === undefined;
-
-      const shouldRecalculateHandicap =
-        handicapMissing ||
-        (ageChanged || sexChanged) && oldR.handicap === newR.handicap;
-
-      // object spreading to update only new values
-      var updatedRacer = {
-        ...oldR,
-        ...newR,
-        ...(shouldRecalculateHandicap && {
-          handicap: handicaps[newR.sex ?? oldR.sex][newR.age ?? oldR.age]
-        })
-      };
-
-      if (shouldRecalculateHandicap) {
-        updatedRacer.handicap = handicaps[updatedRacer.sex][updatedRacer.age];
-      };
-
-      updateDisplayedRecords({ oldRecord: oldR, newRecord: updatedRacer })
-      updateDBRecord(updatedRacer);
-  }, [handicaps, updateDisplayedRecords]);
+    async ({ oldRecord: oldR, newRecord: newR }) => {
+      const racer = await updateDBRacer({ id: oldR.id, newRecord: newR });
+      setDisplayRecords(prev => mergeUpdatedRecord(prev, racer));
+      setTimerDisplayRecords(prev => mergeUpdatedRecord(prev, racer));
+    }
+  );
 
   // deletes a racer from the database
   // and from timer display (if relevant) and racers' tab
@@ -276,13 +364,11 @@ function App() {
 
   // -------------- CATEGORY LOGIC --------------
   const addCategory = useCallback(
-    (category) => {
-    setDisplayCategories(prev =>
-      [...prev,
-        { ...category, id: nextCatID.current }
-      ]);
-    addDBCategory(category);
-    nextCatID.current += 1;
+    async (category) => {
+      console.log(category)
+      const newCat = await addDBCategory(category);
+      console.log(newCat)
+      setDisplayCategories(prev => [...prev, newCat ]);
   }, []);
 
   const editCategory = useCallback(
@@ -291,10 +377,8 @@ function App() {
       ...oldData,
       ...newData
     };
-    setDisplayCategories(prev => prev.map(cat => {
-      return cat.id === updatedCategory.id ? updatedCategory : cat;
-    }));
     updateDBCategory(updatedCategory);
+    setDisplayCategories(prev => mergeUpdatedRecord(prev, updatedCategory));
   }, []);
 
   const deleteCategory = useCallback(
@@ -357,9 +441,10 @@ function App() {
                               buttonText={buttonText}
                               setButtonText={setButtonText}
                               records={memoTimerRecords}
-                              fetchRecord={fetchRacerRecord}
+                              divisions={memoDivisions}
+                              categories={memoCategories}
                               delete={deleteDisplayedRecord}
-                              update={updateDisplayedRecords}
+                              update={formatAndUpdateTimerDisplayRecord}
                             />
                             <Timer
                               tab={tab}
@@ -370,7 +455,7 @@ function App() {
                               setButtonText={setButtonText}
                               records={memoTimerRecords}
                               fetchRecord={fetchRacerRecord}
-                              update={updateDisplayedRecords}
+                              update={updateAllRecords}
                             />
                 </div>
               )}
@@ -391,6 +476,7 @@ function App() {
                                     fields={fields}
                                     fieldsObj={fieldsObject}
                                     records={memoRecords}
+                                    divisions={memoDivisions}
                                     categories={memoCategories}
                                     update={updateDisplayedRecords}
                                     add={addRacer}
@@ -401,6 +487,8 @@ function App() {
               {tab === "result" && <Tab
                                     tab={tab}
                                     headers={headers}
+                                    divisions={memoDivisions}
+                                    categories={memoCategories}
                                     fieldsObj={fieldsObject}
                                     records={memoTimerRecords}
                                   />

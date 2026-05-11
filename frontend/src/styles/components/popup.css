@@ -29,7 +29,7 @@
 
 .popup-content {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: .5rem;
 }
 
@@ -37,6 +37,7 @@
   background-color: var(--color-primary);
   padding: 4px;
   border-radius: 4px;
+  width: -webkit-fill-available;
   border: none;
 }
 
@@ -47,41 +48,76 @@
   color: var(--color-primary);
 }
 
-.popup-content .bib {
-  grid-area: 1 / 1 / 2 / 2;
+select {
+  padding: .25rem;
+  border-radius: 4px;
+  background-color: var(--color-primary);
 }
-.popup-content .age {
-  grid-area: 1 / 2 / 2 / 3;
-}
-.popup-content .sex {
-  grid-area: 1 / 3 / 2 / 4;
-}
-.popup-content .lName {
-  grid-area: 2 / 1 / 3 / -1;
-}
-.popup-content .fName {
-  grid-area: 3 / 1 / 4 / -1;
-}
-.popup-content .city {
-  grid-area: 4 / 1 / 5 / -1;
-}
-.popup-content .handicap {
-  grid-area: 5 / 1 / 6 / 2;
-}
-.popup-content .raceNo {
-  grid-area: 6 / 1 / 7 / 2;
-}
-.popup-content .category {
-  grid-area: 6 / 2 / 7 / 3;
-}
-.popup-content .time {
-  grid-area: 2 / 1 / 3 / -1;
+
+.category_id > select > option {
+  gap: .25rem;
 }
 
 .popup-buttons-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.popup-content .age {
+  grid-area: 3 / 1 / 4 / 2;
+}
+.popup-content .sex {
+  grid-area: 6 / 1 / 7 / 2;
+}
+.popup-content .last_name {
+  grid-area: 1 / 2 / 2 / 3;
+}
+.popup-content .first_name {
+  grid-area: 1 / 1 / 2 / 2;
+}
+.popup-content .email {
+  grid-area: 2 / 1 / 3 / 2;
+}
+.popup-content .city {
+  grid-area: 2 / 2 / 3 / -1;
+}
+.popup-content .handicap {
+  grid-area: 5 / 1 / 6 / 2;
+}
+.popup-content .race_no {
+  grid-area: 6 / 2 / 7 / -1;
+}
+.popup-content .category_id {
+  grid-area: 4 / 1 / 5 / 2;
+}
+.popup-content .division_id {
+  grid-area: 4 / 2 / 5 / 3;
+}
+.popup-content .time {
+  grid-area: 2 / 1 / 3 / -1;
+}
+
+.add-category .category_id, .edit-category .category_id {
+  grid-area: 1 / 1 / 2 / 2;
+}
+.add-category .race_no, .edit-category .race_no {
+  grid-area: 1 / 2 / 2 / 3;
+}
+.add-category .sex, .edit-category .sex {
+  grid-area: 1 / 2 / 2 / 3;
+}
+.add-category .plusFive, .edit-category .plusFive {
+  grid-area: 3 / 1 / 4 / 2;
+}
+.add-category .plusTen, .edit-category .plusTen {
+  grid-area: 3 / 2 / 4/ 3;
+}
+.add-category .min_age {
+  grid-area: 2 / 1 / 3 / 2;
+}
+.add-category .max_age {
+  grid-area: 2 / 2 / 3 / -1;
 }
 
 .btn {
@@ -101,41 +137,4 @@
 
 #delete-button {
   background-color: rgba(252, 32, 32, 0.901);
-}
-
-.category > select {
-  min-width: 50px;
-  width: 75px;
-  padding: .25rem;
-  border-radius: 4px;
-  background-color: var(--color-primary);
-}
-
-.category > select > option {
-  gap: .25rem;
-}
-
-.add-category .category, .edit-category .category {
-  grid-area: 1 / 1 / 2 / 2;
-}
-.add-category .raceNo, .edit-category .raceNo {
-  grid-area: 1 / 2 / 2 / 3;
-}
-.add-category .handicap, .edit-category .handicap {
-  grid-area: 2 / 1 / 3 / 2;
-}
-.add-category .sex, .edit-category .sex {
-  grid-area: 2 / 2 / 3 / 3;
-}
-.add-category .plusFive, .edit-category .plusFive {
-  grid-area: 3 / 1 / 4 / 2;
-}
-.add-category .plusTen, .edit-category .plusTen {
-  grid-area: 3 / 2 / 4/ 3;
-}
-
-.raceNo select{
-  background-color: var(--color-primary);
-  padding: .25rem;
-  border-radius: 4px;
 }

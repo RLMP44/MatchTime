@@ -1,13 +1,13 @@
 function CategoryField({ field, title, categories, formData, setFormData }) {
   // updates racer info upon selecting category from dropdown
   function updateCategoryInfo({ field, categories, event }) {
-    const selectedCategory = categories.find(cat => cat.category === event.target.value);
-      setFormData({
+    const selectedCategory = categories.find(cat =>
+      cat.id === parseInt(event.target.value)
+    );
+    setFormData({
       ...formData,
       [field]: event.target.value,
       'sex': selectedCategory.sex,
-      'handicap': selectedCategory.handicap,
-      'raceNo': selectedCategory.raceNo
     });
   };
 
@@ -23,9 +23,9 @@ function CategoryField({ field, title, categories, formData, setFormData }) {
         <option value="" disabled>Select</option>
         {categories.map((cat) => {
           return (
-            <option key={cat.category} value={cat.category}>{cat.category}</option>
+            <option key={cat.category} value={cat.id}>{cat.category}</option>
           )})
-        };
+        }
       </select>
     </>
   );

@@ -7,20 +7,28 @@ const defaultHandicap = 1;
 
 // updates data to display "last name, first name" if names present in headers
 // updates data to display adjusted time for timeAdjusted header in results
-function transformData({ data, tab }) {
+function transformData({ data, tab, cats, divs }) {
   if (!data) return null;
   if (tab === 'category') { return data };
-  const { fName, lName, timeRaw, ...other } = data;
+  const { id, first_name, last_name, time_raw, category_id, division_id, ...other } = data;
 
-  let transObject = { ...other };
+  let transObject = { id, ...other };
 
-  if (fName || lName) {
-    transObject.name = `${lName ?? ""}, ${fName ?? ""}`;
+  if (first_name || last_name) {
+    transObject.name = `${last_name ?? ""}, ${first_name ?? ""}`;
   }
 
-  if (timeRaw) {
-    let timeToDisplay = (tab === 'result') ? (timeRaw * (data?.handicap || defaultHandicap)) : timeRaw;
-    transObject.timeRaw = timeForDisplay(timeToDisplay);
+  if (category_id) {
+    transObject.category = cats.find(cat => cat.id === data.category_id).category
+  }
+
+  if (division_id) {
+    transObject.division = divs.find(div => div.id === data.division_id).division
+  }
+
+  if (time_raw) {
+    let timeToDisplay = (tab === 'result') ? (time_raw * (data?.handicap || defaultHandicap)) : time_raw;
+    transObject.time_raw = timeForDisplay(timeToDisplay);
     transObject.timeAdjusted = timeForDisplay(timeToDisplay);
   };
 
@@ -36,27 +44,28 @@ function Display(props) {
   const shouldDisplayData = !props.isHeader && props.data !== null;
   const editButtonTypes = ['cancel', 'update', 'delete'];
   const displayData = useMemo(() => transformData(
-    { data: props.data, tab: props.tab }), [props.data, props.tab]
+    { data: props.data, tab: props.tab, cats: props.categories, divs: props.divisions }),
+    [props.data, props.tab, props.categories, props.divisions ]
   );
 
   // useState to set up headers BEFORE first render to avoid flash on screen
   // condenses first and last names to 'name' in header
-  // changes timeRaw to timeAdjusted header for result tab
+  // changes time_raw to timeAdjusted header for result tab
   const [updatedHeaders] = useState(() => {
     if (!props.headers) { return [] };
-    const hasNameField = props.headers.includes('fName') ||
-      props.headers.includes('lName');
-    const resultTabTime = props.tab === 'result' && props.headers.includes('timeRaw');
+    const hasNameField = props.headers.includes('first_name') ||
+      props.headers.includes('last_name');
+    const resultTabTime = props.tab === 'result' && props.headers.includes('time_raw');
     let newHeaders = [...props.headers];
 
     if (hasNameField) {
       newHeaders = newHeaders
-        .filter(header => header !== 'fName' && header !== 'lName')
+        .filter(header => header !== 'first_name' && header !== 'last_name')
         .concat('name');
     }
     if (resultTabTime) {
       newHeaders = newHeaders
-        .filter(header => header !== "timeRaw")
+        .filter(header => header !== "time_raw")
         .concat('timeAdjusted');
     }
     return newHeaders;
@@ -73,15 +82,13 @@ function Display(props) {
   return (
     <div>
       <div
-        data-testid={props.isHeader ? `${props.tab}-header-row` : `${props.tab}-row`}
+        key={displayData?.id}
         className={`display-container ${props.tab}-display-grid`}
         onClick={!props.isHeader ? handlePopUp : undefined}
       >
         {updatedHeaders.map((header) => (
           <p
-            id={header}
             key={header}
-            data-testid={props.isHeader ? `${props.tab}-header-value` : `${props.tab}-row-value`}
           >
             {shouldDisplayData
               ? (displayData?.[header] ?? "")
@@ -94,7 +101,7 @@ function Display(props) {
       {/* ------------- POPUP ------------- */}
       <div>
         {isDisplayed && <Popup
-            key={props.data?.id ?? crypto.randomUUID()}
+            key={`${props.data?.id}-${props?.categories.length}-${props?.divisions.length}`}
             setIsDisplayed={setIsDisplayed}
             data={props.data}
             tab={props.tab}
@@ -103,8 +110,8 @@ function Display(props) {
             buttons={buttonTypes}
             setButtonTypes={setButtonTypes}
             categories={props.categories}
+            divisions={props.divisions}
             setDisplayRecords={props.setDisplayRecords}
-            fetchRecord={props.fetchRecord}
             update={props.update}
             edit={props.edit}
             delete={props.delete}

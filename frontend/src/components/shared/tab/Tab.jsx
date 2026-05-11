@@ -21,8 +21,8 @@ function Tab(props) {
             data={record}
             tab={props.tab}
             categories={props.categories}
+            divisions={props.divisions}
             setDisplayRecords={props.setDisplayRecords}
-            fetchRecord={props.fetchRecord}
             update={props.update}
             edit={props.edit}
             delete={props.delete}
@@ -34,6 +34,7 @@ function Tab(props) {
                                   tab={props.tab}
                                   add={props.add}
                                   categories={props.categories}
+                                  divisions={props.divisions}
                                   fieldsObj={props.fieldsObj}
                                 />
       }

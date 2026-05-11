@@ -1,0 +1,2 @@
+module RacerHelper
+end

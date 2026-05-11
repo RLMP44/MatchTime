@@ -17,16 +17,6 @@ export function checkIsPresent({ array: records, target: target, type: type }) {
 // returns array
 export function range(start, end) {
   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-}
-
-export function setMinMaxAge(category) {
-  const integers = /\d+/;
-  const splitCat = category.category.split('-');
-  const minAge = parseInt(splitCat[0].match(integers));
-  const maxAge = parseInt(splitCat[1]);
-  category.minAge = minAge;
-  category.maxAge = maxAge;
-  return category;
 };
 
 export function prepTimeForDisplay(milliseconds) {
@@ -60,4 +50,28 @@ export function convertToMs(time) {
     millis * 10;
 
   return totalMs;
+};
+
+// used for setTimerDisplay, setDisplayRecords, etc
+export function mergeUpdatedRecord(prev, updated) {
+  return prev.map(record =>
+    record.id === updated.id ? { ...record, ...updated } : record
+  );
+};
+
+export function diff(oldObj, newObj) {
+  const changed = {};
+  for (const key in newObj) {
+    const oldVal = oldObj[key];
+    const newVal = newObj[key];
+    const normalizedOld = typeof oldVal === "string" && !isNaN(oldVal) ? parseInt(oldVal) : oldVal;
+    const normalizedNew = typeof newVal === "string" && !isNaN(newVal) ? parseInt(newVal) : newVal;
+    const valuesEqual = normalizedOld === normalizedNew;
+    const typesEqual = typeof oldVal === typeof newVal;
+
+    if (!valuesEqual || !typesEqual) {
+      changed[key] = newVal;
+    };
+  };
+  return changed;
 };
