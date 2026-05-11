@@ -1,9 +1,9 @@
 test:
 		bundle exec rspec
-		cd frontend && npm test -- --ci --runInBand
+		cd frontend && npx jest --ci --runInBand
 
 rspec:
 		bundle exec rspec
 
 jest:
-		cd frontend && npm test -- --ci --runInBand
+		cd frontend && npx jest --ci --runInBand
