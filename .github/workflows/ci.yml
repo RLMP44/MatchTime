@@ -23,6 +23,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
       - name: Audit JS dependencies
         run: bin/importmap audit
 
@@ -101,4 +107,5 @@ jobs:
         run: npm ci
 
       - name: Run Jest
-        run: make jest
+        working-directory: frontend
+        run: npx jest --ci --runInBand
