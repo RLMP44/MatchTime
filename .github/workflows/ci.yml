@@ -6,75 +6,41 @@ on:
     branches: [ main ]
 
 jobs:
-  scan_ruby:
+  brakeman:
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:15
-        ports: ["5432:5432"]
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: matchtime_test
-        options: >-
-          --health-cmd="pg_isready -U postgres"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
       - uses: actions/checkout@v4
-
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
           bundler-cache: true
-
-      - name: Wait for Postgres
-        run: |
-          for i in {1..20}; do
-            pg_isready -h localhost -U postgres && break
-            sleep 1
-          done
-
-      - name: Install frontend dependencies
-        working-directory: frontend
-        run: npm ci
-
       - name: Run Brakeman
         env:
           RAILS_ENV: development
-          POSTGRESQL_USER: postgres
-          POSTGRESQL_PASSWORD: postgres
-          POSTGRESQL_HOST: localhost
         run: bin/brakeman --no-pager
-
-      - name: Run all tests
-        env:
-          RAILS_ENV: test
-          POSTGRESQL_USER: postgres
-          POSTGRESQL_PASSWORD: postgres
-          POSTGRESQL_HOST: localhost
-        run: cd .. && make test
 
   scan_js:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
       - name: Audit JS dependencies
         run: bin/importmap audit
 
   lint:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+      - name: Run Rubocop
+        env:
+          RAILS_ENV: development
+        run: bin/rubocop -f github
 
+  rspec:
+    runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:15
@@ -91,7 +57,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
@@ -104,38 +69,21 @@ jobs:
             sleep 1
           done
 
-      - name: Run Rubocop
+      - name: Prepare DB
         env:
-          RAILS_ENV: development
+          RAILS_ENV: test
           POSTGRESQL_USER: postgres
           POSTGRESQL_PASSWORD: postgres
           POSTGRESQL_HOST: localhost
-        run: bin/rubocop -f github
+        run: bin/rails db:test:prepare
 
-  rspec:
-    runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:15
-        ports: ["5432:5432"]
+      - name: Run RSpec
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: matchtime_test
-        options: >-
-          --health-cmd="pg_isready -U postgres"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
+          RAILS_ENV: test
+          POSTGRESQL_USER: postgres
+          POSTGRESQL_PASSWORD: postgres
+          POSTGRESQL_HOST: localhost
+        run: bundle exec rspec
 
   jest:
     runs-on: ubuntu-latest
@@ -153,5 +101,4 @@ jobs:
         run: npm ci
 
       - name: Run Jest
-        working-directory: MatchTime
-        run: npm test -- --ci --runInBand
+        run: make jest
