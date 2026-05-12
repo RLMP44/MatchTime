@@ -6,7 +6,7 @@ It also calculates pace and adjusted times using the provided handicaps for each
 ## Tech Stack
 - Ruby on Rails: 7.2.3
 - Ruby: 3.3.1
-- React: 19.2.0
+- React: 18.3.1
 - Vite: 7.2.4 (used only for bundling and development)
 
 ## Architecture Overview
