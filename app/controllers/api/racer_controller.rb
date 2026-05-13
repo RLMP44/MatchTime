@@ -54,6 +54,11 @@ class Api::RacerController < Api::ApplicationController
     render json: racer
   end
 
+  def destroy
+    racer = Racer.find(params[:id])
+    racer.destroy
+  end
+
   private
 
   def racer_params

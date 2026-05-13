@@ -117,8 +117,8 @@ function App() {
     return await response.json();
   };
 
-  function deleteDBRacer() {
-    // TODO: delete racer from DB
+  async function deleteDBRacer(id) {
+    return await fetch(`${API_BASE}/racer/${id}`, { method: 'DELETE' });
   }
 
   async function fetchAllCategories() {
@@ -358,7 +358,7 @@ function App() {
       return filtered;
     });
 
-    deleteDBRacer(racerToDelete);
+    deleteDBRacer(racerToDelete.id);
   }, [deleteDisplayedRecord, timerDisplayRecords]);
 
 
