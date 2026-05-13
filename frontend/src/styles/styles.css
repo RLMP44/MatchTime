@@ -13,6 +13,9 @@
   --color-highlight-fade: #ed6300c8;
   --color-primary: #fef2e3;
   --color-bg: #383837;
+  --color-warning: #fc2020e6;
+  --color-plus: #c9ffc9;
+  --color-minus: #ffd5d5;
 }
 
 * {

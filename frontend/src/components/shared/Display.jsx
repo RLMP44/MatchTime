@@ -89,6 +89,7 @@ function Display(props) {
         {updatedHeaders.map((header) => (
           <p
             key={header}
+            id={header}
           >
             {shouldDisplayData
               ? (displayData?.[header] ?? "")

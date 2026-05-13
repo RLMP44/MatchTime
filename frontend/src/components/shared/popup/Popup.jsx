@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { titleize, pluralize, convertToMs, diff } from "../../../utils/helpers";
+import { titleize, pluralize, convertToMs, diff, updateCatAge } from "../../../utils/helpers";
 import { useTranslation } from "react-i18next";
 import createFieldRenderers from "./fieldRenderers";
 import GeneralField from "./fields/GeneralField";
@@ -7,6 +7,7 @@ import GeneralField from "./fields/GeneralField";
 function Popup(props) {
   const { t } = useTranslation();
   const [formData, setFormData] = useState({ ...props.data });
+  const renderPlusButtons = props.tab === 'category' && (props.crud === 'add' || props.crud === 'edit');
   const fieldRenderers = useMemo(
     () => createFieldRenderers({ props, formData, setFormData }),
     [props, formData]
@@ -39,16 +40,27 @@ function Popup(props) {
     let formattedForm = formatRecord(formData);
     if (button === "update-button" && props.tab === "timer") {
       props.update({ prevData: props.data, newData: formattedForm });
+    } else if (props.tab === 'category' && button === 'add-button') {
+      props.add(formattedForm);
+      return;
     } else if (button === 'update-button') {
       const changed = diff(props.data, formattedForm)
       props.edit({ oldRecord: props.data, newRecord: changed });
     } else if (button === 'add-button') {
       props.add(formattedForm);
-      setFormData({});
     } else if (button === "delete-button") {
       props.delete(props.data);
     };
+    setFormData({});
     props.setIsDisplayed(false);
+  };
+
+  async function handlePlusClick(event) {
+    const amtToIncrease = event.target.innerHTML;
+    const num = parseInt(amtToIncrease.match(/\d+/)[0]);
+    const method = amtToIncrease.match(/[+-]?/)[0];
+    const updatedCategory = updateCatAge({ num, category: formData.category, method });
+    setFormData({category: updatedCategory});
   };
 
 
@@ -86,6 +98,35 @@ function Popup(props) {
             })
           )}
         </div>
+
+        {renderPlusButtons && (
+          <div className="popup-buttons-container">
+            <button
+              className='btn minus-btn'
+              id={'minusFive'}
+              onClick={handlePlusClick}
+            >- 5
+            </button>
+            <button
+              className='btn plus-btn'
+              id={'plusFive'}
+              onClick={handlePlusClick}
+            >+ 5
+            </button>
+            <button
+              className='btn minus-btn'
+              id={'minusTen'}
+              onClick={handlePlusClick}
+            >- 10
+            </button>
+            <button
+              className='btn plus-btn'
+              id={'plusTen'}
+              onClick={handlePlusClick}
+            >+ 10
+            </button>
+          </div>
+        )}
 
         {props.buttons?.length > 0 && (
           <div className="popup-buttons-container">

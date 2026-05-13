@@ -20,12 +20,14 @@ function ButtonBar(props) {
     const selectedCrud = getCrud(button);
     if (props.tab === "result" && selectedCrud != "export") { return }
     setCrud(selectedCrud);
-    setButtonTypes(['cancel', selectedCrud]);
-    if (selectedCrud === 'add') {
-      setPopUpFields(props.fieldsObj[props.tab]);
-    } else {
-      setPopUpFields(props.fieldsObj[selectedCrud]);
-    };
+    setButtonTypes((props.tab === 'category' && selectedCrud === 'add')
+      ? ['cancel', selectedCrud, 'done']
+      : ['cancel', selectedCrud]
+    );
+    setPopUpFields(selectedCrud === 'add'
+      ? props.fieldsObj[props.tab]
+      : props.fieldsObj[selectedCrud]
+    );
     setIsDisplayed(!isDisplayed);
   };
 
