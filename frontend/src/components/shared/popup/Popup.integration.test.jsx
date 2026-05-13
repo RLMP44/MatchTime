@@ -27,6 +27,20 @@ describe("Popup UI Integration", () => {
     delete: jest.fn()
   };
 
+  const altProps = {
+    crud: "add",
+    tab: "category",
+    data: { id: 1, category: "M30-39", min_age: 30, max_age: 39, sex: "M" },
+    popUpFields: ["category", "sex", "min_age", "max_age"],
+    buttons: ["update", "add", "done"],
+    setIsDisplayed: jest.fn(),
+    fetchRecord: jest.fn(),
+    update: jest.fn(),
+    edit: jest.fn(),
+    add: jest.fn(),
+    delete: jest.fn()
+  };
+
   beforeEach(() => jest.clearAllMocks());
 
   test("renders title and fields", () => {
@@ -64,6 +78,15 @@ describe("Popup UI Integration", () => {
 
     expect(props.add).toHaveBeenCalled();
     expect(props.setIsDisplayed).toHaveBeenCalledWith(false);
+  });
+
+  test("category tab add button triggers add() but doesn't close popup", () => {
+    render(<Popup {...altProps} />);
+
+    fireEvent.click(screen.getByText("Add"));
+
+    expect(altProps.add).toHaveBeenCalled();
+    expect(altProps.setIsDisplayed).not.toHaveBeenCalled();
   });
 
   test("timer tab: update triggers updateTimerDisplayRecord", async () => {
