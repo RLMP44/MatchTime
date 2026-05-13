@@ -16,7 +16,7 @@ const API_BASE =
   window.location.search.includes("e2e") ? "/test_support" : "/api";
 
 const timerHeaders = ['place', 'bib', 'time_raw', 'last_name', 'first_name'];
-const categoryHeaders = ['category', 'min_age', 'max_age'];
+const categoryHeaders = ['category', 'sex', 'min_age', 'max_age'];
 const racerHeaders = ['bib', 'first_name', 'last_name', 'category', 'division', 'handicap'];
 const resultHeaders = ['place', 'time_raw', 'bib', 'last_name', 'first_name', 'city', 'category', 'division', 'sex'];
 const headersObject = {
@@ -28,7 +28,7 @@ const headersObject = {
 
 const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
 const timerRecordsEditFields = ['bib', 'time_raw'];
-const categoryFields = ['category', 'plusFive', 'plusTen'];
+const categoryFields = ['category'];
 const divisionFields = ['division', 'race_no', 'start_time'];
 const racerFields = ['age', 'sex', 'first_name', 'last_name', 'city', 'handicap', 'email', 'race_no', 'category_id', 'division_id'];
 const fieldsObject = {
@@ -465,6 +465,8 @@ function App() {
                                     fields={fields}
                                     fieldsObj={fieldsObject}
                                     records={memoCategories}
+                                    divisions={memoDivisions}
+                                    categories={memoCategories}
                                     add={addCategory}
                                     edit={editCategory}
                                     delete={deleteCategory}

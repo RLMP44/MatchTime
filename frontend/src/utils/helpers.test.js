@@ -5,7 +5,10 @@ import {
   range,
   prepTimeForDisplay,
   timeForDisplay,
-  convertToMs
+  convertToMs,
+  mergeUpdatedRecord,
+  diff,
+  updateCatAge
 } from "./helpers";
 
 
@@ -42,5 +45,28 @@ describe('helpers', () => {
 
   test('convertToMs works', () => {
     expect(convertToMs("00:01:30:50")).toBe(90500);
+  });
+
+  test('mergeUpdatedRecord works', () => {
+    const prev = [
+      { id: 1, first_name: "Lara", last_name: "Croft", age: 40 },
+      { id: 2, first_name: "Ben", last_name: "Stark", age: 44 }
+    ];
+    const updated = { id: 2, first_name: "Ben", last_name: "Stork", age: 45 };
+    const expected = [
+      { id: 1, first_name: "Lara", last_name: "Croft", age: 40 },
+      { id: 2, first_name: "Ben", last_name: "Stork", age: 45 }
+    ];
+    expect(mergeUpdatedRecord(prev, updated)).toStrictEqual(expected);
+  })
+
+  test('diff compares two objects and returns only what changed', () => {
+    const oldObject = { first_name: "Laura", last_name: "Croft", age: 40 };
+    const newObject = { first_name: "Lara", last_name: "Croft", age: 40 };
+    expect(diff(oldObject, newObject)).toStrictEqual({ first_name: "Lara" });
+  });
+
+  test('updateCatAge increases or decreases age', () => {
+    expect(updateCatAge({ num: 10, category: 'F30-39', method: '+' })).toBe('F40-49');
   });
 });

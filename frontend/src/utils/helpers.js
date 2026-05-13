@@ -75,3 +75,14 @@ export function diff(oldObj, newObj) {
   };
   return changed;
 };
+
+export function updateCatAge({num, category, method}) {
+  // "M20-29" → ["M20", "29"]
+  const [first, last] = category.split("-");
+  const sex = first.match(/[A-Za-z]+/)[0];
+  const min_age = parseInt(first.match(/\d+/)[0]);
+  const max_age = parseInt(last);
+  return method === '+'
+    ? `${sex}${min_age + num}-${max_age + num}`
+    : `${sex}${min_age - num}-${max_age - num}`;
+};

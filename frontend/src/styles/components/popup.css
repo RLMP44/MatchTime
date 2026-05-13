@@ -2,6 +2,7 @@
   background-color: var(--color-bg);
   padding: 1rem 2rem;
   min-width: 300px;
+  width: min-content;
   min-height: fit-content;
   position: fixed;
   border-radius: 10px;
@@ -54,6 +55,14 @@ select {
   background-color: var(--color-primary);
 }
 
+.plus-btn {
+  background-color: var(--color-plus);
+}
+
+.minus-btn {
+  background-color: var(--color-minus);
+}
+
 .category_id > select > option {
   gap: .25rem;
 }
@@ -101,23 +110,10 @@ select {
 .add-category .category_id, .edit-category .category_id {
   grid-area: 1 / 1 / 2 / 2;
 }
-.add-category .race_no, .edit-category .race_no {
-  grid-area: 1 / 2 / 2 / 3;
-}
-.add-category .sex, .edit-category .sex {
-  grid-area: 1 / 2 / 2 / 3;
-}
-.add-category .plusFive, .edit-category .plusFive {
-  grid-area: 3 / 1 / 4 / 2;
-}
-.add-category .plusTen, .edit-category .plusTen {
-  grid-area: 3 / 2 / 4/ 3;
-}
-.add-category .min_age {
-  grid-area: 2 / 1 / 3 / 2;
-}
-.add-category .max_age {
-  grid-area: 2 / 2 / 3 / -1;
+
+.add-category {
+  display: grid;
+  justify-content: space-around;
 }
 
 .btn {
@@ -135,6 +131,6 @@ select {
   background-color: var(--color-highlight);
 }
 
-#delete-button {
-  background-color: rgba(252, 32, 32, 0.901);
+#delete-button, #done-button {
+  background-color: var(--color-warning);
 }

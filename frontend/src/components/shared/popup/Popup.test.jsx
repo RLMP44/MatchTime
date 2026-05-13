@@ -13,7 +13,7 @@ jest.mock("./fieldRenderers", () => jest.fn(() => ({
 describe("Popup component", () => {
   const baseProps = {
     crud: "edit",
-    tab: "runner",
+    tab: "racer",
     data: { id: 1, first_name: "John", last_name: "Doe", age: "25", bib: "10" },
     popUpFields: ["first_name", "age"],
     buttons: ["update", "delete"],
@@ -32,7 +32,7 @@ describe("Popup component", () => {
   test("renders correct title", () => {
     render(<Popup {...baseProps} />);
 
-    expect(screen.getByText("Edit Runner")).toBeInTheDocument();
+    expect(screen.getByText("Edit Racer")).toBeInTheDocument();
   });
 
   test("renders pluralized title for import/export", () => {
@@ -113,7 +113,7 @@ describe("Popup component", () => {
     });
   });
 
-  test("closes popup after any button click", () => {
+  test("closes popup after general button click", () => {
     render(<Popup {...baseProps} />);
 
     fireEvent.click(screen.getByText("Update"));
