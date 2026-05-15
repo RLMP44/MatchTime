@@ -1,5 +1,5 @@
 class Category < ApplicationRecord
-  has_many :racers
+  has_many :racers, dependent: :restrict_with_error
   validates :sex, :category, presence: true
   validates :min_age, numericality: { only_integer: true }
   validates :max_age, numericality: { only_integer: true }

@@ -1,6 +1,6 @@
 class Api::CategoryController < Api::ApplicationController
   def index
-    render json: Category.all
+    render json: Category.all.order(:id)
   end
 
   def create
@@ -15,6 +15,30 @@ class Api::CategoryController < Api::ApplicationController
 
   def show
     render json: Category.find(params[:id])
+  end
+
+  def update
+    cat = Category.find(params[:id])
+
+    if cat.update(category_params)
+      render json: cat, status: :ok
+    else
+      render json: cat.errors, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    cat = Category.find(params[:id])
+
+    if cat.destroy
+      render json: { message: "Category deleted" }, status: :ok
+    else
+      render json: {
+        error: "Can't delete a category with racers assigned to it.
+          Please reassign racers' categories then try again."
+        },
+        status: :unprocessable_entity
+    end
   end
 
   private
