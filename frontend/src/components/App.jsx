@@ -136,8 +136,14 @@ function App() {
     return await response.json();
   };
 
-  async function updateDBCategory() {
-    // TODO: update category in DB
+  async function updateDBCategory({ id, newCategory }) {
+    const response = await fetch(`${API_BASE}/category/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category: newCategory })
+    });
+
+    return await response.json();
   };
 
   function deleteDBCategory() {
@@ -365,19 +371,14 @@ function App() {
   // -------------- CATEGORY LOGIC --------------
   const addCategory = useCallback(
     async (category) => {
-      console.log(category)
       const newCat = await addDBCategory(category);
-      console.log(newCat)
       setDisplayCategories(prev => [...prev, newCat ]);
   }, []);
 
   const editCategory = useCallback(
-    ({ newData: newData, oldData: oldData, }) => {
-    const updatedCategory = {
-      ...oldData,
-      ...newData
-    };
-    updateDBCategory(updatedCategory);
+    async ({ newRecord, oldRecord }) => {
+    const changed = diff(oldRecord, newRecord)
+    const updatedCategory = await updateDBCategory({ id: oldRecord.id, newCategory: changed });
     setDisplayCategories(prev => mergeUpdatedRecord(prev, updatedCategory));
   }, []);
 
