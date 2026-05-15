@@ -11,6 +11,7 @@ import TimerIcon from '@mui/icons-material/Timer';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd';
+import { ToastContainer, toast, Bounce } from 'react-toastify';
 
 const API_BASE =
   window.location.search.includes("e2e") ? "/test_support" : "/api";
@@ -146,8 +147,9 @@ function App() {
     return await response.json();
   };
 
-  function deleteDBCategory() {
-    // TODO: delete and remove from racers
+  async function deleteDBCategory(id ) {
+    const response = await fetch(`${API_BASE}/category/${id}`, { method: 'DELETE' });
+    return await response.json();
   };
 
   async function fetchAllDivisions() {
@@ -383,10 +385,13 @@ function App() {
   }, []);
 
   const deleteCategory = useCallback(
-    (catToDelete) => {
-    setDisplayCategories(prev => prev.filter(cat => cat.id !== catToDelete.id));
-    // TODO: remove category from all racers with it currently listed
-    deleteDBCategory(catToDelete);
+    async (catToDelete) => {
+    const status = await deleteDBCategory(catToDelete.id);
+    if (status.error) {
+      toast(status.error);
+    } else {
+      setDisplayCategories(prev => prev.filter(cat => cat.id !== catToDelete.id));
+    }
   }, []);
 
 
@@ -501,6 +506,19 @@ function App() {
       </TimeKeeper>
       </div>
       <Footer />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
     </div>
   );
 };

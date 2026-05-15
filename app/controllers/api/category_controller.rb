@@ -27,6 +27,20 @@ class Api::CategoryController < Api::ApplicationController
     end
   end
 
+  def destroy
+    cat = Category.find(params[:id])
+
+    if cat.destroy
+      render json: { message: "Category deleted" }, status: :ok
+    else
+      render json: {
+        error: "Can't delete a category with racers assigned to it.
+          Please reassign racers' categories then try again."
+        },
+        status: :unprocessable_entity
+    end
+  end
+
   private
 
   def category_params
