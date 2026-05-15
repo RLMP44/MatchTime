@@ -11,6 +11,7 @@ import TimerIcon from '@mui/icons-material/Timer';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd';
+import ForkRightIcon from '@mui/icons-material/ForkRight';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 
 const API_BASE =
@@ -18,16 +19,18 @@ const API_BASE =
 
 const timerHeaders = ['place', 'bib', 'time_raw', 'last_name', 'first_name'];
 const categoryHeaders = ['category', 'sex', 'min_age', 'max_age'];
+const divisionHeaders = ['division', 'race_no', 'start_time'];
 const racerHeaders = ['bib', 'first_name', 'last_name', 'category', 'division', 'handicap'];
 const resultHeaders = ['place', 'time_raw', 'bib', 'last_name', 'first_name', 'city', 'category', 'division', 'sex'];
 const headersObject = {
   timer: timerHeaders,
   category: categoryHeaders,
+  division: divisionHeaders,
   racer: racerHeaders,
   result: resultHeaders
 };
 
-const importExportFields = ['times', 'categories', 'racers', 'clear existing', 'merge', 'filename'];
+const importExportFields = ['times', 'categories', 'divisions', 'racers', 'clear existing', 'merge', 'filename'];
 const timerRecordsEditFields = ['bib', 'time_raw'];
 const categoryFields = ['category'];
 const divisionFields = ['division', 'race_no', 'start_time'];
@@ -147,7 +150,7 @@ function App() {
     return await response.json();
   };
 
-  async function deleteDBCategory(id ) {
+  async function deleteDBCategory(id) {
     const response = await fetch(`${API_BASE}/category/${id}`, { method: 'DELETE' });
     return await response.json();
   };
@@ -157,16 +160,29 @@ function App() {
     return response.json();
   };
 
-  async function addDBDivision() {
-     // TODO: add Division in DB
+  async function addDBDivision(data) {
+    const response = await fetch(`${API_BASE}/division`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ division: data })
+    });
+
+    return await response.json();
   };
 
-  async function updateDBDivision() {
-    // TODO: update Division in DB and racers
+  async function updateDBDivision({ id, newDivision }) {
+    const response = await fetch(`${API_BASE}/division/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ division: newDivision })
+    });
+
+    return await response.json();
   };
 
-  function deleteDBDivision() {
-    // TODO: delete and remove from racers
+  async function deleteDBDivision(id) {
+    const response = await fetch(`${API_BASE}/division/${id}`, { method: 'DELETE' });
+    return await response.json();
   };
 
 
@@ -395,15 +411,42 @@ function App() {
   }, []);
 
 
+  // -------------- DIVISION LOGIC --------------
+  const addDivision= useCallback(
+    async (division) => {
+      const newDiv = await addDBDivision(division);
+      setDisplayDivisions(prev => [...prev, newDiv ]);
+  }, []);
+
+  const editDivision= useCallback(
+    async ({ newRecord, oldRecord }) => {
+    const changed = diff(oldRecord, newRecord)
+    const updatedDivision= await updateDBDivision({ id: oldRecord.id, newDivision: changed });
+    setDisplayDivisions(prev => mergeUpdatedRecord(prev, updatedDivision));
+  }, []);
+
+  const deleteDivision= useCallback(
+    async (divToDelete) => {
+    const status = await deleteDBDivision(divToDelete.id);
+    if (status.error) {
+      toast(status.error);
+    } else {
+      setDisplayDivisions(prev => prev.filter(div => div.id !== divToDelete.id));
+    }
+  }, []);
+
+
   // -------------- TAB SWITCH LOGIC --------------
   // create function once to prevent recreation every rerender
   const goToTimer = useCallback(() => setTab("timer"), []);
   const goToCategory = useCallback(() => setTab("category"), []);
+  const goToDivision = useCallback(() => setTab("division"), []);
   const goToRacer = useCallback(() => setTab("racer"), []);
   const goToResult = useCallback(() => setTab("result"), []);
 
   const TIMER_ICON = <TimerIcon />;
   const CATEGORY_ICON = <FormatListBulletedAddIcon />;
+  const DIVISION_ICON = <ForkRightIcon />;
   const RACER_ICON = <DirectionsRunIcon />;
   const RESULT_ICON = <EmojiEventsIcon />;
 
@@ -414,6 +457,7 @@ function App() {
       <div className="tab-display">
         <TabButton aria-label="timer tab" active={tab === "timer"} icon={TIMER_ICON} onClick={goToTimer} />
         <TabButton aria-label="category tab" active={tab === "category"} icon={CATEGORY_ICON} onClick={goToCategory} />
+        <TabButton aria-label="division tab" active={tab === "division"} icon={DIVISION_ICON} onClick={goToDivision} />
         <TabButton aria-label="racer tab" active={tab === "racer"} icon={RACER_ICON} onClick={goToRacer} />
         <TabButton aria-label="result tab" active={tab === "result"} icon={RESULT_ICON} onClick={goToResult} />
       </div>
@@ -476,6 +520,19 @@ function App() {
                                     add={addCategory}
                                     edit={editCategory}
                                     delete={deleteCategory}
+                                  />
+              }
+              {tab === "division" && <Tab
+                                    tab={tab}
+                                    headers={headers}
+                                    fields={fields}
+                                    fieldsObj={fieldsObject}
+                                    records={memoDivisions}
+                                    divisions={memoDivisions}
+                                    categories={memoCategories}
+                                    add={addDivision}
+                                    edit={editDivision}
+                                    delete={deleteDivision}
                                   />
               }
               {tab === "racer" && <Tab

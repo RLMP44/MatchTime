@@ -1,7 +1,7 @@
 .tab-display {
   width: auto;
   display: grid;
-  grid-template-columns: 3fr 3fr 3fr 3fr;
+  grid-template-columns: 20% 20% 20% 20% 20%;
   gap: 1px;
   justify-content: center;
 }
