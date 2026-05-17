@@ -7,9 +7,9 @@ HANDICAPS = JSON.parse(File.read(handicaps_path))
 return if Rails.env.test?
 
 # create divisions
-races = [ [ 1, '5k' ], [ 2, '10k' ], [ 3, '15k' ], [ 4, '21k' ], [ 5, '42k' ] ]
+races = [ [ 1, '5k', '10:00' ], [ 2, '10k', '09:30' ], [ 3, '15k', '09:00' ], [ 4, '21k', '08:00' ], [ 5, '42k', '06:30' ] ]
 races.each do |race|
-  Division.create!(division: race[1], race_no: race[0])
+  Division.create!(division: race[1], race_no: race[0], start_time: race[2])
 end
 
 # create categories

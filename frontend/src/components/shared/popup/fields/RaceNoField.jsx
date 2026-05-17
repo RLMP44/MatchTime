@@ -12,7 +12,8 @@ function race_noField({ field, title, formData, editable, setFormData }) {
           value={formData[field] ?? ''}
           disabled={!editable}
           onChange={event => setFormData({ ...formData, [field]: event.target.value })}
-          >
+        >
+        <option value="" disabled>Select</option>
         {raceSelections.map((num) => {
           return (
             <option key={num} value={num} disabled={!editable}>{num}</option>
