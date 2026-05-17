@@ -1,7 +1,7 @@
 .dialog {
   background-color: var(--color-bg);
   padding: 1rem 2rem;
-  min-width: 300px;
+  min-width: 320px;
   width: min-content;
   min-height: fit-content;
   position: fixed;
@@ -114,6 +114,18 @@ select {
 .add-category {
   display: grid;
   justify-content: space-around;
+}
+
+.add-division .division, .edit-division .division {
+  grid-area: 1 / 1 / 2 / -1;
+}
+
+.add-division .race_no, .edit-division .race_no {
+  grid-area: 3 / 1 / 4 / -1;
+}
+
+.add-division .start_time, .edit-division .start_time {
+  grid-area: 2 / 1 / 3 / -1;
 }
 
 .btn {
