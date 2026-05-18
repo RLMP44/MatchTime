@@ -19,5 +19,6 @@
   "name": "Name",
   "email": "Email",
   "min_age": "Min Age",
-  "max_age": "Max Age"
+  "max_age": "Max Age",
+  "start_time": "Start Time"
 }

@@ -4,6 +4,7 @@ import RaceNoField from "./fields/RaceNoField";
 import SexField from "./fields/SexField";
 import TimeRawField from './fields/TimeRawField';
 import DivisionField from "./fields/DivisionField";
+import StartTimeField from "./fields/StartTimeField";
 
 // use lookup object to simplify rendering and limit branching
 function createFieldRenderers({ props, formData, setFormData }) {
@@ -47,6 +48,14 @@ function createFieldRenderers({ props, formData, setFormData }) {
 
     time_raw: ({ field, title }) =>
       <TimeRawField
+        field={field}
+        title={title}
+        formData={formData}
+        setFormData={setFormData}
+      />,
+
+    start_time: ({ field, title }) =>
+      <StartTimeField
         field={field}
         title={title}
         formData={formData}

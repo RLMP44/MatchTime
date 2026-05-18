@@ -17,6 +17,30 @@ class Api::DivisionController < Api::ApplicationController
     render json: Division.find(params[:id])
   end
 
+  def update
+    div = Division.find(params[:id])
+
+    if div.update(division_params)
+      render json: div, status: :ok
+    else
+      render json: div.errors, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    div = Division.find(params[:id])
+
+    if div.destroy
+      render json: { message: "Division deleted" }, status: :ok
+    else
+      render json: {
+        error: "Can't delete a division with racers assigned to it.
+          Please reassign racers' divisions, then try again."
+        },
+        status: :unprocessable_entity
+    end
+  end
+
   private
 
   def division_params
