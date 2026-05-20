@@ -5,9 +5,11 @@ import SexField from "./fields/SexField";
 import TimeRawField from './fields/TimeRawField';
 import DivisionField from "./fields/DivisionField";
 import StartTimeField from "./fields/StartTimeField";
+import ImportExportField from "./fields/ImportExportField";
+import FileField from "./fields/FileField";
 
 // use lookup object to simplify rendering and limit branching
-function createFieldRenderers({ props, formData, setFormData }) {
+function createFieldRenderers({ props, formData, setFormData, obj }) {
   const fieldRenderers = {
     category_id: ({ field, title }) =>
       props.tab !== 'category'
@@ -56,6 +58,32 @@ function createFieldRenderers({ props, formData, setFormData }) {
 
     start_time: ({ field, title }) =>
       <StartTimeField
+        field={field}
+        title={title}
+        formData={formData}
+        setFormData={setFormData}
+      />,
+
+    items: ({ field, title}) =>
+      <ImportExportField
+        field={field}
+        title={title}
+        obj={props.fieldsObj}
+        formData={formData}
+        setFormData={setFormData}
+      />,
+
+    actions: ({ field, title}) =>
+      <ImportExportField
+        field={field}
+        title={title}
+        obj={props.fieldsObj}
+        formData={formData}
+        setFormData={setFormData}
+      />,
+
+    file: ({ field, title}) =>
+      <FileField
         field={field}
         title={title}
         formData={formData}

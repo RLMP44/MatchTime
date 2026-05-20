@@ -20,5 +20,8 @@
   "email": "Email",
   "min_age": "Min Age",
   "max_age": "Max Age",
-  "start_time": "Start Time"
+  "start_time": "Start Time",
+  "items": "Choose One",
+  "actions": "Action",
+  "file": "File"
 }

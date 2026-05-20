@@ -30,7 +30,11 @@ const headersObject = {
   result: resultHeaders
 };
 
-const importExportFields = ['times', 'categories', 'divisions', 'racers', 'clear existing', 'merge', 'filename'];
+const importExportFields = {
+  items: ['times', 'categories', 'divisions', 'racers'],
+  actions: ['clear existing', 'merge'],
+  file: 'filename'
+};
 const timerRecordsEditFields = ['bib', 'time_raw'];
 const categoryFields = ['category'];
 const divisionFields = ['division', 'race_no', 'start_time'];

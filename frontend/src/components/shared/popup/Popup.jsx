@@ -15,8 +15,7 @@ function Popup(props) {
 
   function setTitle(crud, target) {
     return (crud === 'import' || crud === 'export') ?
-      `${titleize(crud)} ${pluralize(titleize(target))}` :
-      `${titleize(crud)} ${titleize(target)}`;
+      `${titleize(crud)}` : `${titleize(crud)} ${titleize(target)}`;
   };
 
   // converts numeric fields in formData
@@ -50,6 +49,8 @@ function Popup(props) {
       props.add(formattedForm);
     } else if (button === "delete-button") {
       props.delete(props.data);
+    } else if (button === "import-button" || button === "export-button") {
+      console.log(formattedForm)
     };
     setFormData({});
     props.setIsDisplayed(false);
