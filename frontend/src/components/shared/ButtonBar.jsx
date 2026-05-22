@@ -46,6 +46,7 @@ function ButtonBar(props) {
           tab={props.tab}
           crud={crud}
           add={props.add}
+          import={props.import}
           buttons={buttonTypes}
           categories={props.categories}
           divisions={props.divisions}

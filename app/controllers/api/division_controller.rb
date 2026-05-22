@@ -1,3 +1,5 @@
+require "csv"
+
 class Api::DivisionController < Api::ApplicationController
   def index
     render json: Division.all
@@ -27,6 +29,21 @@ class Api::DivisionController < Api::ApplicationController
     end
   end
 
+  def clear_existing
+    file = params[:division]
+    puts "made it to clear"
+    Racer.destroy
+    Division.destroy
+    upload_file(file)
+  end
+
+  def merge
+    puts params
+    file = params[:division]
+    puts "merging"
+    upload_file(file)
+  end
+
   def destroy
     div = Division.find(params[:id])
 
@@ -45,5 +62,14 @@ class Api::DivisionController < Api::ApplicationController
 
   def division_params
     params.require(:division).permit(:division, :race_no, :start_time)
+  end
+
+  def upload_file(file)
+    csv_text = File.read(file)
+    csv = CSV.parse(csv_text, headers: true)
+
+    csv.each do |row|
+      Division.create({ division: row[0], race_no: row[1], start_time: row[2] })
+    end
   end
 end

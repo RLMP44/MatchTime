@@ -1,4 +1,4 @@
-import { titleize } from "../../../../utils/helpers";
+import { titleize, pluralize } from "../../../../utils/helpers";
 
 function ImportExportField({ field, title, obj, formData, setFormData }) {
   const currentValue = formData[field] ?? null;
@@ -20,7 +20,13 @@ function ImportExportField({ field, title, obj, formData, setFormData }) {
               }
               checked={currentValue === objField}
             />
-            <label htmlFor={`${field}-${objField}`}>{titleize(objField)}</label><br></br>
+            <label htmlFor={`${field}-${objField}`}>
+              {
+                field === 'items'
+                ? titleize(pluralize(objField))
+                : titleize(objField)
+              }
+            </label><br></br>
           </div>
         )
       })}

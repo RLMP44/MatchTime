@@ -10,11 +10,22 @@ Rails.application.routes.draw do
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
   namespace :api do
-    resources :category
-    resources :division
+    resources :category do
+      collection do
+        put :merge, :clear_existing
+      end
+    end
+    resources :division do
+      collection do
+        put :merge, :clear_existing
+      end
+    end
     resources :racer do
       member do
         patch :reset
+      end
+      collection do
+        put :merge, :clear_existing
       end
     end
   end
