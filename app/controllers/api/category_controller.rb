@@ -27,6 +27,24 @@ class Api::CategoryController < Api::ApplicationController
     end
   end
 
+  def clear_existing
+    file = params[:category]
+    # Racer.delete_all
+    Category.delete_all
+    upload_file(file)
+    if Category.count > 0
+      render json: { message: "Uploaded" }, status: :ok
+    else
+      render json: { error: "Could not upload" }, status: :unprocessable_entity
+    end
+  end
+
+  def merge
+    puts params
+    file = params[:category]
+    upload_file(file)
+  end
+
   def destroy
     cat = Category.find(params[:id])
 
@@ -45,5 +63,14 @@ class Api::CategoryController < Api::ApplicationController
 
   def category_params
     params.require(:category).permit(:category, :sex, :min_age, :max_age)
+  end
+
+  def upload_file(file)
+    csv_text = File.read(file).gsub(/\t/, "")
+    csv = CSV.parse(csv_text, headers: true, skip_blanks: true)
+
+    csv.each do |row|
+      Category.create!({ category: row[0] })
+    end
   end
 end
