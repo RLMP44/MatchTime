@@ -11,7 +11,8 @@ class Api::DivisionController < Api::ApplicationController
     if div.save
       render json: div, status: :created
     else
-      render json: { errors: div.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: div.errors.full_messages },
+        status: :unprocessable_entity
     end
   end
 
@@ -30,17 +31,20 @@ class Api::DivisionController < Api::ApplicationController
   end
 
   def clear_existing
-    file = params[:division]
-    puts "made it to clear"
-    Racer.destroy
-    Division.destroy
+    file = params[:divisions]
+    # Racer.delete_all
+    Division.delete_all
     upload_file(file)
+    if Division.count > 0
+      render json: { message: "Uploaded" }, status: :ok
+    else
+      render json: { error: "Could not upload" }, status: :unprocessable_entity
+    end
   end
 
   def merge
     puts params
-    file = params[:division]
-    puts "merging"
+    file = params[:divisions]
     upload_file(file)
   end
 
@@ -65,11 +69,15 @@ class Api::DivisionController < Api::ApplicationController
   end
 
   def upload_file(file)
-    csv_text = File.read(file)
-    csv = CSV.parse(csv_text, headers: true)
+    csv_text = File.read(file).gsub(/\t/, "")
+    csv = CSV.parse(csv_text, headers: true, skip_blanks: true)
 
     csv.each do |row|
-      Division.create({ division: row[0], race_no: row[1], start_time: row[2] })
+      Division.create!({
+        division: row[0],
+        race_no: row[1].to_i,
+        start_time: row[2]
+      })
     end
   end
 end

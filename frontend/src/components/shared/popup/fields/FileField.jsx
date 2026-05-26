@@ -14,6 +14,7 @@ function FileField({ field, title, formData, setFormData }) {
           onChange={event =>
             setFormData({ ...formData, [field]: event.target.files[0] })
           }
+          required
         />
       </div>
     </>

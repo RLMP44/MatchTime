@@ -31,7 +31,7 @@ const headersObject = {
 };
 
 const importExportFields = {
-  items: ['times', 'categories', 'divisions', 'racers'],
+  items: ['time', 'category', 'division', 'racer'],
   actions: ['clear existing', 'merge'],
   file: 'filename'
 };
@@ -71,28 +71,25 @@ function App() {
   // -------------- DB LOGIC --------------
   // load data from backend on first render
   useEffect(() => {
-    async function loadRacers() {
-      const racersJSON = await fetchAllRacers();
-      setDisplayRecords(racersJSON);
-    }
+    loadCategories();
+    loadDivisions();
     loadRacers();
   }, []);
 
-  useEffect(() => {
-    async function loadCategories() {
-      const categoriesJSON = await fetchAllCategories();
-      setDisplayCategories(categoriesJSON);
-    }
-    loadCategories();
-  }, []);
+  async function loadRacers() {
+    const racersJSON = await fetchAllRacers();
+    setDisplayRecords(racersJSON);
+  };
 
-  useEffect(() => {
-    async function loadDivisions() {
-      const divisionsJSON = await fetchAllDivisions();
-      setDisplayDivisions(divisionsJSON);
-    }
-    loadDivisions();
-  }, []);
+  async function loadCategories() {
+    const categoriesJSON = await fetchAllCategories();
+    setDisplayCategories(categoriesJSON);
+  };
+
+  async function loadDivisions() {
+    const divisionsJSON = await fetchAllDivisions();
+    setDisplayDivisions(divisionsJSON);
+  };
 
   async function fetchAllRacers() {
     const response = await fetch(`${API_BASE}/racer`);
@@ -161,7 +158,7 @@ function App() {
 
   async function fetchAllDivisions() {
     const response = await fetch(`${API_BASE}/division`);
-    return response.json();
+    return await response.json();
   };
 
   async function addDBDivision(data) {
@@ -416,20 +413,20 @@ function App() {
 
 
   // -------------- DIVISION LOGIC --------------
-  const addDivision= useCallback(
+  const addDivision = useCallback(
     async (division) => {
       const newDiv = await addDBDivision(division);
       setDisplayDivisions(prev => [...prev, newDiv ]);
   }, []);
 
-  const editDivision= useCallback(
+  const editDivision = useCallback(
     async ({ newRecord, oldRecord }) => {
     const changed = diff(oldRecord, newRecord)
     const updatedDivision= await updateDBDivision({ id: oldRecord.id, newDivision: changed });
     setDisplayDivisions(prev => mergeUpdatedRecord(prev, updatedDivision));
   }, []);
 
-  const deleteDivision= useCallback(
+  const deleteDivision = useCallback(
     async (divToDelete) => {
     const status = await deleteDBDivision(divToDelete.id);
     if (status.error) {
@@ -438,6 +435,30 @@ function App() {
       setDisplayDivisions(prev => prev.filter(div => div.id !== divToDelete.id));
     }
   }, []);
+
+
+  // -------------- IMPORT/EXPORT LOGIC --------------
+  const importFileData = useCallback(
+    async (data) => {
+      handleFileImport({
+        file: data.file,
+        target: data.items,
+        action: data.actions
+      });
+    }
+  );
+
+  async function handleFileImport({ file, target, action }) {
+    const endpoint = `${API_BASE}/${target}/${action === 'clear existing' ? 'clear_existing' : action}`;
+    const formData = new FormData();
+    formData.append('divisions', file);
+    const response = await fetch(endpoint, {
+      method: 'PUT',
+      body: formData
+    });
+    await response.json();
+    loadDivisions();
+  };
 
 
   // -------------- TAB SWITCH LOGIC --------------
@@ -524,6 +545,7 @@ function App() {
                                     add={addCategory}
                                     edit={editCategory}
                                     delete={deleteCategory}
+                                    import={importFileData}
                                   />
               }
               {tab === "division" && <Tab
@@ -537,6 +559,7 @@ function App() {
                                     add={addDivision}
                                     edit={editDivision}
                                     delete={deleteDivision}
+                                    import={importFileData}
                                   />
               }
               {tab === "racer" && <Tab
@@ -551,6 +574,7 @@ function App() {
                                     add={addRacer}
                                     edit={editRacer}
                                     delete={deleteRacer}
+                                    import={importFileData}
                                   />
               }
               {tab === "result" && <Tab
