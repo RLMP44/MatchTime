@@ -31,7 +31,7 @@ class Api::DivisionController < Api::ApplicationController
   end
 
   def clear_existing
-    file = params[:divisions]
+    file = params[:division]
     # Racer.delete_all
     Division.delete_all
     upload_file(file)
@@ -44,7 +44,7 @@ class Api::DivisionController < Api::ApplicationController
 
   def merge
     puts params
-    file = params[:divisions]
+    file = params[:division]
     upload_file(file)
   end
 

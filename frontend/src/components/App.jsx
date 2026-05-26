@@ -451,13 +451,15 @@ function App() {
   async function handleFileImport({ file, target, action }) {
     const endpoint = `${API_BASE}/${target}/${action === 'clear existing' ? 'clear_existing' : action}`;
     const formData = new FormData();
-    formData.append('divisions', file);
+    formData.append(target, file);
     const response = await fetch(endpoint, {
       method: 'PUT',
       body: formData
     });
     await response.json();
-    loadDivisions();
+    if (target === 'division') { loadDivisions() };
+    if (target === 'category') { loadCategories() };
+    if (target === 'racer') { loadRacers() };
   };
 
 
