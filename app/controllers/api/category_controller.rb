@@ -29,9 +29,20 @@ class Api::CategoryController < Api::ApplicationController
 
   def clear_existing
     file = params[:category]
-    # Racer.delete_all
-    Category.delete_all
+    destroyed = Category.destroy_all
+
+    if destroyed.any? { |div| div.errors.any? }
+      render json: {
+        error: "Can't delete a category with racers assigned to it.
+          Please reassign racers' categories, then try again."
+        },
+        status: :unprocessable_entity
+
+      return
+    end
+
     upload_file(file)
+
     if Category.count > 0
       render json: { message: "Uploaded" }, status: :ok
     else

@@ -11,8 +11,7 @@ class Racer < ApplicationRecord
   validates :first_name, uniqueness: { scope: :last_name,
                                        message: "Full name already used" }
 
-  before_create :calculate_handicap, unless: :placeholder?
-  after_create :assign_bib, unless: :placeholder?
+  before_create :calculate_handicap, :assign_bib, unless: :placeholder?
   before_save :calculate_handicap, if: :needs_handicap_update?, unless: :placeholder?
 
   def placeholder?
@@ -53,6 +52,6 @@ class Racer < ApplicationRecord
   end
 
   def assign_bib
-    update_column(:bib, id)
+    self.bib = Racer.maximum(:bib).to_i + 1
   end
 end

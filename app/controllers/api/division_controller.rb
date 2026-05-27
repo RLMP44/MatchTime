@@ -32,9 +32,20 @@ class Api::DivisionController < Api::ApplicationController
 
   def clear_existing
     file = params[:division]
-    # Racer.delete_all
-    Division.delete_all
+    destroyed = Division.destroy_all
+
+    if destroyed.any? { |div| div.errors.any? }
+      render json: {
+        error: "Can't delete a division with racers assigned to it.
+          Please reassign racers' divisions, then try again."
+        },
+        status: :unprocessable_entity
+
+      return
+    end
+
     upload_file(file)
+
     if Division.count > 0
       render json: { message: "Uploaded" }, status: :ok
     else

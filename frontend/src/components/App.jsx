@@ -456,7 +456,11 @@ function App() {
       method: 'PUT',
       body: formData
     });
-    await response.json();
+    const status = await response.json();
+    if (status.error) {
+      toast(status.error);
+      return;
+    };
     if (target === 'division') { loadDivisions() };
     if (target === 'category') { loadCategories() };
     if (target === 'racer') { loadRacers() };
