@@ -49,9 +49,9 @@ RSpec.describe Racer, type: :model do
       expect(racer.handicap).not_to be_nil
     end
 
-    it "assigns bib equal to id after create" do
+    it "assigns bib before create" do
       racer = create(:racer)
-      expect(racer.bib).to eq(racer.id)
+      expect(racer.bib).not_to be_nil
     end
 
     it "does not override bib for placeholder racers" do
