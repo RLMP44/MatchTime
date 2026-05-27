@@ -31,7 +31,7 @@ class Api::DivisionController < Api::ApplicationController
   end
 
   def clear_existing
-    file = params[:division]
+    file = params[:file]
     destroyed = Division.destroy_all
 
     if destroyed.any? { |div| div.errors.any? }
@@ -55,7 +55,7 @@ class Api::DivisionController < Api::ApplicationController
 
   def merge
     puts params
-    file = params[:division]
+    file = params[:file]
     upload_file(file)
   end
 

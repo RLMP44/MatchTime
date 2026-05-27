@@ -52,6 +52,6 @@ class Racer < ApplicationRecord
   end
 
   def assign_bib
-    self.bib = Racer.maximum(:bib).to_i + 1
+    self.bib = (Racer.maximum(:bib) || 0) + 1
   end
 end

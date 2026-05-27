@@ -28,7 +28,7 @@ class Api::CategoryController < Api::ApplicationController
   end
 
   def clear_existing
-    file = params[:category]
+    file = params[:file]
     destroyed = Category.destroy_all
 
     if destroyed.any? { |div| div.errors.any? }
@@ -52,7 +52,7 @@ class Api::CategoryController < Api::ApplicationController
 
   def merge
     puts params
-    file = params[:category]
+    file = params[:file]
     upload_file(file)
   end
 

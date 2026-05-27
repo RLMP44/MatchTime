@@ -451,14 +451,14 @@ function App() {
   async function handleFileImport({ file, target, action }) {
     const endpoint = `${API_BASE}/${target}/${action === 'clear existing' ? 'clear_existing' : action}`;
     const formData = new FormData();
-    formData.append(target, file);
+    formData.append("file", file);
     const response = await fetch(endpoint, {
       method: 'PUT',
       body: formData
     });
     const status = await response.json();
     if (status.error) {
-      toast(status.error);
+      toast(status.error.join("\n"));
       return;
     };
     if (target === 'division') { loadDivisions() };

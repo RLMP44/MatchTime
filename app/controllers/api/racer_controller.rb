@@ -1,3 +1,5 @@
+require "ostruct"
+
 class Api::RacerController < Api::ApplicationController
   def index
     racers = Racer.joins(:division, :category)
@@ -55,21 +57,33 @@ class Api::RacerController < Api::ApplicationController
   end
 
   def clear_existing
-    file = params[:racer]
+    file = params[:file]
 
     destroyed = Racer.destroy_all
 
     if destroyed.any? { |div| div.errors.any? }
-      render json: { error: div.error }, status: :unprocessable_entity
+      render json: { error: "Cannot delete racers" }, status: :unprocessable_entity
       return
     end
 
-    upload_file(file)
+    result = RacerImporter.new(file).call
+
+    if result.success?
+      render json: { message: "Racers imported successfully" }, status: :ok
+    else
+      render json: { error: result.error }, status: :unprocessable_entity
+    end
   end
 
   def merge
-    file = params[:racer]
-    upload_file(file)
+    file = params[:file]
+    result = RacerImporter.new(file).call
+
+    if result.success?
+      render json: { message: "Racers imported successfully" }, status: :ok
+    else
+      render json: { error: result.error }, status: :unprocessable_entity
+    end
   end
 
   def destroy
@@ -94,76 +108,5 @@ class Api::RacerController < Api::ApplicationController
       :bib,
       :handicap
     )
-  end
-
-  def file_fields_missing?(row)
-    required_fields = {
-      "first name" => row[0],
-      "last name"  => row[1],
-      "city"       => row[2],
-      "email"      => row[3],
-      "category"   => row[4],
-      "division"   => row[5],
-      "age"        => row[6]
-    }
-
-    missing = required_fields.select { |_, v| v.nil? || v.strip == "" }
-
-    if missing.any?
-      render json: {
-        error: "Import failed! The file has missing fields:\n" \
-              "#{missing.keys.map(&:titleize).join(', ')}"
-      }, status: :unprocessable_entity
-      return true
-    end
-    false
-  end
-
-  def category_and_division_invalid?(row, category, division)
-    category = Category.find_by(category: row[4])
-    division = Division.find_by(division: row[5])
-
-    if category.nil? || division.nil?
-      missing_target = category.nil? ? "category" : "division"
-      missing_value  = category.nil? ? row[4] : row[5]
-
-      render json: {
-        error: "Import failed! #{row[0]} #{row[1]}'s chosen #{missing_target} doesn't exist:\n" \
-              "#{missing_target.titleize}: #{missing_value}"
-      }, status: :unprocessable_entity
-      return true
-    end
-    false
-  end
-
-  def upload_file(file)
-    csv_text = File.read(file).gsub(/\t/, "")
-    csv = CSV.parse(csv_text, headers: true, skip_blanks: true)
-
-    csv.each do |row|
-      return if file_fields_missing?(row)
-
-      category = Category.find_by(category: row[4])
-      division = Division.find_by(division: row[5])
-
-      return if category_and_division_invalid?(row, category, division)
-    end
-
-    csv.each do |row|
-      category = Category.find_by(category: row[4])
-      division = Division.find_by(division: row[5])
-
-      Racer.create!(
-        first_name: row[0],
-        last_name: row[1],
-        city: row[2],
-        email: row[3],
-        category_id: category.id,
-        division_id: division.id,
-        age: row[6],
-        sex: category.sex
-      )
-    end
-    render json: { message: "Racers imported successfully" }, status: :ok
   end
 end
