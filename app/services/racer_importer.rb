@@ -5,6 +5,7 @@ class RacerImporter
   attr_reader :file, :errors, :rows
 
   REQUIRED_FIELDS = %w[first_name last_name city email age division category]
+  MAX_ALLOWED_ERRORS = 10
 
   def initialize(file)
     @file = file
@@ -12,13 +13,25 @@ class RacerImporter
   end
 
   def call
-    return failure("No file provided") if file.blank?
-    return failure("Invalid CSV format") unless parse_csv
-
-    check_rows
+    import_rows
     return failure(errors) if errors.any?
 
-    import_rows
+    success
+  end
+
+  def validate_file
+    return failure([ "No file provided" ]) if file.blank? || file === "undefined"
+    return failure([ "Invalid CSV format" ]) unless parse_csv
+    return failure([ "Invalid CSV format" ]) if rows.blank?
+    missing_headers = REQUIRED_FIELDS - rows.first.keys
+    return failure([ "Invalid CSV format" ]) if missing_headers.any?
+
+    check_rows
+
+    if errors.count > MAX_ALLOWED_ERRORS
+      return failure([ "File has too many errors. The format is either invalid, missing too many fields, or you are missing Categories or Divisions. Always import Divisions and Categories first." ])
+    end
+
     return failure(errors) if errors.any?
 
     success
@@ -123,8 +136,8 @@ class RacerImporter
           email: row["email"],
           age: row["age"],
           sex: category&.sex,
-          category_id: category.id,
-          division_id: division.id
+          category_id: category&.id,
+          division_id: division&.id
         )
 
         unless racer.save

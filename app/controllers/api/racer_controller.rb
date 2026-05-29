@@ -58,6 +58,11 @@ class Api::RacerController < Api::ApplicationController
 
   def clear_existing
     file = params[:file]
+    importer = RacerImporter.new(file)
+    checked_file = importer.validate_file
+    unless checked_file.success?
+      return render json: { error: checked_file.error }, status: :unprocessable_entity
+    end
 
     destroyed = Racer.destroy_all
 
@@ -66,7 +71,7 @@ class Api::RacerController < Api::ApplicationController
       return
     end
 
-    result = RacerImporter.new(file).call
+    result = importer.call
 
     if result.success?
       render json: { message: "Racers imported successfully" }, status: :ok
