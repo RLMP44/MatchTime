@@ -50,10 +50,44 @@ class Api::CategoryController < Api::ApplicationController
     end
   end
 
-  def merge
-    puts params
+  def clear_existing
     file = params[:file]
-    upload_file(file)
+    importer = CategoryImporter.new(file)
+    checked_file = importer.validate_file
+    unless checked_file.success?
+      return render json: { error: checked_file.error }, status: :unprocessable_entity
+    end
+
+    destroyed = Category.destroy_all
+
+    if destroyed.any? { |div| div.errors.any? }
+      render json: { error: "Cannot delete categories" }, status: :unprocessable_entity
+      return
+    end
+
+    result = importer.call
+
+    if result.success?
+      render json: { message: "Categories imported successfully" }, status: :ok
+    else
+      render json: { error: result.error }, status: :unprocessable_entity
+    end
+  end
+
+  def merge
+    file = params[:file]
+    importer = CategoryImporter.new(file)
+    checked_file = importer.validate_file
+    unless checked_file.success?
+      return render json: { error: checked_file.error }, status: :unprocessable_entity
+    end
+
+    result = importer.call
+    if result.success?
+      render json: { message: "Categories merged successfully" }, status: :ok
+    else
+      render json: { error: result.error }, status: :unprocessable_entity
+    end
   end
 
   def destroy
