@@ -32,31 +32,42 @@ class Api::DivisionController < Api::ApplicationController
 
   def clear_existing
     file = params[:file]
+    importer = DivisionImporter.new(file)
+    checked_file = importer.validate_file
+    unless checked_file.success?
+      return render json: { error: checked_file.error }, status: :unprocessable_entity
+    end
+
     destroyed = Division.destroy_all
 
     if destroyed.any? { |div| div.errors.any? }
-      render json: {
-        error: "Can't delete a division with racers assigned to it.
-          Please reassign racers' divisions, then try again."
-        },
-        status: :unprocessable_entity
-
+      render json: { error: "Cannot delete divisions" }, status: :unprocessable_entity
       return
     end
 
-    upload_file(file)
+    result = importer.call
 
-    if Division.count > 0
-      render json: { message: "Uploaded" }, status: :ok
+    if result.success?
+      render json: { message: "Divisions imported successfully" }, status: :ok
     else
-      render json: { error: "Could not upload" }, status: :unprocessable_entity
+      render json: { error: result.error }, status: :unprocessable_entity
     end
   end
 
   def merge
-    puts params
     file = params[:file]
-    upload_file(file)
+    importer = DivisionImporter.new(file)
+    checked_file = importer.validate_file
+    unless checked_file.success?
+      return render json: { error: checked_file.error }, status: :unprocessable_entity
+    end
+
+    result = importer.call
+    if result.success?
+      render json: { message: "Divisions merged successfully" }, status: :ok
+    else
+      render json: { error: result.error }, status: :unprocessable_entity
+    end
   end
 
   def destroy

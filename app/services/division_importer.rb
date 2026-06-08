@@ -1,10 +1,10 @@
 require "csv"
 require "ostruct"
 
-class CategoryImporter
+class DivisionImporter
   attr_reader :file, :errors, :rows
 
-  REQUIRED_FIELDS = %w[category]
+  REQUIRED_FIELDS = %w[division race_no start_time]
   MAX_ALLOWED_ERRORS = 10
 
   def initialize(file)
@@ -47,7 +47,11 @@ class CategoryImporter
   end
 
   def normalize_row(row)
-    { "category"   => row["category"]&.strip&.upcase }
+    {
+      "division"    => row["division"]&.strip,
+      "race_no"     => row["race_no"]&.strip&.to_i,
+      "start_time"  => row["start_time"]&.strip
+    }
   end
 
   def parse_csv
@@ -80,8 +84,8 @@ class CategoryImporter
         end
       end
 
-      if Category.exists?(category: row["category"])
-        errors << "Row #{row_number + 1}: '#{row["category"]}' has already been created"
+      if Division.exists?(division: row["division"])
+        errors << "Row #{row_number + 1}: '#{row["division"]}' has already been created"
       end
     end
   end
@@ -91,10 +95,14 @@ class CategoryImporter
       rows.each_with_index do |raw_row, index|
         row = normalize_row(raw_row)
 
-        category = Category.new(category: row["category"])
+        division = Division.new(
+          division: row["division"],
+          race_no: row["race_no"],
+          start_time: row["start_time"]
+        )
 
-        unless category.save
-          errors << "Row #{index + 1}: #{category.errors.full_messages.join(', ')}"
+        unless division.save
+          errors << "Row #{index + 1}: #{division.errors.full_messages.join(', ')}"
         end
       end
 
