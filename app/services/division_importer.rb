@@ -84,6 +84,8 @@ class DivisionImporter
         end
       end
 
+      # TODO: allow rewrites and deletion anyway?
+      # disallow duplicate names for division?
       if Division.exists?(division: row["division"])
         errors << "Row #{row_number + 1}: '#{row["division"]}' has already been created"
       end
