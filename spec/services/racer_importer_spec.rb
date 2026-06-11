@@ -37,13 +37,13 @@ RSpec.describe RacerImporter do
     context "when no file is provided" do
       it "returns failure" do
         undefined_file = described_class.new('undefined')
-        result = undefined_file.validate_file
+        result = undefined_file.validate_file("clear")
 
         expect(result.success?).to be false
         expect(result.error).to eq([ "No file provided" ])
 
         nil_file = described_class.new(nil)
-        result = nil_file.validate_file
+        result = nil_file.validate_file("clear")
 
         expect(result.success?).to be false
         expect(result.error).to eq([ "No file provided" ])
@@ -60,7 +60,7 @@ RSpec.describe RacerImporter do
 
       it "returns failure" do
         importer = described_class.new(uploaded_file)
-        result = importer.validate_file
+        result = importer.validate_file("clear")
         expected = [ "Invalid CSV format" ]
 
         expect(result.success?).to be false
@@ -69,9 +69,18 @@ RSpec.describe RacerImporter do
     end
 
     context "with valid CSV" do
-      it "imports racers successfully" do
+      it "imports racers successfully when merging" do
         importer = described_class.new(uploaded_file)
-        checked_file = importer.validate_file
+        checked_file = importer.validate_file("merge")
+        result = importer.call if checked_file.success?
+
+        expect(result.success?).to be true
+        expect(Racer.count).to eq(2)
+      end
+
+       it "imports racers successfully when clearing" do
+        importer = described_class.new(uploaded_file)
+        checked_file = importer.validate_file("clear")
         result = importer.call if checked_file.success?
 
         expect(result.success?).to be true
@@ -96,7 +105,7 @@ RSpec.describe RacerImporter do
 
       it "returns missing field errors" do
         importer = described_class.new(uploaded_file)
-        result = importer.validate_file
+        result = importer.validate_file("clear")
 
         expect(result.success?).to be false
         expect(result.error).to include("Row 2: Missing first_name")
@@ -120,7 +129,7 @@ RSpec.describe RacerImporter do
 
       it "returns unknown category error" do
         importer = described_class.new(uploaded_file)
-        result = importer.validate_file
+        result = importer.validate_file("clear")
 
         expect(result.success?).to be false
         expect(result.error).to include("Row 2: Unknown category 'M70-79'")
@@ -144,7 +153,7 @@ RSpec.describe RacerImporter do
 
       it "returns unknown division error" do
         importer = described_class.new(uploaded_file)
-        result = importer.validate_file
+        result = importer.validate_file("clear")
 
         expect(result.success?).to be false
         expect(result.error).to include("Row 2: Unknown division '100k'")
@@ -158,7 +167,7 @@ RSpec.describe RacerImporter do
 
       it "returns duplicate racer error" do
         importer = described_class.new(uploaded_file)
-        result = importer.validate_file
+        result = importer.validate_file("merge")
 
         expect(result.success?).to be false
         expect(result.error).to include("Row 2: 'John Doe' is already registered")
@@ -183,7 +192,7 @@ RSpec.describe RacerImporter do
 
       it "returns duplicate full name error" do
         importer = described_class.new(uploaded_file)
-        result = importer.validate_file
+        result = importer.validate_file("clear")
 
         expect(result.success?).to be false
         expect(result.error).to include("Row 3: Duplicate full name in CSV 'John Doe'")
@@ -197,7 +206,7 @@ RSpec.describe RacerImporter do
 
       it "rolls back all inserts" do
         importer = described_class.new(uploaded_file)
-        checked_file = importer.validate_file
+        checked_file = importer.validate_file("clear")
         result = importer.call if checked_file.success?
 
         expect(result.success?).to be false

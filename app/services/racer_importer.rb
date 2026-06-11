@@ -19,14 +19,14 @@ class RacerImporter
     success
   end
 
-  def validate_file
+  def validate_file(action)
     return failure([ "No file provided" ]) if file.blank? || file === "undefined"
     return failure([ "Invalid CSV format" ]) unless parse_csv
     return failure([ "Invalid CSV format" ]) if rows.blank?
     missing_headers = REQUIRED_FIELDS - rows.first.keys
     return failure([ "Invalid CSV format" ]) if missing_headers.any?
 
-    check_rows
+    check_rows(action)
 
     if errors.count > MAX_ALLOWED_ERRORS
       return failure([ "File has too many errors. The format is either invalid, missing too many fields, or you are missing Categories or Divisions. Always import Divisions and Categories first." ])
@@ -78,7 +78,7 @@ class RacerImporter
 
   # check file for missing fields, non-existing categories and divisions
   # duplicate registrations etc.
-  def check_rows
+  def check_rows(action)
     rows.each_with_index do |raw_row, index|
       row = normalize_row(raw_row)
       row_number = index + 1
@@ -97,7 +97,7 @@ class RacerImporter
         errors << "Row #{row_number + 1}: Unknown division '#{row["division"]}'"
       end
 
-      if Racer.exists?(first_name: row["first_name"], last_name: row["last_name"])
+      if action == "merge" && Racer.exists?(first_name: row["first_name"], last_name: row["last_name"])
         errors << "Row #{row_number + 1}: '#{row["first_name"]} #{row["last_name"]}' is already registered"
       end
 
@@ -106,7 +106,7 @@ class RacerImporter
         errors << "Row #{row_number + 1}: Duplicate full name in CSV '#{row["first_name"]} #{row["last_name"]}'"
       end
 
-      if row["email"].present? &&
+      if action == "merge" && row["email"].present? &&
          Racer.exists?(email: row["email"], first_name: row["first_name"], last_name: row["last_name"])
         errors << "Row #{row_number + 1}: Email '#{row["email"]}' already used by #{row["first_name"]} #{row["last_name"]}"
       end

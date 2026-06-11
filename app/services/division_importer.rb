@@ -19,14 +19,14 @@ class DivisionImporter
     success
   end
 
-  def validate_file
+  def validate_file(action)
     return failure([ "No file provided" ]) if file.blank? || file === "undefined"
     return failure([ "Invalid CSV format" ]) unless parse_csv
     return failure([ "Invalid CSV format" ]) if rows.blank?
     missing_headers = REQUIRED_FIELDS - rows.first.keys
     return failure([ "Invalid CSV format" ]) if missing_headers.any?
 
-    check_rows
+    check_rows(action)
 
     if errors.count > MAX_ALLOWED_ERRORS
       return failure([ "File has too many errors. The format is either invalid or missing too many fields." ])
@@ -73,7 +73,7 @@ class DivisionImporter
   end
 
   # check file for missing field or duplicates
-  def check_rows
+  def check_rows(action)
     rows.each_with_index do |raw_row, index|
       row = normalize_row(raw_row)
       row_number = index + 1
@@ -84,9 +84,7 @@ class DivisionImporter
         end
       end
 
-      # TODO: allow rewrites and deletion anyway?
-      # disallow duplicate names for division?
-      if Division.exists?(division: row["division"])
+      if action == "merge" && Division.exists?(division: row["division"])
         errors << "Row #{row_number + 1}: '#{row["division"]}' has already been created"
       end
     end

@@ -59,7 +59,7 @@ class Api::RacerController < Api::ApplicationController
   def clear_existing
     file = params[:file]
     importer = RacerImporter.new(file)
-    checked_file = importer.validate_file
+    checked_file = importer.validate_file("clear")
     unless checked_file.success?
       return render json: { error: checked_file.error }, status: :unprocessable_entity
     end
@@ -82,10 +82,15 @@ class Api::RacerController < Api::ApplicationController
 
   def merge
     file = params[:file]
-    result = RacerImporter.new(file).call
+    importer = RacerImporter.new(file)
+    checked_file = importer.validate_file("merge")
+    unless checked_file.success?
+      return render json: { error: checked_file.error }, status: :unprocessable_entity
+    end
 
+    result = importer.call
     if result.success?
-      render json: { message: "Racers imported successfully" }, status: :ok
+      render json: { message: "Racers merged successfully" }, status: :ok
     else
       render json: { error: result.error }, status: :unprocessable_entity
     end

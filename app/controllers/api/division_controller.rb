@@ -33,7 +33,7 @@ class Api::DivisionController < Api::ApplicationController
   def clear_existing
     file = params[:file]
     importer = DivisionImporter.new(file)
-    checked_file = importer.validate_file
+    checked_file = importer.validate_file("clear")
     unless checked_file.success?
       return render json: { error: checked_file.error }, status: :unprocessable_entity
     end
@@ -57,7 +57,7 @@ class Api::DivisionController < Api::ApplicationController
   def merge
     file = params[:file]
     importer = DivisionImporter.new(file)
-    checked_file = importer.validate_file
+    checked_file = importer.validate_file("merge")
     unless checked_file.success?
       return render json: { error: checked_file.error }, status: :unprocessable_entity
     end

@@ -456,11 +456,15 @@ function App() {
       method: 'PUT',
       body: formData
     });
+
     const status = await response.json();
     if (status.error) {
       toast(status.error.join("\n"));
       return;
+    } else {
+      toast(status.message);
     };
+
     if (target === 'division') { loadDivisions() };
     if (target === 'category') { loadCategories() };
     if (target === 'racer') { loadRacers() };

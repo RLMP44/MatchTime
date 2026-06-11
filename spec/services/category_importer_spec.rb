@@ -27,13 +27,13 @@ RSpec.describe CategoryImporter do
     context "when no file is provided" do
       it "returns failure" do
         undefined_file = described_class.new('undefined')
-        result = undefined_file.validate_file
+        result = undefined_file.validate_file("merge")
 
         expect(result.success?).to be false
         expect(result.error).to eq([ "No file provided" ])
 
         nil_file = described_class.new(nil)
-        result = nil_file.validate_file
+        result = nil_file.validate_file("merge")
 
         expect(result.success?).to be false
         expect(result.error).to eq([ "No file provided" ])
@@ -50,7 +50,7 @@ RSpec.describe CategoryImporter do
 
       it "returns failure" do
         importer = described_class.new(uploaded_file)
-        result = importer.validate_file
+        result = importer.validate_file("clear")
         expected = [ "Invalid CSV format" ]
 
         expect(result.success?).to be false
@@ -61,7 +61,7 @@ RSpec.describe CategoryImporter do
     context "with valid CSV" do
       it "imports categories successfully" do
         importer = described_class.new(uploaded_file)
-        checked_file = importer.validate_file
+        checked_file = importer.validate_file("merge")
         result = importer.call if checked_file.success?
 
         expect(result.success?).to be true
@@ -74,9 +74,9 @@ RSpec.describe CategoryImporter do
         create(:category, category: "M40-49")
       end
 
-      it "returns duplicate racer error" do
+      it "returns duplicate category error when merging" do
         importer = described_class.new(uploaded_file)
-        result = importer.validate_file
+        result = importer.validate_file("merge")
 
         expect(result.success?).to be false
         expect(result.error).to include("Row 2: 'M40-49' has already been created")
@@ -99,9 +99,10 @@ RSpec.describe CategoryImporter do
         file
       end
 
+      # TODO: verify if it should treat them as errors
       it "does not treat duplicate CSV rows as errors" do
         importer = described_class.new(uploaded_file)
-        result = importer.validate_file
+        result = importer.validate_file("merge")
 
         expect(result.success?).to be true
       end
@@ -114,7 +115,7 @@ RSpec.describe CategoryImporter do
 
       it "rolls back all inserts" do
         importer = described_class.new(uploaded_file)
-        checked_file = importer.validate_file
+        checked_file = importer.validate_file("clear")
         result = importer.call if checked_file.success?
 
         expect(result.success?).to be false
