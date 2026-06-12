@@ -128,6 +128,22 @@ select {
   grid-area: 2 / 1 / 3 / -1;
 }
 
+.items {
+  grid-area: 1 / 1 / 2 / 2;
+}
+
+.actions {
+  grid-area: 2 / 1 / 3 / 2;
+}
+
+.file {
+  grid-area: 3 / 1 / 4 / 2;
+}
+
+.file-input {
+  background-color: #00000000 !important;
+}
+
 .btn {
   font-weight: bolder;
   border: none;

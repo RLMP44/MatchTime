@@ -18,4 +18,13 @@ RSpec.describe Category, type: :model do
       expect(build(:category)).to be_valid
     end
   end
+
+  describe "callbacks" do
+    it 'assigns sex, min age, and max age from assigned category' do
+      category = Category.create(category: 'F20-29')
+      expect(category.sex).to eq('F')
+      expect(category.min_age).to eq(20)
+      expect(category.max_age).to eq(29)
+    end
+  end
 end

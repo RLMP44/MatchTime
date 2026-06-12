@@ -26,7 +26,7 @@ function ButtonBar(props) {
     );
     setPopUpFields(selectedCrud === 'add'
       ? props.fieldsObj[props.tab]
-      : props.fieldsObj[selectedCrud]
+      : Object.keys(props.fieldsObj[selectedCrud])
     );
     setIsDisplayed(!isDisplayed);
   };
@@ -34,22 +34,25 @@ function ButtonBar(props) {
   return (
     <div>
       <div className={`buttons-bar ${props.tab}-bar`}>
-        <button id='import-btn' className="button-bar-btn" aria-label={`Import ${pluralize(props.tab)}`} onClick={handlePopUp}><FileDownloadIcon /></button>
+        <button id='import-btn' className="button-bar-btn" aria-label={`Import`} onClick={handlePopUp}><FileDownloadIcon /></button>
         <button id='add-btn' className="button-bar-btn" aria-label={`Add ${props.tab}`} onClick={handlePopUp}><AddCircleIcon /></button>
-        <button id='export-btn' className="button-bar-btn" aria-label={`Export ${pluralize(props.tab)}`} onClick={handlePopUp}><FileUploadIcon /></button>
+        <button id='export-btn' className="button-bar-btn" aria-label={`Export`} onClick={handlePopUp}><FileUploadIcon /></button>
       </div>
 
       {/* ------------- POPUP ------------- */}
       <div style={{display: isDisplayed ? "" : "none"}}>
         <Popup
+          key={Math.random()}
           setIsDisplayed={setIsDisplayed}
           tab={props.tab}
           crud={crud}
           add={props.add}
+          import={props.import}
           buttons={buttonTypes}
           categories={props.categories}
           divisions={props.divisions}
           popUpFields={popUpFields}
+          fieldsObj={props.fieldsObj}
         />
       </div>
     </div>

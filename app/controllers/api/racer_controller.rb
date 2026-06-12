@@ -1,3 +1,5 @@
+require "ostruct"
+
 class Api::RacerController < Api::ApplicationController
   def index
     racers = Racer.joins(:division, :category)
@@ -52,6 +54,46 @@ class Api::RacerController < Api::ApplicationController
     racer = Racer.find(params[:id])
     racer.update({ place: nil, time_raw: nil })
     render json: racer
+  end
+
+  def clear_existing
+    file = params[:file]
+    importer = RacerImporter.new(file)
+    checked_file = importer.validate_file("clear")
+    unless checked_file.success?
+      return render json: { error: checked_file.error }, status: :unprocessable_entity
+    end
+
+    destroyed = Racer.destroy_all
+
+    if destroyed.any? { |div| div.errors.any? }
+      render json: { error: "Cannot delete racers" }, status: :unprocessable_entity
+      return
+    end
+
+    result = importer.call
+
+    if result.success?
+      render json: { message: "Racers imported successfully" }, status: :ok
+    else
+      render json: { error: result.error }, status: :unprocessable_entity
+    end
+  end
+
+  def merge
+    file = params[:file]
+    importer = RacerImporter.new(file)
+    checked_file = importer.validate_file("merge")
+    unless checked_file.success?
+      return render json: { error: checked_file.error }, status: :unprocessable_entity
+    end
+
+    result = importer.call
+    if result.success?
+      render json: { message: "Racers merged successfully" }, status: :ok
+    else
+      render json: { error: result.error }, status: :unprocessable_entity
+    end
   end
 
   def destroy

@@ -35,12 +35,6 @@ describe("Popup component", () => {
     expect(screen.getByText("Edit Racer")).toBeInTheDocument();
   });
 
-  test("renders pluralized title for import/export", () => {
-    render(<Popup {...baseProps} crud="import" tab="result" />);
-
-    expect(screen.getByText("Import Results")).toBeInTheDocument();
-  });
-
   test("renders fields using fieldRenderers", () => {
     render(<Popup {...baseProps} />);
 

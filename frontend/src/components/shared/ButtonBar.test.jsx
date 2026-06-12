@@ -16,8 +16,16 @@ function setup(overrides = {}) {
     fieldsObj: {
       racer: ["name", "age"],
       add: ["name", "age"],
-      import: ["file"],
-      export: ["format"]
+      import: {
+        items: ['racers', 'categories', 'divisions', 'times'],
+        actions: ['clear existing', 'merge'],
+        file: "file"
+      },
+      export: {
+        items: ['racers', 'categories', 'divisions', 'times'],
+        actions: ['clear existing', 'merge'],
+        file: "file"
+      }
     },
     add: jest.fn(),
     categories: [],
@@ -33,9 +41,9 @@ describe("ButtonBar", () => {
 
   test("renders all three buttons", () => {
     setup();
-    expect(screen.getByRole("button", { name: /import racers/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /import/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /add racer/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /export racers/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /export/i })).toBeInTheDocument();
   });
 
   test("clicking Add opens popup with correct fields", async () => {
@@ -51,7 +59,7 @@ describe("ButtonBar", () => {
   test("clicking Import opens popup with import fields", async () => {
     const { user } = setup();
 
-    await user.click(screen.getByRole("button", { name: /import racers/i }));
+    await user.click(screen.getByRole("button", { name: /import/i }));
 
     const popup = screen.getByTestId("popup");
     expect(popup).toHaveTextContent("crud:import");
@@ -61,11 +69,11 @@ describe("ButtonBar", () => {
   test("clicking Export opens popup with export fields", async () => {
     const { user } = setup();
 
-    await user.click(screen.getByRole("button", { name: /export racers/i }));
+    await user.click(screen.getByRole("button", { name: /export/i }));
 
     const popup = screen.getByTestId("popup");
     expect(popup).toHaveTextContent("crud:export");
-    expect(popup).toHaveTextContent('"format"');
+    expect(popup).toHaveTextContent('"file"');
   });
 
   test("popup toggles visibility on repeated clicks", async () => {
@@ -86,11 +94,11 @@ describe("ButtonBar", () => {
     expect(screen.queryByTestId("popup")).not.toBeVisible()
 
     // Import should do nothing
-    await user.click(screen.getByRole("button", { name: /import results/i }));
+    await user.click(screen.getByRole("button", { name: /import/i }));
     expect(screen.queryByTestId("popup")).not.toBeVisible();
 
     // Export should work
-    await user.click(screen.getByRole("button", { name: /export results/i }));
+    await user.click(screen.getByRole("button", { name: /export/i }));
     expect(screen.getByTestId("popup")).toBeInTheDocument();
   });
 

@@ -15,8 +15,7 @@ function Popup(props) {
 
   function setTitle(crud, target) {
     return (crud === 'import' || crud === 'export') ?
-      `${titleize(crud)} ${pluralize(titleize(target))}` :
-      `${titleize(crud)} ${titleize(target)}`;
+      `${titleize(crud)}` : `${titleize(crud)} ${titleize(target)}`;
   };
 
   // converts numeric fields in formData
@@ -36,20 +35,21 @@ function Popup(props) {
 
   // ----------------- EVENT HANDLING LOGIC -----------------
   async function handleSubmit(event) {
-    const button = event.target.id;
+    const button = event.currentTarget.id;
     let formattedForm = formatRecord(formData);
     if (button === "update-button" && props.tab === "timer") {
       props.update({ prevData: props.data, newData: formattedForm });
-    } else if (props.tab === 'category' && button === 'add-button') {
-      props.add(formattedForm);
-      return;
     } else if (button === 'update-button') {
       const changed = diff(props.data, formattedForm)
       props.edit({ oldRecord: props.data, newRecord: changed });
-    } else if (button === 'add-button') {
+    }
+    if (props.tab === 'category' && button === 'add-button') {
       props.add(formattedForm);
-    } else if (button === "delete-button") {
-      props.delete(props.data);
+      return;
+    } else if (button === 'add-button') { props.add(formattedForm); };
+    if (button === "delete-button") { props.delete(props.data); }
+    if (button === "import-button" || button === "export-button") {
+      props.import(formattedForm);
     };
     setFormData({});
     props.setIsDisplayed(false);

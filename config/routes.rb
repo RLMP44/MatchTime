@@ -10,9 +10,26 @@ Rails.application.routes.draw do
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
   namespace :api do
-    resources :category
-    resources :division
+    put "racer/clear_existing", to: "racer#clear_existing"
+    put "racer/merge", to: "racer#merge"
+    put "division/clear_existing", to: "division#clear_existing"
+    put "division/merge", to: "division#merge"
+    put "category/clear_existing", to: "category#clear_existing"
+    put "category/merge", to: "category#merge"
+
     resources :racer do
+      member do
+        patch :reset
+      end
+    end
+
+    resources :division do
+      member do
+        patch :reset
+      end
+    end
+
+    resources :category do
       member do
         patch :reset
       end
@@ -20,9 +37,7 @@ Rails.application.routes.draw do
   end
 
   root "frontend#index"
-  get "*path", to: "frontend#index", constraints: lambda { |req|
-    html_request = req.format.html?
-    not_ajax = !req.xhr?
-    html_request && not_ajax
-  }
+
+  get "*path", to: "frontend#index",
+    constraints: ->(req) { req.format.html? && !req.xhr? }
 end
