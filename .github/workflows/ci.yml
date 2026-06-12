@@ -17,7 +17,7 @@ jobs:
       - name: Run Brakeman
         env:
           RAILS_ENV: development
-        run: bin/brakeman --no-pager --exit-on-warn=false
+        run: bin/brakeman --no-pager --no-exit-on-warn
 
   scan_js:
     runs-on: ubuntu-latest
