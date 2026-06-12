@@ -42,6 +42,7 @@ function ButtonBar(props) {
       {/* ------------- POPUP ------------- */}
       <div style={{display: isDisplayed ? "" : "none"}}>
         <Popup
+          key={Math.random()}
           setIsDisplayed={setIsDisplayed}
           tab={props.tab}
           crud={crud}
