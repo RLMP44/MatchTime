@@ -60,6 +60,6 @@ Rails serves the frontend directly from public/.
 ![15](https://github.com/user-attachments/assets/56e561af-09c3-49c1-ba0d-9f39b5ce1c0e)
 - Preliminary results are also immediately updated.
 ![16](https://github.com/user-attachments/assets/0fd4b832-86a5-4232-84bb-b6623fa68d67)
-- Records can also be edited to switch bib numbers or adjust times if mistakes are made.
-![17](https://github.com/user-attachments/assets/3f7f814a-298e-4424-be2d-d19acaefdab5)
+- Records can also be edited to switch bib numbers or adjust times if mistakes are made.<br><img width="500" height="295" alt="1" src="https://github.com/user-attachments/assets/c30fc3ef-99cc-4359-888e-c3d4562b5ec4" />
+
 
