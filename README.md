@@ -35,27 +35,21 @@ Rails serves the frontend directly from public/.
 - Use Rails (rails s) for backend development.
 
 ## Overview
-- Match Time loads on the Timer tab. Racer, Category, and Results tabs are accessible in the same nav bar.
-![1](https://github.com/user-attachments/assets/f252e98c-b68b-4ff7-87ca-2ea5fb10f151)
-- Users can navigate to the Category tab to begin Match entry.
-![2](https://github.com/user-attachments/assets/6b4e3a5f-4f7b-4724-ac2f-745aa95e9044)
-- Users start by adding categories manually or importing via the button bar at the bottom of the screen.
-![3](https://github.com/user-attachments/assets/15a3f9e2-87f6-4a66-b421-c6d92aca4896)
-- Categories are added and displayed immediately upon submit. This will determine what categories racers are added to when entered into the app.
-![4](https://github.com/user-attachments/assets/16c821d9-ca55-4bd5-9d23-704f71d2a264)
-- Racers are displayed and added/edited/deleted via the Racer tab.
-![5](https://github.com/user-attachments/assets/c894f5ef-d841-4a43-9b59-0bb16f33daa0)
-- Sex, race number, and handicap are automatically filled in when a category is selected.
-![6](https://github.com/user-attachments/assets/919d7050-06ec-4898-af90-b28e1984a03d)
-![7](https://github.com/user-attachments/assets/bb07ebd9-70e5-4db6-b980-96366d2be51f)
-- Newly added racers are immediately displayed onscreen.
-![8](https://github.com/user-attachments/assets/345b10f3-80a0-4d06-a105-e86a4c8d6c72)
-- Once the timer is started in the Timer tab, bib numbers can be entered and racer names are displayed but not submitted.
-![9](https://github.com/user-attachments/assets/5a45e100-6dc5-4f56-b6f6-3d9db37954a3)
-- Once the record button is hit, racers and their times are immediately displayed on the left.
-![10](https://github.com/user-attachments/assets/99abf89c-7bf1-4648-94bb-b89e28b174c9)
-- The results in the Result tab are also updated at the same time.
-![11](https://github.com/user-attachments/assets/a5afd28d-1c7a-40e2-8f12-6dc3dbd3792c)
+- Match Time loads on the Timer tab. Racer, Category, Division, and Results tabs are accessible in the same nav bar.<img width="1353" height="773" alt="1" src="https://github.com/user-attachments/assets/70f8149c-d70e-4b5e-8b5b-6d4b66083c28" />
+- Users can navigate to the Category tab to begin Match entry. Users start by adding categories manually or importing via the button bar at the bottom of the screen.<br><img width="407" height="300" alt="5" src="https://github.com/user-attachments/assets/1369808b-6ce7-41cc-8ced-8651e7ed4ef9" /><img width="407" height="235" alt="3" src="https://github.com/user-attachments/assets/907d51c6-b43e-46c2-9faa-ecac351b43ae" /><br>
+
+- Categories are added and displayed immediately upon submit. This will populate the required category dropdown when racers are added.<br><img width="1352" height="770" alt="2" src="https://github.com/user-attachments/assets/c42e17d5-60b2-4cda-ae44-497c79e8429e" /><br>
+- Edits are also available once categories are added by clicking on a specific category.<br><img width="397" height="236" alt="4" src="https://github.com/user-attachments/assets/7d3c1582-1e68-48af-af49-4bd52ea04e5a" /><b4>
+- Divisions are then added in the Division tab, where handicaps are automatically calculated.<img width="407" height="273" alt="7" src="https://github.com/user-attachments/assets/a8c2f8e8-53c8-4d9d-aa01-ba0aff676daf" /><img width="407" height="273" alt="8" src="https://github.com/user-attachments/assets/778d56fa-3bf5-4278-b829-250d1d37f7a7" /><br><img width="1353" height="773" alt="6" src="https://github.com/user-attachments/assets/45db69e7-757d-49b8-8ef1-b42572c29967" /><br>
+
+- Racers are displayed and added/edited/deleted via the Racer tab.<img width="1356" height="772" alt="9" src="https://github.com/user-attachments/assets/c20721a3-8aa3-4891-b6dc-e9d62a1c1cdf" /><br>
+
+- Sex and race number are automatically filled in when a category is selected. Handicap can be filled by hand, or left blank to use default handicaps.<br><img width="687" height="437" alt="14" src="https://github.com/user-attachments/assets/45eb3bea-5eb1-4d6d-8b42-947e471d908b" /><br>
+
+- Newly added racers are immediately displayed onscreen.<img width="1357" height="773" alt="10" src="https://github.com/user-attachments/assets/a6ce23d6-24b7-4afd-afef-5417e150870c" /><br><img width="1352" height="775" alt="11" src="https://github.com/user-attachments/assets/8215edd5-a6a1-4c16-8ee6-0c44dd0122e2" /><br>
+- Once the timer is started in the Timer tab, bib numbers can be entered and racer names will be displayed on the right. Once the record button is hit, the racers and their times are immediately displayed on the left.<img width="1352" height="771" alt="12" src="https://github.com/user-attachments/assets/ca58c83b-a17a-4aab-94ce-6a14c0a53069" /><br>
+- The results in the Result tab are also updated at the same time.<img width="1353" height="772" alt="13" src="https://github.com/user-attachments/assets/be676c6f-1185-4966-9b0f-e59282fcbc62" /><br>
+
 - Newly added racers are immediately accessible in the timer tab.
 ![12](https://github.com/user-attachments/assets/0ba9b019-b619-412a-bbbe-af2eaa21f4f4)
 - If an unregistered bib number is entered, its place is entered into the display and results.
