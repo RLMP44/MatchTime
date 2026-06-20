@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { checkIsPresent, range, prepTimeForDisplay, titleize } from "../../utils/helpers";
+import { ToastContainer, toast, Bounce } from 'react-toastify';
 
 function Timer(props) {
   const { timeInMs, startTimer } = props.timer;
@@ -113,7 +114,7 @@ function Timer(props) {
       };
 
       if (noRacerSelected) {
-        console.warn("No racer selected")
+        toast("No racer selected!");
         return;
       };
 
@@ -129,8 +130,7 @@ function Timer(props) {
       };
 
       if (racerAlreadyRecorded) {
-        // TODO: give user feedback
-        console.warn("User already recorded")
+        toast("Racer already recorded!")
         reset();
         return;
       };
