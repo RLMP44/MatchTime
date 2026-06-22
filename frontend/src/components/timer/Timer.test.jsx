@@ -2,11 +2,6 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Timer from "./Timer";
 
-// disable flags for intentional console.warns
-beforeEach(() => {
-  jest.spyOn(console, "warn").mockImplementation(() => {});
-});
-
 // create default props and user to be used in testing
 // use jest.fn() to create a fake function to allow inspection of arguments
 // and to simply see if the function is called or not
