@@ -201,10 +201,11 @@ function App() {
   // -------------- TIMER RECORD DISPLAY LOGIC --------------
   const updateAllRecords = async ({ oldRecord, newRecord }) => {
     updateDisplayedRecords({ oldRecord, newRecord });
+    if (oldRecord.first_name === "" || oldRecord.first_name === null) { return };
     await updateDBRacer({
-        id: oldRecord.id,
-        newRecord: diff(oldRecord, newRecord)
-      });
+      id: oldRecord.id,
+      newRecord: diff(oldRecord, newRecord)
+    });
   };
 
   // takes 2 records => updates a single, previously displayed record
@@ -238,10 +239,8 @@ function App() {
       timeChanged,
       timeInMs
     });
-    await updateDisplayedRecords({
-      oldRecord: prevData,
-      newRecord: newRacer
-    });
+    await updateDisplayedRecords({ oldRecord: prevData, newRecord: newRacer });
+    if (prevData.first_name === "" || prevData.first_name === null) { return };
     await resetRacerRecord({ racerToReset: prevData });
   };
 

@@ -1,6 +1,9 @@
 class Racer < ApplicationRecord
   belongs_to :category
   belongs_to :division
+
+  attr_accessor :is_placeholder
+
   validates :first_name, :last_name, :sex, :category, :division, :age, presence: true, unless: :placeholder?
   validates :age, numericality: { only_integer: true }
   validates :handicap, numericality: true, unless: -> { handicap.blank? }
@@ -11,11 +14,12 @@ class Racer < ApplicationRecord
   validates :first_name, uniqueness: { scope: :last_name,
                                        message: "Full name already used" }
 
-  before_create :calculate_handicap, :assign_bib, unless: :placeholder?
+  before_create :calculate_handicap, unless: :placeholder?
+  before_create :assign_bib, unless: :placeholder?
   before_save :calculate_handicap, if: :needs_handicap_update?, unless: :placeholder?
 
   def placeholder?
-    id.present? && id < 0
+    is_placeholder || id.to_i < 0
   end
 
   private
@@ -35,6 +39,7 @@ class Racer < ApplicationRecord
       place: place,
       time_raw: time_raw
     })
+    racer.is_placeholder = true
     racer.save(validate: false)
     racer
   end
